@@ -11,6 +11,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --bs-primary: #007bff; /* 이미지의 진한 파란색 버튼 컬러 */
 }
 
 a {
@@ -65,4 +66,21 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+}
+
+.progress-bar {
+  background-color: #007bff;
+}
+
+.input-group-text, .form-control {
+  border-color: #eee;
+}
+
+.extra-small {
+  font-size: 0.7rem;
 }

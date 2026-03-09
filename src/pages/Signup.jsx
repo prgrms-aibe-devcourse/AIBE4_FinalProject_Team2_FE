@@ -1,124 +1,136 @@
-import { useState, useEffect } from 'react';
-import api from '../api/axios'; // 기존에 만든 axios 설정 파일
+import React, { useState } from 'react';
+import { Container, Row, Col, Form, Button, ProgressBar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import axios from '../api/axios.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Signup() {
+const Signup = () => {
   const navigate = useNavigate();
-  
-  // 1. 상태 관리 (입력값 및 상태)
+
+  // 백엔드 MemberDTO 구조에 맞게 상태 설정
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    verificationCode: ''
+    nickname: '',   // request.getNickname()에 대응
+    email: '',      // request.getEmail()에 대응
+    password: '',   // request.getPassword()에 대응
+    provider: 'LOCAL', // 일반 가입이므로 기본값 설정
+    agreed: false
   });
 
-  const [isEmailSent, setIsEmailSent] = useState(false); // 인증번호 발송 여부
-  const [isEmailVerified, setIsEmailVerified] = useState(false); // 인증 완료 여부
-  const [timer, setTimer] = useState(300); // 5분 타이머 (초 단위)
-
-  // 2. 타이머 로직
-  useEffect(() => {
-    let interval;
-    if (isEmailSent && timer > 0 && !isEmailVerified) {
-      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isEmailSent, timer, isEmailVerified]);
-
-  const formatTime = (time) => {
-    const min = Math.floor(time / 60);
-    const sec = time % 60;
-    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-  };
-
-  // 3. 핸들러 함수들
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
-  // 이메일 인증번호 요청
-  const handleEmailRequest = async () => {
-    try {
-      await api.post(`/auth/email/request?email=${formData.email}`);
-      setIsEmailSent(true);
-      setTimer(300);
-      alert("인증번호가 발송되었습니다.");
-    } catch (error) {
-      alert(error.response?.data || "메일 발송에 실패했습니다.");
-    }
-  };
-
-  // 이메일 인증번호 확인
-  const handleEmailVerify = async () => {
-    try {
-      await api.post(`/auth/email/verify?email=${formData.email}&code=${formData.verificationCode}`);
-      setIsEmailVerified(true);
-      alert("이메일 인증에 성공했습니다.");
-    } catch (error) {
-      alert("인증번호가 틀렸거나 만료되었습니다.");
-    }
-  };
-
-  // 최종 회원가입 제출
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isEmailVerified) return alert("이메일 인증을 완료해주세요.");
-    if (formData.password !== formData.confirmPassword) return alert("비밀번호가 일치하지 않습니다.");
+
+    // 간단한 프론트엔드 방어 로직
+    if (!formData.agreed) {
+      alert("이용약관에 동의해주세요.");
+      return;
+    }
 
     try {
-      await api.post('/auth/signup', {
-        username: formData.username,
+      // 작성하신 백엔드 API 주소로 데이터 전송
+      const response = await axios.post('auth/signup', {
+        nickname: formData.nickname,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        provider: formData.provider
       });
-      alert("회원가입이 완료되었습니다!");
-      navigate('/login');
+
+      if (response.status === 200) {
+        alert(response.data); // "회원가입이 완료되었습니다."
+        navigate('/login');    // 가입 완료 후 로그인 페이지로 이동
+      }
     } catch (error) {
-      alert(error.response?.data || "회원가입 실패");
+      // 백엔드에서 던지는 400 에러(중복 아이디 등) 처리
+      const errorMessage = error.response?.data || "회원가입 중 오류가 발생했습니다.";
+      alert(errorMessage);
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto' }}>
-      <h2>회원가입</h2>
-      <form onSubmit={handleSubmit}>
-        {/* 아이디 */}
-        <input name="username" placeholder="아이디" onChange={handleChange} required />
-        
-        {/* 이메일 및 인증 */}
-        <div style={{ display: 'flex', gap: '5px', marginTop: '10px' }}>
-          <input name="email" type="email" placeholder="이메일" onChange={handleChange} disabled={isEmailVerified} required />
-          <button type="button" onClick={handleEmailRequest} disabled={isEmailVerified}>
-            {isEmailSent ? '재전송' : '인증요청'}
-          </button>
-        </div>
+      <Container fluid className="vh-100 p-0">
+        <Row className="h-100 g-0">
+          {/* 왼쪽 홍보 섹션 (생략 가능, 이전 코드와 동일) */}
+          <Col md={5} className="bg-light d-none d-md-flex flex-column justify-content-center p-5 position-relative">
+            <div className="mb-5 px-4">
+              <h5 className="text-primary fw-bold">SyncTalk</h5>
+              <h1 className="display-5 fw-bold mt-5">AI와 함께 면접 스킬을 마스터하세요.</h1>
+              <p className="text-muted mt-4">맞춤형 자기소개서와 실전 같은 모의 면접으로 꿈의 직장에 합격한 10,000명 이상의 지원자들과 함께하세요.</p>
+            </div>
+            <div className="card shadow-sm border-0 p-4 mx-4 mt-5 bg-white rounded-4">
+              <p className="small text-warning">★★★★★</p>
+              <p className="small">"SyncTalk 덕분에 PM 직무 면접 답변을 완벽하게 다듬을 수 있었어요. 면접장에 들어갈 때 자신감이 훨씬 넘쳤습니다."</p>
+              <div className="d-flex align-items-center mt-3">
+                <div className="bg-secondary rounded-circle me-3" style={{width: '40px', height: '40px'}}></div>
+                <div>
+                  <p className="mb-0 fw-bold small">김지수</p>
+                  <p className="mb-0 text-muted x-small">TechCorp PM</p>
+                </div>
+              </div>
+            </div>
+          </Col>
 
-        {isEmailSent && !isEmailVerified && (
-          <div style={{ display: 'flex', gap: '5px', marginTop: '10px' }}>
-            <input name="verificationCode" placeholder="인증번호 6자리" onChange={handleChange} required />
-            <button type="button" onClick={handleEmailVerify}>확인</button>
-            <span style={{ color: 'red' }}>{formatTime(timer)}</span>
-          </div>
-        )}
+          {/* 오른쪽 가입 폼 섹션 */}
+          <Col md={7} className="d-flex flex-column justify-content-center p-5 bg-white">
+            <div style={{ maxWidth: '480px', margin: '0 auto', width: '100%' }}>
+              <h2 className="fw-bold mb-4">계정 만들기</h2>
 
-        {isEmailVerified && <p style={{ color: 'blue', fontSize: '12px' }}>✓ 이메일 인증 완료</p>}
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-bold">이름 (닉네임)</Form.Label>
+                  <Form.Control
+                      name="nickname"
+                      type="text"
+                      placeholder="예: 홍길동"
+                      onChange={handleChange}
+                      required
+                  />
+                </Form.Group>
 
-        {/* 비밀번호 */}
-        <input name="password" type="password" placeholder="비밀번호" onChange={handleChange} style={{ marginTop: '10px', width: '100%' }} required />
-        <input name="confirmPassword" type="password" placeholder="비밀번호 확인" onChange={handleChange} style={{ marginTop: '10px', width: '100%' }} required />
-        
-        {formData.password !== formData.confirmPassword && formData.confirmPassword && (
-          <p style={{ color: 'red', fontSize: '12px' }}>비밀번호가 일치하지 않습니다.</p>
-        )}
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-bold">이메일</Form.Label>
+                  <Form.Control
+                      name="email"
+                      type="email"
+                      placeholder="name@company.com"
+                      onChange={handleChange}
+                      required
+                  />
+                </Form.Group>
 
-        <button type="submit" style={{ marginTop: '20px', width: '100%', height: '40px' }} disabled={!isEmailVerified}>
-          가입하기
-        </button>
-      </form>
-    </div>
+                <Form.Group className="mb-4">
+                  <Form.Label className="small fw-bold">비밀번호</Form.Label>
+                  <Form.Control
+                      name="password"
+                      type="password"
+                      placeholder="최소 8자 이상"
+                      onChange={handleChange}
+                      required
+                  />
+                </Form.Group>
+
+                <Form.Check className="mb-4 small">
+                  <Form.Check.Input
+                      type="checkbox"
+                      name="agreed"
+                      onChange={handleChange}
+                      required
+                  />
+                  <Form.Check.Label>이용약관 및 개인정보 처리방침에 동의합니다.</Form.Check.Label>
+                </Form.Check>
+
+                <Button variant="primary" className="w-100 py-2 fw-bold" type="submit">
+                  회원가입 완료
+                </Button>
+              </Form>
+            </div>
+          </Col>
+        </Row>
+      </Container>
   );
-}
+};
 
 export default Signup;
