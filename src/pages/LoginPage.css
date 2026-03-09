@@ -1,0 +1,77 @@
+.login-container {
+    background-color: #05080d; /* 전체 배경색 */
+}
+
+/* 좌측 섹션 배경 */
+.left-section {
+    background: linear-gradient(135deg, #1a1c2e 0%, #303456 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 이미지의 구불구불한 선 효과 재현 (의사 요소 활용) */
+.left-section::before {
+    content: "";
+    position: absolute;
+    top: 20%;
+    left: -10%;
+    width: 120%;
+    height: 60%;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50% 100% 50% 100%;
+    pointer-events: none;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 450px;
+    background-color: #11141d;
+    border-radius: 15px;
+}
+
+/* 입력창 스타일 */
+.form-control {
+    background-color: #1a1e29 !important;
+    border: 1px solid #2d3446 !important;
+    padding: 12px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(84, 82, 231, 0.25);
+    border-color: #5452e7 !important;
+}
+
+/* 로그인 버튼 */
+.btn-login {
+    background-color: #5452e7;
+    border: none;
+    font-weight: 600;
+}
+
+/* 구분선 */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #4b5563;
+    font-size: 0.8rem;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #2d3446;
+}
+
+.divider:not(:empty)::before { margin-right: .5em; }
+.divider:not(:empty)::after { margin-left: .5em; }
+
+/* 소셜 버튼 커스텀 */
+.social-btn {
+    border: 1px solid #2d3446;
+    background: transparent;
+    padding: 10px;
+}
+
+.kakao-btn { background-color: #fee500 !important; border: none !important; color: #000; }
+.naver-btn { background-color: #03c75a !important; border: none !important; color: #fff; }
