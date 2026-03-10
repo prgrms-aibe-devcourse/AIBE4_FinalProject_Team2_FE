@@ -22,17 +22,17 @@ function Navigation() {
                         <Nav.Link href="/correction">자기소개서 첨삭</Nav.Link>
                         <Nav.Link href="#link">AI 모의면접</Nav.Link>
                         <Nav.Link href="/Dashboard">마이페이지</Nav.Link>
-                        <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">
-                                Another action
-                            </NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">
-                                Separated link
-                            </NavDropdown.Item>
-                        </NavDropdown>
+                        {/*<NavDropdown title="Dropdown" id="basic-nav-dropdown">*/}
+                        {/*    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>*/}
+                        {/*    <NavDropdown.Item href="#action/3.2">*/}
+                        {/*        Another action*/}
+                        {/*    </NavDropdown.Item>*/}
+                        {/*    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>*/}
+                        {/*    <NavDropdown.Divider />*/}
+                        {/*    <NavDropdown.Item href="#action/3.4">*/}
+                        {/*        Separated link*/}
+                        {/*    </NavDropdown.Item>*/}
+                        {/*</NavDropdown>*/}
                     </Nav>
                 </Navbar.Collapse>
                 <Button as={Link} to="/login">login</Button>

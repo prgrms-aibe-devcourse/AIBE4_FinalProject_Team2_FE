@@ -66,12 +66,70 @@
 .divider:not(:empty)::before { margin-right: .5em; }
 .divider:not(:empty)::after { margin-left: .5em; }
 
-/* 소셜 버튼 커스텀 */
-.social-btn {
-    border: 1px solid #2d3446;
-    background: transparent;
-    padding: 10px;
+/* 소셜 로그인 컨테이너 */
+.social-login-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 2rem;
 }
 
-.kakao-btn { background-color: #fee500 !important; border: none !important; color: #000; }
-.naver-btn { background-color: #03c75a !important; border: none !important; color: #fff; }
+/* 공통 버튼 스타일 (이미지의 둥근 사각형 재현) */
+.social-btn {
+    width: 60px;
+    height: 44px;
+    border-radius: 12px; /* 이미지의 부드러운 곡률 */
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+}
+
+.social-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+/* Google 버튼 - 다크 배경에 흰색 G */
+.btn-google {
+    background-color: #2d333b !important;
+    color: #ffffff !important;
+    border: 1px solid #444c56 !important;
+}
+
+/* Kakao 버튼 - 시그니처 옐로우 */
+.btn-kakao {
+    background-color: #fee500 !important;
+    color: #3c1e1e !important;
+}
+
+/* GitHub 버튼 - 네이버 대신 추가 (짙은 차콜/블랙) */
+.btn-github {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+/* 구분선 텍스트 스타일 */
+.divider-text {
+    color: #8b949e;
+    font-size: 0.8rem;
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.divider-text::before,
+.divider-text::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 35%;
+    height: 1px;
+    background-color: #30363d;
+}
+
+.divider-text::before { left: 0; }
+.divider-text::after { right: 0; }
