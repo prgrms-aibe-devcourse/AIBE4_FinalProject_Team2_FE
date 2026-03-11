@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LoginPage = () => {
@@ -19,9 +19,8 @@ const LoginPage = () => {
             const response = await axios.post('/auth/login', loginData);
             localStorage.setItem('token', response.data.token);
             alert("로그인 성공!");
-            navigate('/Dashboard');
         } catch (error) {
-            alert("로그인 실패: 이메일 또는 비밀번호를 확인하세요.");
+            alert("로그인 실패: 이메일 또는 비밀번호를 확인하세요.\n" + error.message);
         }
     };
 
