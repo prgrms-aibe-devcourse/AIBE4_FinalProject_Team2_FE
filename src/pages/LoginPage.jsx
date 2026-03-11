@@ -1,3 +1,7 @@
+import { FcGoogle } from "react-icons/fc"; // 구글 아이콘
+import { RiKakaoTalkFill } from "react-icons/ri"; // 카카오 아이콘
+import { FaGithub } from "react-icons/fa"; // 깃허브 아이콘
+
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -34,8 +38,8 @@ const LoginPage = () => {
     };
 
     return (
-        <Container fluid className="vh-100 p-0" style={{ backgroundColor: '#0a0b10' }}>
-            <Row className="h-100 g-0">
+        <Container fluid className="min-vh-100 p-0" style={{ backgroundColor: '#0a0b10' }}>
+            <Row className="flex-grow-1 g-0">
 
                 {/* 왼쪽 섹션: 홍보 문구 */}
                 <Col md={6} className="d-none d-md-flex flex-column justify-content-center p-5 text-white position-relative"
@@ -100,35 +104,39 @@ const LoginPage = () => {
                                     로그인
                                 </Button>
 
-                                <div className="divider-text">간편 로그인</div>
-
-                                <div className="social-login-group">
-                                    {/* 구글 */}
-                                    <Button
-                                        className="social-btn btn-google"
-                                        onClick={() => handleSocialLogin('google')}
-                                    >
-                                        <i className="bi bi-google"></i>G
-                                    </Button>
-
-                                    {/* 카카오 */}
-                                    <Button
-                                        className="social-btn btn-kakao"
-                                        onClick={() => handleSocialLogin('kakao')}
-                                    >
-                                        <i className="bi bi-chat-fill"></i>
-                                    </Button>
-
-                                    {/* 깃허브 (네이버 대체) */}
-                                    <Button
-                                        className="social-btn btn-github"
-                                        onClick={() => handleSocialLogin('github')}
-                                    >
-                                        <i className="bi bi-github"></i>
-                                    </Button>
+                                {/* "간편하게 시작하기" 텍스트 영역 */}
+                                <div className="text-center mt-5 mb-3">
+                                    <small className="text-secondary" style={{ fontSize: '0.8rem' }}>간편하게 시작하기</small>
                                 </div>
 
-                                <p className="text-center small text-secondary">
+                                {/* 소셜 로그인 아이콘 버튼 영역 (가로 배치) */}
+                                <div className="d-flex justify-content-center gap-3 mb-4">
+                                    {/* Google - 심플한 테두리 원형 */}
+                                    <button className="btn btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center" 
+                                            style={{ width: '45px', height: '45px', borderColor: '#30363d' }}
+                                            onClick={() => handleSocialLogin('google')}
+                                            title="Google 로그인">
+                                        <FcGoogle size={24} />
+                                    </button>
+
+                                    {/* Kakao - 브랜드 컬러 원형 */}
+                                    <button className="btn rounded-circle p-0 d-flex align-items-center justify-content-center" 
+                                            style={{ width: '45px', height: '45px', backgroundColor: '#FEE500', color: '#191919', border: 'none' }}
+                                            onClick={() => handleSocialLogin('kakao')}
+                                            title="카카오 로그인">
+                                        <RiKakaoTalkFill size={26} />
+                                    </button>
+
+                                    {/* GitHub - 다크 모드 원형 */}
+                                    <button className="btn btn-dark rounded-circle p-0 d-flex align-items-center justify-content-center border-secondary" 
+                                            style={{ width: '45px', height: '45px', backgroundColor: '#24292f', borderColor: '#30363d' }}
+                                            onClick={() => handleSocialLogin('github')}
+                                            title="GitHub 로그인">
+                                        <FaGithub size={24} className="text-white" />
+                                    </button>
+                                </div>
+
+                                <p className="text-center small text-secondary mt-3">
                                     계정이 없으신가요? <a href="/AIBE4_FinalProject_Team2_FE/signup" className="text-primary text-decoration-none fw-bold">회원가입</a>
                                 </p>
                             </Form>

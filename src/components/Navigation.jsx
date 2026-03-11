@@ -17,7 +17,7 @@ function Navigation() {
         try {
             // 백엔드 로그인 API 호출 예시
 
-            const response = await axios.post('/auth/logout');
+            const response = await axios.get('/auth/logout');
 
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
@@ -26,7 +26,7 @@ function Navigation() {
         } catch (error) {
             // 서버에서 온 에러 메시지가 있다면 그걸 보여주는 게 좋습니다.
             const errorMsg = error.response?.data?.message || error.message;
-            alert("로그아웃 실패: " + errorMsg);
+            alert("로그아웃 실패\n" + errorMsg);
         }
     };
 

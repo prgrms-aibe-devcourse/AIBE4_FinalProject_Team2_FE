@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import Correction from "./pages/Correction.jsx";
 import Dashboard from "./pages/DashBoard.jsx";
 import Signup from './pages/Signup.jsx';
+import OAuthCallback from './pages/OAuthCallback.jsx';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/correction" element={<Correction />} />
+                <Route path="/oauth/callback" element={<OAuthCallback />} />
             </Routes>
         </>
     );
