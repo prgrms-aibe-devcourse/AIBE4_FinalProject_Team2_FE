@@ -18,10 +18,10 @@ function Navigation() {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mx-auto">
-                        <Nav.Link href="#home">이력서 관리</Nav.Link>
-                        <Nav.Link href="/correction">자기소개서 첨삭</Nav.Link>
-                        <Nav.Link href="#link">AI 모의면접</Nav.Link>
-                        <Nav.Link href="/Dashboard">마이페이지</Nav.Link>
+                        <Nav.Link href="#">이력서 관리</Nav.Link>
+                        <Nav.Link href="#">자기소개서 첨삭</Nav.Link>
+                        <Nav.Link href="#">AI 모의면접</Nav.Link>
+                        <Nav.Link href="#">마이페이지</Nav.Link>
                         {/*<NavDropdown title="Dropdown" id="basic-nav-dropdown">*/}
                         {/*    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>*/}
                         {/*    <NavDropdown.Item href="#action/3.2">*/}
