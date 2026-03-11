@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import api from '../api/axios';
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -15,12 +15,18 @@ const LoginPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            // 백엔드 로그인 API 호출 예시
-            const response = await axios.post('/auth/login', loginData);
-            localStorage.setItem('token', response.data.token);
+            const response = await api.post('/auth/login', loginData);
+
+            localStorage.setItem('accessToken', response.data.accessToken);
+            localStorage.setItem('refreshToken', response.data.refreshToken);
+            localStorage.setItem('role', response.data.role);
+            localStorage.setItem('email', response.data.email);
+            localStorage.setItem('nickname', response.data.nickname);
+
             alert("로그인 성공!");
-            navigate('/Dashboard');
+            navigate('/');
         } catch (error) {
+            console.error(error);
             alert("로그인 실패: 이메일 또는 비밀번호를 확인하세요.");
         }
     };
@@ -28,7 +34,7 @@ const LoginPage = () => {
     const handleSocialLogin = (provider) => {
         // 백엔드 서버 주소 (Spring Security 기본 엔드포인트)
         // provider: google, kakao, naver
-        const backendUrl = `http://localhost:8080/oauth2/authorization/${provider}`;
+        const backendUrl = `http://localhost:8081/oauth2/authorization/${provider}`;
 
         // 현재 창의 주소를 백엔드로 이동시켜 인증 프로세스 시작
         window.location.href = backendUrl;
