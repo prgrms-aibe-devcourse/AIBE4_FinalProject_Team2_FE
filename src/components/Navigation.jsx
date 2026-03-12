@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import SyncTalkLogo from '../assets/SyncTalk_Logo.png';
 
 function Navigation() {
+
     const navigate = useNavigate();
     const location = useLocation();
 

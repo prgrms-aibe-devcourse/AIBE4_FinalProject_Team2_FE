@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom'; // Router 감싸기
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        {/*<BrowserRouter>*/}
+        {/* <BrowserRouter> */}
         <BrowserRouter basename="/AIBE4_FinalProject_Team2_FE">
             <App />
         </BrowserRouter>
