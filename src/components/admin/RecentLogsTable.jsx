@@ -19,8 +19,8 @@ function RecentLogsTable({ logs }) {
 
             <tbody>
 
-            {logs.map((log, index) => (
-                <tr key={index}>
+            {logs.map((log) => (
+                <tr key={log.id}>
                     <td>{log.memberId}</td>
                     <td>{log.serviceType}</td>
                     <td>{log.amount}</td>

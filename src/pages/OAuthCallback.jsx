@@ -3,7 +3,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 function parseJwt(token) {
     try {
-        const base64Payload = token.split('.')[1];
+        const parts = token?.split('.');
+        const base64Payload = parts?.[1];
+        if (!base64Payload) return null;
+
         const payload = atob(base64Payload.replace(/-/g, '+').replace(/_/g, '/'));
         return JSON.parse(payload);
     } catch (e) {

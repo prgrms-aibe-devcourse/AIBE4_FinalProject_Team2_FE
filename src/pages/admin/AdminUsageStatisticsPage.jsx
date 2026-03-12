@@ -116,8 +116,8 @@ function AdminUsageStatisticsPage() {
                                         </td>
                                     </tr>
                                 ) : (
-                                    dailyRows.map((row, idx) => (
-                                        <tr key={idx}>
+                                    dailyRows.map((row) => (
+                                        <tr key={row.serviceType}>
                                             <td>{row.serviceType}</td>
                                             <td>{row.totalCount}</td>
                                             <td>{row.totalTokenUsage}</td>

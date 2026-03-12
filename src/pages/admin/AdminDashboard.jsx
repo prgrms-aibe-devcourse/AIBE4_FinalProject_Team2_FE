@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../../api/axios.js";
+import { getAdminDashboardSummary, getAdminRecentLogs } from "../../api/admin";
 
 import AdminLayout from "../../components/admin/AdminLayout.jsx";
 import SummaryCards from "../../components/admin/SummaryCards.jsx";
@@ -18,8 +18,8 @@ function AdminDashboard() {
                 setError("");
 
                 const [summaryRes, logsRes] = await Promise.all([
-                    api.get("/admin/dashboard/summary"),
-                    api.get("/admin/dashboard/recent-logs"),
+                    getAdminDashboardSummary(),
+                    getAdminRecentLogs(),
                 ]);
 
                 setSummary(summaryRes.data?.data ?? summaryRes.data);
