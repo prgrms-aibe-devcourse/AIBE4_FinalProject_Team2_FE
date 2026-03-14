@@ -25,7 +25,11 @@ function RecentLogsTable({ logs }) {
                     <td>{log.serviceType}</td>
                     <td>{log.amount}</td>
                     <td>{log.tokenUsage}</td>
-                    <td>{log.createdAt}</td>
+                    <td>
+                        {log.createdAt
+                            ? new Date(log.createdAt).toLocaleString("ko-KR")
+                            : "-"}
+                    </td>
                 </tr>
             ))}
 

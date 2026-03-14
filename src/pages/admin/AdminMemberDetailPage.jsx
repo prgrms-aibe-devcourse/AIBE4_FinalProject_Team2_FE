@@ -130,12 +130,20 @@ function AdminMemberDetailPage() {
 
                             <Row className="mb-2">
                                 <Col sm={4}><strong>가입일</strong></Col>
-                                <Col sm={8}>{member.createdAt?.replace("T", " ").slice(0, 16) || "-"}</Col>
+                                <Col sm={8}>
+                                    {member.createdAt
+                                        ? new Date(member.createdAt).toLocaleString("ko-KR")
+                                        : "-"}
+                                </Col>
                             </Row>
 
                             <Row>
                                 <Col sm={4}><strong>삭제일</strong></Col>
-                                <Col sm={8}>{member.deletedAt ? member.deletedAt.replace("T", " ").slice(0, 16) : "-"}</Col>
+                                <Col sm={8}>
+                                    {member.deletedAt
+                                        ? new Date(member.deletedAt).toLocaleString("ko-KR")
+                                        : "-"}
+                                </Col>
                             </Row>
                         </Card.Body>
                     </Card>

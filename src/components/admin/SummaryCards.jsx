@@ -16,7 +16,7 @@ function SummaryCards({ summary }) {
             <Card title="자소서 분석 사용" value={summary.todayResumeUsageCount} />
             <Card title="면접 사용" value={summary.todayInterviewUsageCount} />
 
-            <Card title="오늘 토큰 사용량" value={summary.todayTotalTokenUsage} />
+            <Card title="오늘 AI 토큰 사용량" value={summary.todayTotalTokenUsage} />
 
         </div>
     );

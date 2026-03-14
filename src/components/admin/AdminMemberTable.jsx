@@ -34,7 +34,11 @@ function AdminMemberTable({ members }) {
                         <td>{member.role}</td>
                         <td>{member.status}</td>
                         <td>{member.creditBalance}</td>
-                        <td>{member.createdAt?.replace("T", " ").slice(0, 16)}</td>
+                        <td>
+                            {member.createdAt
+                                ? new Date(member.createdAt).toLocaleString("ko-KR")
+                                : "-"}
+                        </td>
                         <td>
                             <Button
                                 size="sm"
