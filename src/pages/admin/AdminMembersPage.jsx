@@ -6,15 +6,19 @@ import { searchAdminMembers } from "../../api/admin";
 
 function AdminMembersPage() {
     const [members, setMembers] = useState([]);
+    const [pageInfo, setPageInfo] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const fetchMembers = async (params = { page: 0, size: 10 }) => {
         try {
             setLoading(true);
-            const res = await searchAdminMembers(params);
 
-            const content = res.data?.data?.content || [];
+            const res = await searchAdminMembers(params);
+            const data = res.data?.data;
+            const content = data?.content || [];
+
             setMembers(content);
+            setPageInfo(data);
         } catch (error) {
             console.error("회원 목록 조회 실패:", error);
         } finally {

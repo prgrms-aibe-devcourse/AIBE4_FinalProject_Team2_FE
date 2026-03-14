@@ -3,27 +3,33 @@ import { Alert, Button, Card, Col, Form, Row, Table } from "react-bootstrap";
 import AdminLayout from "../../components/admin/AdminLayout";
 import { searchAdminUsageLogs } from "../../api/admin";
 
-function AdminUsageLogsPage() {
-    const [form, setForm] = useState({
-        memberId: "",
-        serviceType: "",
-        from: "",
-        to: "",
-        targetType: "",
-        page: 0,
-        size: 10,
-    });
+const initialForm = {
+    memberId: "",
+    nickname: "",
+    email: "",
+    serviceType: "",
+    from: "",
+    to: "",
+    targetType: "",
+    page: 0,
+    size: 10,
+};
 
+function AdminUsageLogsPage() {
+    const [form, setForm] = useState(initialForm);
     const [logs, setLogs] = useState([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const fetchLogs = async (params = form) => {
+    const fetchLogs = async (params = initialForm) => {
         try {
             setLoading(true);
+            setMessage("");
 
             const cleanedParams = {
                 memberId: params.memberId || undefined,
+                nickname: params.nickname || undefined,
+                email: params.email || undefined,
                 serviceType: params.serviceType || undefined,
                 from: params.from || undefined,
                 to: params.to || undefined,
@@ -45,7 +51,7 @@ function AdminUsageLogsPage() {
     };
 
     useEffect(() => {
-        fetchLogs(form);
+        fetchLogs(initialForm);
     }, []);
 
     const handleChange = (e) => {
@@ -59,6 +65,12 @@ function AdminUsageLogsPage() {
     const handleSearch = (e) => {
         e.preventDefault();
         fetchLogs({ ...form, page: 0 });
+    };
+
+    const handleReset = () => {
+        setForm(initialForm);
+        setMessage("");
+        fetchLogs(initialForm);
     };
 
     return (
@@ -82,6 +94,24 @@ function AdminUsageLogsPage() {
                             </Col>
 
                             <Col md={2}>
+                                <Form.Control
+                                    name="nickname"
+                                    placeholder="닉네임"
+                                    value={form.nickname}
+                                    onChange={handleChange}
+                                />
+                            </Col>
+
+                            <Col md={2}>
+                                <Form.Control
+                                    name="email"
+                                    placeholder="이메일"
+                                    value={form.email}
+                                    onChange={handleChange}
+                                />
+                            </Col>
+
+                            <Col md={2}>
                                 <Form.Select
                                     name="serviceType"
                                     value={form.serviceType}
@@ -92,6 +122,32 @@ function AdminUsageLogsPage() {
                                     <option value="INTERVIEW">INTERVIEW</option>
                                     <option value="ADMIN">ADMIN</option>
                                 </Form.Select>
+                            </Col>
+
+                            <Col md={2}>
+                                <Form.Control
+                                    name="targetType"
+                                    placeholder="targetType"
+                                    value={form.targetType}
+                                    onChange={handleChange}
+                                />
+                            </Col>
+
+                            <Col md={1}>
+                                <Button type="submit" className="w-100">
+                                    검색
+                                </Button>
+                            </Col>
+
+                            <Col md={1}>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    className="w-100"
+                                    onClick={handleReset}
+                                >
+                                    초기화
+                                </Button>
                             </Col>
 
                             <Col md={2}>
@@ -111,21 +167,6 @@ function AdminUsageLogsPage() {
                                     onChange={handleChange}
                                 />
                             </Col>
-
-                            <Col md={2}>
-                                <Form.Control
-                                    name="targetType"
-                                    placeholder="targetType"
-                                    value={form.targetType}
-                                    onChange={handleChange}
-                                />
-                            </Col>
-
-                            <Col md={2}>
-                                <Button type="submit" className="w-100">
-                                    검색
-                                </Button>
-                            </Col>
                         </Row>
                     </Form>
                 </Card.Body>
@@ -142,16 +183,16 @@ function AdminUsageLogsPage() {
                             <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>회원ID</th>
+                                <th>회원 ID</th>
                                 <th>이메일</th>
-                                <th>서비스</th>
-                                <th>Amount</th>
-                                <th>Token</th>
+                                <th>서비스 유형</th>
+                                <th>처리량</th>
+                                <th>토큰 사용량 / 크레딧 변동량</th>
                                 <th>잔액</th>
-                                <th>TargetType</th>
-                                <th>TargetId</th>
-                                <th>Description</th>
-                                <th>생성일</th>
+                                <th>대상 유형</th>
+                                <th>대상 ID</th>
+                                <th>설명</th>
+                                <th>로그 기록 시각</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -174,7 +215,11 @@ function AdminUsageLogsPage() {
                                         <td>{log.targetType || "-"}</td>
                                         <td>{log.targetId ?? "-"}</td>
                                         <td>{log.description || "-"}</td>
-                                        <td>{log.createdAt?.replace("T", " ").slice(0, 16)}</td>
+                                        <td>
+                                            {log.createdAt
+                                                ? new Date(log.createdAt).toLocaleString("ko-KR")
+                                                : "-"}
+                                        </td>
                                     </tr>
                                 ))
                             )}

@@ -29,6 +29,17 @@ function AdminMemberSearchForm({ onSearch }) {
         onSearch(cleaned);
     };
 
+    const handleReset = () => {
+        setForm({
+            memberId: "",
+            email: "",
+            nickname: "",
+            status: ""
+        });
+
+        onSearch({ page: 0, size: 10 });
+    };
+
     return (
         <Form onSubmit={handleSubmit} className="mb-4">
             <Row className="g-3">
@@ -72,9 +83,20 @@ function AdminMemberSearchForm({ onSearch }) {
                     </Form.Select>
                 </Col>
 
-                <Col md={2}>
+                <Col md={1}>
                     <Button type="submit" className="w-100">
                         검색
+                    </Button>
+                </Col>
+
+                <Col md={1}>
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        className="w-100"
+                        onClick={handleReset}
+                    >
+                        초기화
                     </Button>
                 </Col>
             </Row>

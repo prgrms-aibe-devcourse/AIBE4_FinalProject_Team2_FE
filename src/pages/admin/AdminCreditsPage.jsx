@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Alert, Button, Card, Form } from "react-bootstrap";
 import AdminLayout from "../../components/admin/AdminLayout";
-import { adjustAdminCredit } from "../../api/admin";
+import { adjustAdminCredit, searchAdminMembers } from "../../api/admin";
 
 function AdminCreditsPage() {
     const [form, setForm] = useState({
@@ -9,6 +9,8 @@ function AdminCreditsPage() {
         tokenDelta: "",
         reason: "",
     });
+    const [memberNickname, setMemberNickname] = useState("");
+    const [memberEmail, setMemberEmail] = useState("");
 
     const [result, setResult] = useState(null);
     const [message, setMessage] = useState("");
@@ -21,8 +23,50 @@ function AdminCreditsPage() {
         }));
     };
 
+    const handleFindMember = async () => {
+        try {
+            setMessage("");
+            setResult(null);
+
+            if (!memberNickname.trim() && !memberEmail.trim()) {
+                setMessage("닉네임 또는 이메일을 입력해주세요.");
+                return;
+            }
+
+            const res = await searchAdminMembers({
+                nickname: memberNickname || undefined,
+                email: memberEmail || undefined,
+                page: 0,
+                size: 1,
+            });
+
+            const members = res.data?.data?.content ?? [];
+            const firstMember = members[0];
+
+            if (!firstMember) {
+                setMessage("일치하는 회원이 없습니다.");
+                return;
+            }
+
+            setForm((prev) => ({
+                ...prev,
+                memberId: String(firstMember.memberId),
+            }));
+
+            setMessage(`회원 찾기 성공 (ID: ${firstMember.memberId})`);
+        } catch (error) {
+            console.error("회원 검색 실패:", error);
+            setMessage("회원 검색에 실패했습니다.");
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!form.memberId) {
+            setMessage("회원 ID를 입력하거나 회원 찾기를 먼저 진행해주세요.");
+            return;
+        }
 
         try {
             const body = {
@@ -50,6 +94,39 @@ function AdminCreditsPage() {
             <Card className="shadow-sm" style={{ maxWidth: "720px" }}>
                 <Card.Body>
                     <Card.Title className="mb-4">회원 크레딧 지급 / 차감</Card.Title>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>닉네임</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={memberNickname}
+                            onChange={(e) => setMemberNickname(e.target.value)}
+                            placeholder="닉네임으로 회원 검색"
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>이메일</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={memberEmail}
+                            onChange={(e) => setMemberEmail(e.target.value)}
+                            placeholder="이메일로 회원 검색"
+                        />
+                    </Form.Group>
+
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        className="mb-3"
+                        onClick={handleFindMember}
+                    >
+                        회원 찾기
+                    </Button>
+
+                    <div className="text-muted small mb-3">
+                        ※ 회원 ID를 직접 입력하거나 닉네임/이메일로 회원을 검색할 수 있습니다.
+                    </div>
 
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">

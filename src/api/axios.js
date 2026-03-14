@@ -12,7 +12,7 @@ const getCookie = (name) => {
 
 // 1. axios 인스턴스 생성
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api/v1', // 백엔드 서버 주소
+    baseURL: 'http://localhost:8081/api/v1', // 백엔드 서버 주소
     withCredentials: true,           // 쿠키(RefreshToken) 공유를 위해 필수
     headers: {
         'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ api.interceptors.response.use(
 
                 // 백엔드 /reissue 엔드포인트 호출
                 // 주의: 인스턴스(api) 대신 기본 axios를 사용하여 헤더 꼬임을 방지합니다.
-                const res = await axios.post('http://localhost:8080/reissue',
+                const res = await axios.post('http://localhost:8081/reissue',
                     { refreshToken },
                     { withCredentials: true }
                 );
