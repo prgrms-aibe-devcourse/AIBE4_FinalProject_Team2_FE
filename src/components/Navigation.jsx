@@ -3,24 +3,19 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Button } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import SyncTalkLogo from '../assets/SyncTalk_Logo.png';
+import NotificationDropdown from "../pages/NotificationDropdown.jsx";
 
 function Navigation() {
 
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [role, setRole] = useState(null);
+    const accessToken = localStorage.getItem('accessToken');
+    const savedRole = localStorage.getItem('role');
 
-    useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        const savedRole = localStorage.getItem('role');
-
-        setIsLoggedIn(!!accessToken);
-        setRole(savedRole);
-    }, [location]);
+    const isLoggedIn = !!accessToken;
+    const role = savedRole;
 
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
@@ -32,6 +27,11 @@ function Navigation() {
     };
 
     const isAdmin = role === 'ADMIN';
+
+    // [추가]
+    if(location.pathname.startsWith('/mypage')){
+        return null;
+    }
 
     return (
         <Navbar bg="dark" data-bs-theme="dark" fixed="top">
@@ -47,7 +47,7 @@ function Navigation() {
                         <Nav.Link as={Link} to="/">이력서 관리</Nav.Link>
                         <Nav.Link as={Link} to="/correction">자기소개서 첨삭</Nav.Link>
                         <Nav.Link as={Link} to="/">AI 모의면접</Nav.Link>
-                        <Nav.Link as={Link} to="/dashboard">마이페이지</Nav.Link>
+                        <Nav.Link as={Link} to="/mypage/dashboard">마이페이지</Nav.Link>
                         {isAdmin && (
                             <Nav.Link as={Link} to="/admin/dashboard">관리자</Nav.Link>
                         )}
@@ -56,9 +56,12 @@ function Navigation() {
                 </Navbar.Collapse>
 
                 {isLoggedIn ? (
-                    <Button variant="outline-light" onClick={handleLogout}>
-                        logout
-                    </Button>
+                    <div className="d-flex align-items-center gap-3">
+                        <NotificationDropdown />
+                        <Button variant="outline-light" onClick={handleLogout}>
+                            logout
+                        </Button>
+                    </div>
                 ) : (
                     <Button as={Link} to="/login">
                         login

@@ -1,0 +1,83 @@
+/* MyPageLayout.css */
+
+.app-layout {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    /* 배경색을 옅은 회색으로 주어 하얀색 사각형 카드가 돋보이게 합니다. */
+    background-color: #f0f2f5;
+
+    /* [추가] 화면 위아래, 양옆에 여백을 주어 사각형이 떠있는 느낌을 줍니다. */
+    padding: 30px;
+    box-sizing: border-box;
+
+    /* [추가] 사이드바와 메인 영역 사이의 간격입니다. */
+    gap: 24px;
+    overflow: hidden;
+}
+
+.sidebar-wrapper {
+    height: 100%;
+    /* 사이드바 너비를 고정해두면 안정적입니다. (MyPageSidebar.css의 width와 맞추거나 여기서 제어) */
+    width: 250px;
+    flex-shrink: 0;
+
+    /* [추가] 독립된 사각형 디자인 */
+    background-color: #ffffff;
+    border-radius: 16px; /* 모서리 둥글게 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* 부드럽고 옅은 그림자 */
+    overflow: hidden; /* 내부 요소가 둥근 모서리를 삐져나오지 않도록 차단 */
+
+    /* 기존 border-right: 1px solid #e9ecef; 는 독립된 카드 디자인에 맞지 않으므로 삭제합니다. */
+}
+
+.main-wrapper {
+    flex: 1;
+    max-width: 1000px;
+    height: 100%; /* 사이드바와 동일한 높이를 가지도록 설정 */
+
+    /* [추가] 사이드바와 동일한 형태의 사각형 디자인 */
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================
+   main-wrapper 전용 커스텀 스크롤바 (얇고 투명하게)
+   ========================================= */
+.main-wrapper::-webkit-scrollbar {
+    width: 8px; /* 스크롤바 너비를 얇게 */
+}
+
+.main-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 20px 0; /* 스크롤바가 위아래 둥근 모서리를 침범하지 않게 여백 줌 */
+}
+
+.main-wrapper::-webkit-scrollbar-thumb {
+    background-color: transparent; /* 평소엔 숨김 */
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+/* 마우스를 메인 화면에 올렸을 때만 스크롤바가 부드럽게 나타남 */
+.main-wrapper:hover::-webkit-scrollbar-thumb {
+    background-color: #e5e7eb;
+}
+
+.main-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af; /* 스크롤바 직접 클릭 시 색상 진해짐 */
+}
+
+.content-container {
+    width: 100%;
+    /* 위아래 패딩을 조금 조절하여 둥근 모서리와 내용 사이의 여백을 확보합니다. */
+    padding: 40px 40px;
+    box-sizing: border-box;
+}
+

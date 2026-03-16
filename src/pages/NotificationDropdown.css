@@ -1,0 +1,212 @@
+/* =========================================
+   [엄격한 컬러보드 룰 적용]
+   - Primary Blue : #1976D2
+   - Background   : #F8F9FA
+   - Soft Blue    : #E3F2FD
+   - Text (Dark)  : #212529
+   - Text (Muted) : #6C757D
+   - Border       : #DEE2E6
+   - Card Bg      : #ffffff
+   ========================================= */
+
+.notification-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* 🔔 종 모양 버튼 */
+.notification-bell-btn {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.notification-bell-btn:hover {
+    background-color: #F8F9FA; /* Background Light */
+}
+
+/* 안읽음 카운트 배지 (Primary Blue) */
+.notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: #1976D2;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 2px solid #ffffff; /* 종 모양과 겹칠 때 예쁘게 보이도록 흰색 테두리 */
+}
+
+/* 🔽 드롭다운 컨테이너 */
+.notification-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 360px;
+    background-color: #ffffff;
+    border: 1px solid #DEE2E6;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 1050;
+    overflow: hidden;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 드롭다운 헤더 */
+.dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #DEE2E6;
+    background-color: #ffffff;
+}
+
+.dropdown-header h6 {
+    color: #212529;
+}
+
+.unread-count-text {
+    font-size: 13px;
+    color: #1976D2;
+    font-weight: 600;
+}
+
+/* 드롭다운 바디 (스크롤 영역) */
+.dropdown-body {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* 스크롤바 디자인 */
+.dropdown-body::-webkit-scrollbar { width: 6px; }
+.dropdown-body::-webkit-scrollbar-thumb { background-color: #DEE2E6; border-radius: 10px; }
+
+/* 알림이 없을 때 */
+.empty-notification {
+    padding: 40px 20px;
+    text-align: center;
+    color: #6C757D;
+    font-size: 14px;
+}
+
+/* 개별 알림 아이템 */
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px 20px;
+    border-bottom: 1px solid #DEE2E6;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+/* 💡 안읽은 알림은 Soft Blue 배경으로 강조 */
+.notification-item.unread {
+    background-color: #E3F2FD;
+}
+
+/* 읽은 알림은 흰색 배경 */
+.notification-item.read {
+    background-color: #ffffff;
+}
+
+.notification-item:hover {
+    background-color: #F8F9FA;
+}
+
+.notification-item.unread:hover {
+    background-color: #d0ebff; /* Soft Blue보다 아주 살짝 진한 호버 */
+}
+
+/* 알림 아이콘 */
+.noti-icon {
+    font-size: 20px;
+    margin-right: 14px;
+    background-color: #ffffff;
+    border: 1px solid #DEE2E6;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.notification-item.unread .noti-icon {
+    border-color: #1976D2; /* 안읽은 건 아이콘 테두리도 파랗게 */
+}
+
+/* 알림 텍스트 */
+.noti-content {
+    flex-grow: 1;
+    padding-right: 20px;
+}
+
+.noti-message {
+    font-size: 14px;
+    color: #212529;
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+    word-break: keep-all;
+}
+
+.notification-item.read .noti-message {
+    color: #6C757D; /* 읽은 건 글자 색을 살짝 연하게 */
+}
+
+.noti-time {
+    font-size: 12px;
+    color: #6C757D;
+}
+
+/* 안읽음 파란색 점 표시 */
+.noti-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #1976D2;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+
+/* 알림 삭제 버튼 (평소엔 숨겼다가 호버 시 등장) */
+.noti-delete-btn {
+    position: absolute;
+    top: 16px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: #6C757D;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.notification-item:hover .noti-delete-btn {
+    opacity: 1;
+}
+
+.noti-delete-btn:hover {
+    color: #212529;
+}

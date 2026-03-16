@@ -3,7 +3,6 @@ import Navbar from './components/Navigation.jsx';
 import Home from './pages/Home.jsx';
 import LoginPage from "./pages/LoginPage.jsx";
 import Correction from "./pages/Correction.jsx";
-import Dashboard from "./pages/DashBoard.jsx";
 import Signup from './pages/Signup.jsx';
 import OAuthCallback from "./pages/OAuthCallback.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
@@ -14,6 +13,16 @@ import AdminMemberDetailPage from "./pages/admin/AdminMemberDetailPage.jsx";
 import AdminCreditsPage from "./pages/admin/AdminCreditsPage.jsx";
 import AdminUsageLogsPage from "./pages/admin/AdminUsageLogsPage.jsx";
 import AdminUsageStatisticsPage from "./pages/admin/AdminUsageStatisticsPage.jsx";
+import MyPageLayout from "./components/mypage/MyPageLayout.jsx";
+import Profile from './pages/mypage/Profile.jsx';
+import ProfileEdit from './pages/mypage/ProfileEdit.jsx';
+import ResumesList from "./pages/mypage/ResumesList.jsx";
+import DashBoard from "./pages/mypage/DashBoard.jsx";
+import InterviewsList from "./pages/mypage/InterviewsList.jsx";
+import MyResumeDetail from "./pages/mypage/MyResumeDetail.jsx";
+import MyInterviewDetail from "./pages/mypage/MyInterviewDetail.jsx";
+import QuestionBookmark from "./pages/mypage/QuestionsBookmark.jsx";
+import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
 function App() {
     const location = useLocation();
@@ -26,7 +35,6 @@ function App() {
             <Routes>
                 <Route path="/main" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/correction" element={<Correction />} />
                 <Route path="/oauth/callback" element={<OAuthCallback />} />
@@ -84,6 +92,18 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+                {/*마이페이지*/}
+                <Route path="/mypage" element={<MyPageLayout />}>
+                    <Route path="dashboard" element={<DashBoard />} />
+                    <Route path="resumes" element={<ResumesList />} />
+                    <Route path="interviews" element={<InterviewsList />} />
+                    <Route path="bookmarks" element={<QuestionBookmark />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="profile/edit" element={<ProfileEdit />} />
+                </Route>
+                <Route path="/mypage/resumes/:id" element={<MyResumeDetail />} />
+                <Route path="/mypage/resume/edit/:id" element={<ResumeEdit />} />
+                <Route path="/mypage/interviews/:id" element={<MyInterviewDetail />} />
             </Routes>
         </>
     );

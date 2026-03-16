@@ -1,0 +1,79 @@
+/* --- 마이페이지 조회 화면 CSS --- */
+.profile-summary-card {
+    padding: 30px;
+    margin-bottom: 24px;
+}
+
+.profile-display-section {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.profile-img-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f8f9fb;
+    border: 1px solid #eaeaea;
+}
+
+.profile-text-info h2 {
+    margin: 0 0 6px 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+}
+
+.text-muted {
+    color: #888;
+    font-size: 14px;
+    margin: 0;
+}
+
+.section-title {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid #f8f9fb;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    width: 100px; /* 라벨의 너비를 고정하여 텍스트 정렬을 맞춤 */
+    color: #666;
+    font-weight: 600;
+    font-size: 15px;
+    padding-top: 4px;
+}
+
+.info-value {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag-solid {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}

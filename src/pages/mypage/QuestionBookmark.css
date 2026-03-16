@@ -1,0 +1,169 @@
+/* =========================================
+   [엄격한 컬러보드 룰 적용]
+   - Primary Blue : #1976D2
+   - Background   : #F8F9FA
+   - Soft Blue    : #E3F2FD
+   - Text (Dark)  : #212529
+   - Text (Muted) : #6C757D
+   - Border       : #DEE2E6
+   - Card Bg      : #ffffff
+   ========================================= */
+
+.bookmark-page-wrapper {
+    background-color: transparent !important;
+    min-height: 100vh;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* =========================================
+   상단 버튼 디자인 (뭉개짐 완벽 방지)
+   ========================================= */
+.btn-filter, .btn-new-interview {
+    white-space: nowrap !important;
+    min-width: fit-content;
+    height: 42px;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px !important;
+}
+
+.btn-filter {
+    background-color: #ffffff !important;
+    border: 1px solid #DEE2E6 !important;
+    color: #212529 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.btn-filter:hover { background-color: #F8F9FA !important; }
+
+.btn-new-interview {
+    background-color: #1976D2 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.btn-new-interview:hover { background-color: #1565C0 !important; }
+
+/* =========================================
+   카테고리 필터링 버튼 (동글동글한 알약 형태 복구)
+   ========================================= */
+.category-pill {
+    background-color: #ffffff !important;
+    border: 1px solid #DEE2E6 !important;
+    color: #6C757D !important;
+    padding: 8px 18px !important;
+    border-radius: 50px !important; /* 💡 부트스트랩을 이기고 동그랗게! */
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+    outline: none !important;
+}
+
+.category-pill:hover { background-color: #F8F9FA !important; }
+
+.category-pill.active {
+    background-color: #1976D2 !important;
+    color: #ffffff !important;
+    border-color: #1976D2 !important;
+}
+
+/* =========================================
+   개별 질문 리포트 카드 (패딩 및 둥근 모서리 복구)
+   ========================================= */
+.question-report-card {
+    background-color: #ffffff !important;
+    border-radius: 16px !important;
+    padding: 30px !important;
+    border: 1px solid #DEE2E6 !important;
+}
+
+/* 나의 답변 박스 */
+.answer-section {
+    background-color: #F8F9FA !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+}
+
+.section-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6C757D !important;
+    margin-bottom: 8px;
+}
+
+.answer-text {
+    font-size: 15px;
+    color: #212529 !important;
+    line-height: 1.6;
+}
+
+/* AI 피드백 박스 */
+.feedback-section {
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin-top: 20px;
+}
+
+.bg-ai {
+    background-color: #E3F2FD !important;
+    border-left: 4px solid #1976D2 !important;
+}
+
+.bg-tip {
+    background-color: #ffffff !important;
+    border-left: 4px solid #6C757D !important;
+    border: 1px solid #DEE2E6 !important;
+}
+
+.feedback-text {
+    font-size: 14px;
+    color: #212529 !important;
+    line-height: 1.6;
+}
+
+/* 피드백 태그 (점 디자인 복구) */
+.feedback-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #212529 !important;
+    font-weight: 500;
+}
+
+.dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    display: inline-block;
+}
+
+.dot.blue { background-color: #1976D2 !important; }
+.dot.dark { background-color: #212529 !important; }
+
+/* 하단 버튼 및 링크 */
+.detail-link {
+    color: #6C757D !important;
+    background: transparent;
+    border: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.detail-link:hover {
+    color: #1976D2 !important;
+    text-decoration: underline !important;
+}
+
+.btn-more {
+    background-color: #ffffff !important;
+    border: 1px solid #DEE2E6 !important;
+    color: #6C757D !important;
+}
+.btn-more:hover { background-color: #F8F9FA !important; }
+
+.btn-bookmark { transition: transform 0.2s ease; }
+.btn-bookmark:hover { transform: scale(1.15); }
