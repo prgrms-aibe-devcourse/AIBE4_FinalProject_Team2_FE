@@ -1,0 +1,54 @@
+/* 글로벌 설정 */
+.resume-editor-wrapper {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 폰트 및 공통 */
+.xs-small { font-size: 11px !important; }
+
+/* 상단 툴바 */
+.editor-topbar {
+    z-index: 1010;
+}
+
+.title-input:focus {
+    outline: none;
+    box-shadow: none;
+    background-color: #fff !important;
+    border-bottom: 2px solid #007bff !important;
+    border-radius: 0;
+}
+
+/* 좌측 피드백 아이템 (리포트 페이지와 동일한 스타일 유지) */
+.suggestion-item { border-left: 3px solid; }
+.suggestion-item.professional { background-color: #f0f7ff; border-color: #1976D2; }
+.suggestion-item.professional .fw-bold { color: #1976D2; }
+.suggestion-item.grammar { background-color: #ecfdf5; border-color: #10B981; }
+.suggestion-item.grammar .fw-bold { color: #10B981; }
+.suggestion-item.clarity { background-color: #f5f3ff; border-color: #8A2BE2; }
+.suggestion-item.clarity .fw-bold { color: #8A2BE2; }
+
+/* 우측 텍스트 에디터 */
+.formatting-toolbar Button {
+    font-size: 16px;
+    border-radius: 6px;
+    background-color: transparent;
+}
+
+.formatting-toolbar Button:hover {
+    background-color: #e2e6ea !important;
+}
+
+/* 텍스트 영역: 테두리 없애고 여백 넓게 */
+.editor-textarea {
+    font-size: 15px;
+    line-height: 1.9;
+    color: #212529;
+    border-radius: 0;
+}
+
+.editor-textarea:focus {
+    outline: none !important;
+    box-shadow: none !important; /* 클릭했을 때 파란 테두리 생기는 것 방지 */
+    background-color: #fafbfc;
+}

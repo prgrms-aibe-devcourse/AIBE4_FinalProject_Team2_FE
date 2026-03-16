@@ -1,0 +1,154 @@
+/* 글로벌 색상 변수 (팀 합의 컬러 적용) */
+:root {
+    --primary-blue: #1976D2;
+    --bg-light: #F8F9FA;
+    --text-dark: #212529;
+    --text-muted: #6C757D;
+    --border-color: #DEE2E6;
+    --card-bg: #FFFFFF;
+}
+
+/* 1. 전체 배경 */
+.overflow-auto.flex-grow-1 {
+    background-color: var(--bg-light); /* 화면 전체 배경을 옅은 회색으로 */
+    padding: 2rem;
+}
+
+/* 2. 질문 카드 본체 */
+.question-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02); /* 레퍼런스처럼 아주 은은한 그림자 */
+}
+
+/* 3. 상단 배지 (Badge) */
+.badge-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.badge-question {
+    background-color: #f1f3f5;
+    color: var(--text-muted);
+}
+
+.badge-type {
+    background-color: #e7f1ff; /* Primary Blue의 아주 연한 버전 */
+    color: var(--primary-blue);
+}
+
+/* 4. 질문 텍스트 */
+.question-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+/* 5. 나의 답변 박스 */
+.answer-box {
+    background-color: var(--bg-light); /* 회색 박스 처리 */
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.answer-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.answer-text {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* 6. AI 분석 결과 영역 (구분선 포함) */
+.analysis-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.analysis-header {
+    margin-bottom: 1.5rem;
+}
+
+.analysis-title {
+    font-weight: 700;
+    color: var(--primary-blue);
+}
+
+/* Flexbox를 이용한 좌우 분할 Layout */
+.analysis-body {
+    display: flex;
+    gap: 2rem;
+}
+
+/* 좌측 막대 그래프 영역 */
+.score-area {
+    flex: 1; /* 공간을 1:1로 나눔 */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.score-label-wrap {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-dark);
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background-color: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: var(--primary-blue);
+    border-radius: 4px;
+}
+
+/* 우측 상세 피드백 영역 */
+.feedback-area {
+    flex: 1; /* 공간을 1:1로 나눔 */
+    border-left: 1px solid var(--border-color);
+    padding-left: 2rem;
+}
+
+.feedback-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+}
+
+.feedback-text {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    line-height: 1.6;
+    margin: 0;
+}

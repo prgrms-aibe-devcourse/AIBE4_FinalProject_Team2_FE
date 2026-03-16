@@ -1,0 +1,118 @@
+/* src/pages/mypage/ProfileEdit.css */
+
+/* 1. 마이페이지 내의 카드는 마우스를 올려도 튀어 오르지 않게 막음 */
+.main-content .card:hover {
+    transform: none;
+}
+
+/* 2. 마이페이지 내의 section 태그에는 강제 밑줄이 생기지 않게 막음 */
+.main-content section {
+    border-bottom: none;
+}
+
+.main-content section.card:nth-of-type(4) {
+    position: relative; /* z-index를 작동시키기 위한 필수 조건 */
+    z-index: 10;        /* 계정 삭제 카드(기본값 0)보다 우선순위를 높임 */
+}
+
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+.page-header h1 { margin: 0; font-size: 24px; color: #1a1a1a; }
+.page-header p { margin: 8px 0 0 0; color: #666; font-size: 14px; }
+
+/* 3. 공통 UI 컴포넌트 */
+.card { background: white; padding: 30px; border-radius: 12px; border: 1px solid #eef0f4; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02); }
+.card h3 { margin: 0 0 20px 0; font-size: 16px; font-weight: 600; }
+
+.form-row { display: flex; gap: 20px; }
+.form-group { flex: 1; margin-bottom: 0; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 8px; }
+
+/* ✨ 수정 후: border 속성에도 !important를 추가하여 연회색 테두리를 강제 적용합니다. */
+.form-control {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dcdfe4 !important; /* ✨ 목표 직무와 동일한 연회색 강제 적용 */
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    background-color: #ffffff !important;
+    color: #333333 !important;
+}
+
+/* 입력창을 클릭(포커스)했을 때 테두리가 파란색으로 변하는 효과도 지켜줍니다. */
+.form-control:focus {
+    border-color: #007bff !important;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: #f8f9fb !important;
+    color: #888888 !important;
+    cursor: not-allowed;
+}
+
+.btn-primary { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; }
+.btn-outline { display: inline-block; background: white; color: #444; border: 1px solid #dcdfe4; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-text-danger { background: none; border: none; color: #e53e3e; font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-danger-outline { background: white; color: #e53e3e; border: 1px solid #ffcccc; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; }
+
+.mt-5 { margin-top: 5px; } .mt-10 { margin-top: 10px; } .mt-20 { margin-top: 20px; }
+.text-right { text-align: right; } .link-text { color: #007bff; font-size: 13px; text-decoration: none; }
+
+/* 4. 특정 영역 스타일 */
+.profile-upload-section { display: flex; align-items: center; gap: 24px; }
+.profile-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 1px solid #eef0f4; }
+.upload-info { flex: 1; }
+.help-text { font-size: 13px; color: #888; margin: 0 0 12px 0; line-height: 1.5; }
+.action-buttons { display: flex; gap: 12px; align-items: center; }
+
+.danger-zone { background-color: #fffafb; border: 1px solid #ffe5e8; }
+.danger-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.danger-title { margin: 0 !important; color: #e53e3e; }
+.danger-desc { font-size: 13px; color: #e53e3e; margin: 0 0 16px 0; }
+
+/* 5. 태그 UI */
+.tag-input-container { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid #dcdfe4; border-radius: 8px; background-color: #fff; transition: border-color 0.2s; }
+.tag-input-container:focus-within { border-color: #007bff; }
+.tag-input-field { border: none; outline: none; flex: 1; min-width: 120px; font-size: 14px; background: transparent; padding: 2px 0; }
+.tag-input-field::placeholder { color: #a0aabf; }
+
+.tag { display: inline-flex; align-items: center; gap: 6px; background: #eef5ff; color: #007bff; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+.tag-text { line-height: 1; }
+.tag-close { cursor: pointer; font-weight: bold; color: #0056b3; font-size: 16px; line-height: 1; padding: 0 2px; border-radius: 50%; }
+.tag-close:hover { color: #e53e3e; }
+
+/* 6. 지역 모달 */
+.custom-dropdown-wrapper { position: relative; width: 100%;}
+.dropdown-trigger { display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: white; }
+.placeholder-text { color: #888; } .dropdown-icon { font-size: 12px; color: #888; }
+
+.region-modal {
+    position: absolute; /* 💡 공중으로 띄웁니다. */
+    top: 100%;          /* 💡 부모 요소(입력창)의 바로 아래에 딱 붙어있게 합니다. */
+    left: 0;
+    width: 100%;
+
+    /* 기존에 있던 배경색, 테두리 등은 그대로 유지하세요 */
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    /* ✨ 핵심 해결책 ✨ */
+    z-index: 1000; /* 다른 요소들(계정 삭제 박스 포함)보다 무조건 맨 위에 위치하게 만듭니다. */
+}
+.region-modal-body { display: flex; height: 250px; }
+.region-left { width: 30%; border-right: 1px solid #eef0f4; overflow-y: auto; }
+.region-right { width: 70%; padding: 15px; overflow-y: auto; }
+
+.province-list { list-style: none; padding: 0; margin: 0; }
+.province-list li { padding: 12px 15px; cursor: pointer; font-size: 14px; color: #555; border-bottom: 1px solid #f5f6f8; }
+.province-list li:hover { background-color: #f8f9fb; }
+.province-list li.active { background-color: #eef5ff; color: #007bff; font-weight: 600; }
+
+.city-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.empty-msg { grid-column: 1 / -1; color: #888; font-size: 13px; text-align: center; margin-top: 20px; }
+.checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #444; cursor: pointer; }
+
+.region-modal-footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-top: 1px solid #eef0f4; background: #f8f9fb; border-radius: 0 0 8px 8px; }
+.selected-count { font-size: 13px; color: #555; }
