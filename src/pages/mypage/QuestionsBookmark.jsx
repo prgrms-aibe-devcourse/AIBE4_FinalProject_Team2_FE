@@ -6,7 +6,7 @@ import './QuestionBookmark.css';
 // 💡 [수정 1] USE_MOCK 변수를 아예 바깥으로 뺐습니다. (의존성 경고 해결)
 const USE_MOCK = true;
 
-const QuestionBookmark = () => {
+const QuestionsBookmark = () => {
     const navigate = useNavigate();
 
     const [bookmarks, setBookmarks] = useState([]);
@@ -130,8 +130,10 @@ const QuestionBookmark = () => {
                     <div className="text-center p-5 text-muted">데이터를 불러오는 중입니다...</div>
                 ) : (
                     <div className="d-flex flex-column gap-4">
-                        {bookmarks.map((item, idx) => (
-                            <div key={item.questionId} className="question-report-card shadow-sm">
+                        {bookmarks
+                            .filter(item => activeCategory === '전체' || item.category === activeCategory)
+                            .map((item, idx) => (
+                                <div key={item.questionId} className="question-report-card shadow-sm">
 
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <span className="fw-bold small" style={{ color: '#1976D2' }}>
@@ -202,4 +204,4 @@ const QuestionBookmark = () => {
     );
 };
 
-export default QuestionBookmark;
+export default QuestionsBookmark;

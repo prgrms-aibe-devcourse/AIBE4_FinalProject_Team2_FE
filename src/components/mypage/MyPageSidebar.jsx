@@ -3,11 +3,12 @@ import { NavLink, Link} from 'react-router-dom';
 import api from '../../api/axios';
 import './MyPageSidebar.css';
 import syncTalkLogo from '../../assets/SyncTalk_Logo.png';
+import defaultImage from '../../assets/defaultImage.png'
 
 const MyPageSidebar = () => {
     const [user, setUser] = useState({
         nickname: "",
-        profileImageUrl: "/AIBE4_FinalProject_Team2_FE/images/defaultImage.png"
+        profileImageUrl: defaultImage
     });
 
     useEffect(() => {
@@ -18,13 +19,13 @@ const MyPageSidebar = () => {
 
                 setUser({
                     nickname: profileData.nickname,
-                    profileImageUrl: profileData.profileImageUrl || "/AIBE4_FinalProject_Team2_FE/images/defaultImage.png"
+                    profileImageUrl: profileData.profileImageUrl || defaultImage
                 });
             } catch (error) {
                 console.error("사이드바 사용자 정보를 불러오는데 실패했습니다.", error);
                 setUser({
                     nickname: "사용자",
-                    profileImageUrl: "/AIBE4_FinalProject_Team2_FE/images/defaultImage.png"
+                    profileImageUrl: defaultImage
                 });
             }
         };
