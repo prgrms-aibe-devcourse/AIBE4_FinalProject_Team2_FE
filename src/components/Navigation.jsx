@@ -1,69 +1,71 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-
-import SyncTalkLogo from '../assets/SyncTalk_Logo.png'
-import {Link, useNavigate} from "react-router-dom";
-import axios from "../api/axios.js";
+import { Button } from "react-bootstrap";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import SyncTalkLogo from '../assets/SyncTalk_Logo.png';
+import NotificationDropdown from "../pages/NotificationDropdown.jsx";
 
 function Navigation() {
 
     const navigate = useNavigate();
+    const location = useLocation();
 
-    // 로컬 스토리지에 토큰이 있는지 확인 (로그인 상태 판단)
-    const isAuthenticated = !!localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem('accessToken');
+    const savedRole = localStorage.getItem('role');
 
-    const handleLogout = async () => {
-        try {
-            // 백엔드 로그인 API 호출 예시
+    const isLoggedIn = !!accessToken;
+    const role = savedRole;
 
-            const response = await axios.get('/auth/logout');
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('role');
 
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            alert('로그아웃 되었습니다.');
-            navigate('/main');
-        } catch (error) {
-            // 서버에서 온 에러 메시지가 있다면 그걸 보여주는 게 좋습니다.
-            const errorMsg = error.response?.data?.message || error.message;
-            alert("로그아웃 실패\n" + errorMsg);
-        }
+        alert("로그아웃되었습니다.");
+        navigate('/');
     };
+
+    const isAdmin = role === 'ADMIN';
+
+    // [추가]
+    if(location.pathname.startsWith('/mypage')){
+        return null;
+    }
 
     return (
         <Navbar bg="dark" data-bs-theme="dark" fixed="top">
             <Container>
-                <Navbar.Brand href="/main">
-                    <img src={SyncTalkLogo} width="80" height="40" />
+                <Navbar.Brand as={Link} to="/">
+                    <img src={SyncTalkLogo} width="80" height="40" alt="SyncTalk Logo" />
                 </Navbar.Brand>
+
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
                 <Navbar.Collapse id="basic-navbar-nav">
-                    {isAuthenticated ? (
-                        <Nav className="mx-auto">
-                            <Nav.Link href="#">이력서 관리</Nav.Link>
-                            <Nav.Link href="#">자기소개서 첨삭</Nav.Link>
-                            <Nav.Link href="#">AI 모의면접</Nav.Link>
-                            <Nav.Link href="#">마이페이지</Nav.Link>
-                        </Nav>
-                    ) : (
-                        <></>
-                    )}
+                    <Nav className="mx-auto">
+                        <Nav.Link as={Link} to="/">이력서 관리</Nav.Link>
+                        <Nav.Link as={Link} to="/correction">자기소개서 첨삭</Nav.Link>
+                        <Nav.Link as={Link} to="/">AI 모의면접</Nav.Link>
+                        <Nav.Link as={Link} to="/mypage/dashboard">마이페이지</Nav.Link>
+                        {isAdmin && (
+                            <Nav.Link as={Link} to="/admin/dashboard">관리자</Nav.Link>
+                        )}
+
+                    </Nav>
                 </Navbar.Collapse>
-                {isAuthenticated ? (
-                    /* 1. 로그인 상태일 때: 로그아웃 버튼만 노출 */
-                    <>
-                        <span className="text-secondary me-3 small">환영합니다!</span>
-                        <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>
-                            Logout
-                        </button>
-                    </>
+
+                {isLoggedIn ? (
+                    <div className="d-flex align-items-center gap-3">
+                        <NotificationDropdown />
+                        <Button variant="outline-light" onClick={handleLogout}>
+                            logout
+                        </Button>
+                    </div>
                 ) : (
-                    /* 2. 로그아웃 상태일 때: 로그인/회원가입 버튼 노출 */
-                    <>
-                        <Link className="btn btn-outline-light btn-sm me-2" to="/login">
-                            Login
-                        </Link>
-                    </>
+                    <Button as={Link} to="/login">
+                        login
+                    </Button>
                 )}
             </Container>
         </Navbar>

@@ -1,0 +1,97 @@
+/* =========================================
+   [엄격한 컬러보드 룰 적용]
+   - Primary Blue : #1976D2
+   - Sidebar (Soft Blue) : #E3F2FD
+   - Text (Dark)  : #212529
+   - Text (Muted) : #6C757D
+   - Border       : #DEE2E6
+   - Card Bg      : #ffffff
+   ========================================= */
+
+/* 글로벌 레이아웃 & 배경 */
+.dashboard-wrapper {
+    /* 💡 [수정] 카드 뒤의 옅은 회색 배경색(#F8F9FA)을 제거합니다!
+       이렇게 하면 전체 배경이 투명하게 되어 부트스트랩 기본 화이트 배경이 나옵니다. */
+    background-color: transparent;
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+/* 공통 카드 스타일 (화이트 배경 유지) */
+.dashboard-card {
+    background-color: #ffffff !important; /* 카드 자체 배경은 하얗게 유지해야 내용이 잘 보입니다. */
+    border-radius: 16px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid #DEE2E6 !important; /* 컬러보드의 Border 색상 */
+}
+
+/* 텍스트 컬러 (Dark & Muted) */
+.text-main, .text-strong, .text-base {
+    color: #212529 !important; /* Text (Dark) */
+}
+
+.text-sub, .text-light {
+    color: #6C757D !important; /* Text (Muted) */
+}
+
+/* 포인트 텍스트 컬러 (Primary Blue 통일) */
+.text-point-blue, .text-point-green {
+    color: #1976D2 !important; /* 초록색/구형 파란색 제거 */
+}
+
+/* UI 요소 오버라이딩 */
+/* 프로그레스 바 */
+.progress {
+    background-color: #E3F2FD !important; /* Sidebar (Soft Blue) - 빈 게이지 */
+    border-radius: 8px;
+    border: none;
+    box-shadow: none;
+}
+.progress-bar {
+    background-color: #1976D2 !important; /* Primary Blue - 채워진 게이지 */
+}
+.progress-bar.bg-primary, .progress-bar.bg-success {
+    background-color: #1976D2 !important;
+}
+
+/* 커스텀 배지 */
+.custom-badge {
+    background-color: #ffffff;
+    border: 1px solid #DEE2E6; /* Border */
+    border-radius: 50rem;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* 활성화 배지 */
+.custom-badge.blue, .custom-badge.green {
+    background-color: #E3F2FD !important; /* Soft Blue */
+    border-color: #1976D2 !important; /* Primary Blue */
+    color: #1976D2 !important; /* Primary Blue */
+}
+
+/* 비활성화 배지 */
+.custom-badge.gray {
+    background-color: transparent !important; /* Background (Light) 제거 -> 투명 처리 */
+    border-color: #DEE2E6 !important; /* Border */
+    color: #6C757D !important; /* Text (Muted) */
+}
+
+/* 리스트 & 테이블 라인 컬러 */
+.activity-item {
+    border-bottom: 1px solid #DEE2E6; /* Border */
+}
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.table-custom th {
+    border-bottom: 1px solid #DEE2E6 !important; /* Border */
+    color: #6C757D !important; /* Text (Muted) */
+    font-weight: 500;
+}
+.table-custom td {
+    border-bottom: 1px solid #DEE2E6 !important; /* Border */
+    color: #212529 !important; /* Text (Dark) */
+}

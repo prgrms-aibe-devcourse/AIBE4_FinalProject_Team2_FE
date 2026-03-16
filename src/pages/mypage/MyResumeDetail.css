@@ -1,0 +1,83 @@
+/* 글로벌 색상 및 타이포그래피 */
+.resume-report-wrapper {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333;
+}
+
+/* 폰트 크기 보정 */
+.xs-small { font-size: 11px !important; }
+.display-block { display: block; }
+.shadow-inner { box-shadow: inset 0 2px 4px rgba(0,0,0,0.03); }
+
+/* 스티키 사이드바 */
+.sticky-top {
+    z-index: 100;
+}
+
+/* 좌측 분석 카드 스타일 */
+.core-feedback xs-small {
+    line-height: 1.6;
+}
+
+/* 문항별 개선 제안 아이템 */
+.suggestion-item {
+    border-left: 3px solid;
+}
+
+.suggestion-item.professional {
+    background-color: #f0f7ff;
+    border-color: #1976D2;
+}
+
+.suggestion-item.professional .fw-bold { color: #1976D2; }
+
+.suggestion-item.grammar {
+    background-color: #ecfdf5;
+    border-color: #10B981;
+}
+
+.suggestion-item.grammar .fw-bold { color: #10B981; }
+
+.suggestion-item.clarity {
+    background-color: #f5f3ff;
+    border-color: #8A2BE2;
+}
+
+.suggestion-item.clarity .fw-bold { color: #8A2BE2; }
+
+/* 우측 자소서 리포트 본문 스타일 */
+.report-header h6 {
+    letter-spacing: 2px;
+}
+
+.report-body {
+    font-size: 15px;
+    margin-bottom: 30px;
+}
+
+/* 본문 내 하이라이팅 효과 (초록색 밑줄) */
+.highlighted-text {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-bottom: 2px solid #10B981;
+    padding: 2px 0;
+    transition: background-color 0.2s;
+}
+
+.highlighted-text:hover {
+    background-color: rgba(16, 185, 129, 0.2);
+}
+
+/* 부트스트랩 배지 커스텀 */
+.badge.bg-primary-subtle {
+    background-color: #e3f2fd !important;
+}
+
+/* 애니메이션 */
+.question-report-card {
+    animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
