@@ -6,6 +6,7 @@ import Correction from "./pages/Correction.jsx";
 import Dashboard from "./pages/DashBoard.jsx";
 import Signup from './pages/Signup.jsx';
 import OAuthCallback from './pages/OAuthCallback.jsx';
+import Footer from "./components/Footer.jsx";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/correction" element={<Correction />} />
                 <Route path="/oauth/callback" element={<OAuthCallback />} />
             </Routes>
+            <Footer />
         </>
     );
 }

@@ -8,18 +8,24 @@ const OAuthCallback = () => {
     useEffect(() => {
         const fetchLoginInfo = async () => {
             try {
-                /**
-                 * 1. 백엔드에 세션 확인 요청
-                 * 백엔드가 SuccessHandler에서 쿠키를 구웠기 때문에,
-                 * 이 요청 시 브라우저가 자동으로 쿠키를 실어 보냅니다. (withCredentials: true 필수)
-                 */
-                const response = await api.get('/auth/me'); // 유저 정보 확인용 엔드포인트
+                // ⭐ 핵심 수정: 기존의 모든 인증 흔적을 지우고 시작합니다.
+                localStorage.removeItem('accessToken'); 
+                // 만약 axios 공통 헤더에 토큰이 설정되어 있다면 제거 (함수 이름은 본인의 프로젝트에 맞게 수정)
+                // setAuthToken(null); 
 
-                // 2. 백엔드에서 넘겨준 JSON 데이터에서 accessToken 추출
+                /**
+                 * 헤더에 낡은 토큰이 실려나가지 않도록 
+                 * 이 요청에서만 헤더를 명시적으로 비우거나 초기화합니다.
+                 */
+                const response = await api.get('/auth/me', {
+                    headers: {
+                        Authorization: null // 기존 헤더 무시
+                    }
+                });
+
                 const { accessToken, nickname } = response.data;
 
                 if (accessToken) {
-                    // 3. 클라이언트 측에서 사용할 수 있도록 토큰 저장 및 헤더 설정
                     localStorage.setItem('accessToken', accessToken);
                     setAuthToken(accessToken);
 
@@ -30,7 +36,9 @@ const OAuthCallback = () => {
                 }
             } catch (error) {
                 console.error("소셜 로그인 처리 중 오류:", error);
-                alert("로그인에 실패했습니다. 다시 시도해주세요.");
+                // 401 에러 등이 나면 아예 싹 비우는 처리를 추가
+                localStorage.clear(); 
+                alert("로그인 세션이 만료되었거나 실패했습니다.");
                 navigate('/login');
             }
         };

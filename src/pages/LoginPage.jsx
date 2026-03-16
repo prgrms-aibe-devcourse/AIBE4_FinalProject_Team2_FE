@@ -21,8 +21,9 @@ const LoginPage = () => {
         try {
             // 백엔드 로그인 API 호출 예시
             const response = await axios.post('/auth/login', loginData);
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('accessToken', response.data.accessToken);
             alert("로그인 성공!");
+            navigate('/main'); // 로그인 성공 후 메인 페이지로 이동
         } catch (error) {
             alert("로그인 실패: 이메일 또는 비밀번호를 확인하세요.\n" + error.message);
         }
@@ -115,7 +116,8 @@ const LoginPage = () => {
                                     <button className="btn btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center" 
                                             style={{ width: '45px', height: '45px', borderColor: '#30363d' }}
                                             onClick={() => handleSocialLogin('google')}
-                                            title="Google 로그인">
+                                            title="Google 로그인"
+                                            type="button">
                                         <FcGoogle size={24} />
                                     </button>
 
@@ -123,7 +125,8 @@ const LoginPage = () => {
                                     <button className="btn rounded-circle p-0 d-flex align-items-center justify-content-center" 
                                             style={{ width: '45px', height: '45px', backgroundColor: '#FEE500', color: '#191919', border: 'none' }}
                                             onClick={() => handleSocialLogin('kakao')}
-                                            title="카카오 로그인">
+                                            title="카카오 로그인"
+                                            type="button">
                                         <RiKakaoTalkFill size={26} />
                                     </button>
 
@@ -131,7 +134,8 @@ const LoginPage = () => {
                                     <button className="btn btn-dark rounded-circle p-0 d-flex align-items-center justify-content-center border-secondary" 
                                             style={{ width: '45px', height: '45px', backgroundColor: '#24292f', borderColor: '#30363d' }}
                                             onClick={() => handleSocialLogin('github')}
-                                            title="GitHub 로그인">
+                                            title="GitHub 로그인"
+                                            type="button">
                                         <FaGithub size={24} className="text-white" />
                                     </button>
                                 </div>

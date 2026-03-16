@@ -22,7 +22,7 @@ function Navigation() {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             alert('로그아웃 되었습니다.');
-            navigate('/');
+            navigate('/main');
         } catch (error) {
             // 서버에서 온 에러 메시지가 있다면 그걸 보여주는 게 좋습니다.
             const errorMsg = error.response?.data?.message || error.message;
