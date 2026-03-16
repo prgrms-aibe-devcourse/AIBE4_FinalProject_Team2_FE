@@ -29,7 +29,7 @@ function Navigation() {
     const isAdmin = role === 'ADMIN';
 
     // [추가]
-    if(location.pathname.startsWith('/mypage') || location.pathname.startsWith('/profile') || location.pathname.startsWith('/Dashboard')){
+    if(location.pathname.startsWith('/mypage')){
         return null;
     }
 
