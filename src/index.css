@@ -1,92 +1,136 @@
+/* 1. 프리텐다드 폰트 적용 (깔끔한 UI를 위해 권장) */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* 이미지에서 추출한 메인 컬러 스카마 */
+  --st-primary: #1976d2;
+  --st-bg-light: #f8f9fa;
+  --st-sidebar-blue: #e3f2fd;
+  --st-text-dark: #212529;
+  --st-text-muted: #6c757d;
+  --st-border: #dee2e6;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --bs-primary: #007bff; /* 이미지의 진한 파란색 버튼 컬러 */
-
-  --bs-color-one: #0d0630;
-  --bs-color-two: #18314f;
-  --bs-color-three: #384e77;
-  --bs-color-four: #8bbeb2;
-  --bs-color-five: #e6f9af;
+  /* Bootstrap 테마 컬러 오버라이드 변수 */
+  --bs-primary: var(--st-primary);
+  --bs-primary-rgb: 25, 118, 210;
+  --bs-body-font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* 2. 전체 초기화 및 폰트 설정 */
 body {
   margin: 0;
-  /*display: flex;*/
-  /*place-items: center;*/
-  min-width: 320px;
-  min-height: 100vh;
+  font-family: var(--bs-body-font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--st-text-dark);
+  background-color: #ffffff;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* 3. Bootstrap 컴포넌트 커스텀 스타일 */
+
+/* 입력창 (Input) 포커스 스타일 */
+.form-control:focus {
+  border-color: var(--st-primary);
+  box-shadow: 0 0 0 0.25rem rgba(25, 118, 210, 0.15);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.form-label {
+  color: var(--st-text-dark);
+  margin-bottom: 0.4rem;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
+/* 버튼 커스텀 */
 .btn-primary {
-  background-color: #007bff;
-  border: none;
+  --bs-btn-bg: var(--st-primary);
+  --bs-btn-border-color: var(--st-primary);
+  --bs-btn-hover-bg: #1565c0; /* 조금 더 어두운 블루 */
+  --bs-btn-hover-border-color: #1565c0;
+  --bs-btn-border-radius: 0.5rem; /* 살짝 둥근 버튼 */
+  font-weight: 600;
+}
+
+/* 아웃라인 버튼 (소셜 로그인용) */
+.btn-outline-secondary {
+  --bs-btn-color: var(--st-text-dark);
+  --bs-btn-border-color: var(--st-border);
+  --bs-btn-hover-bg: #f8f9fa;
+  --bs-btn-hover-text-color: var(--st-text-dark);
+  --bs-btn-hover-border-color: var(--st-border);
+  border-radius: 0.5rem;
+}
+
+/* 카드 및 섹션 스타일 */
+.rounded-4 {
+  border-radius: 1rem !important;
+}
+
+/* 왼쪽 사이드바용 그라데이션 클래스 */
+.bg-gradient-sidebar {
+  background: linear-gradient(135deg, var(--st-sidebar-blue) 0%, #ffffff 100%);
+}
+
+/* 프로그레스 바 커스텀 */
+.progress {
+  background-color: #e9ecef;
+  border-radius: 10px;
 }
 
 .progress-bar {
-  background-color: #007bff;
+  background-color: var(--st-primary);
 }
 
-.input-group-text, .form-control {
-  border-color: #eee;
+/* 링크 스타일 */
+a {
+  color: var(--st-primary);
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
 
-.extra-small {
-  font-size: 0.7rem;
+a:hover {
+  opacity: 0.8;
+  color: var(--st-primary);
+}
+
+/* 네비게이션 링크 기본 스타일 */
+.navbar-nav .nav-link {
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
+
+/* 호버 효과 */
+.navbar-nav .nav-link:hover {
+  color: var(--st-primary) !important;
+}
+
+/* 브랜드 로고 텍스트 */
+.navbar-brand span {
+  letter-spacing: -0.03em;
+  color: #212529;
+}
+
+/* 알림/프로필 버튼 배경 원형 유지 */
+.rounded-circle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 푸터 링크 호버 효과 */
+.hover-primary:hover {
+  color: var(--st-primary) !important;
+  transition: color 0.2s ease-in-out;
+}
+
+/* 푸터 텍스트 색상 미세 조정 */
+.text-secondary {
+  color: #6c757d !important;
+}
+
+footer {
+  /* 페이지 하단에 붙이기 위한 최소 높이 설정 (선택 사항) */
+  margin-top: auto;
 }
