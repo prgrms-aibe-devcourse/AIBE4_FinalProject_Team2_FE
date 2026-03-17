@@ -57,7 +57,7 @@ function Navigation() {
 
                 {isLoggedIn ? (
                     <div className="d-flex align-items-center gap-3">
-                        <NotificationDropdown />
+                        <NotificationDropdown direction="down" iconColor="#ffffff" />
                         <Button variant="outline-light" onClick={handleLogout}>
                             logout
                         </Button>

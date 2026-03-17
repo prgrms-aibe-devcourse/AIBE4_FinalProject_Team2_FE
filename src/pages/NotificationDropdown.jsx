@@ -3,15 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios'; // 경로에 맞게 수정해주세요
 import './NotificationDropdown.css';
 
-const NotificationDropdown = () => {
+const NotificationDropdown = ({ direction = 'down', iconColor = '#ffffff' }) => {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+    const [dropdownPosition, setDropdownPosition] = useState({});
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const dropdownRef = useRef(null);
 
     // 💡 [개발용 스위치] 백엔드 연동 시 false로 변경하세요!
-    const USE_MOCK = false;
+    const USE_MOCK = true;
 
     // 모의 데이터 세팅
     useEffect(() => {
@@ -72,7 +73,12 @@ const NotificationDropdown = () => {
         // 2. SSE 연결 (실시간 알림 수신)
         // 주의: EventSource는 기본적으로 헤더에 JWT를 못 넣기 때문에, 쿠키 방식을 쓰거나
         // 백엔드에서 토큰을 파라미터로 받도록 처리해야 할 수 있습니다. (?token=xxx)
-        const eventSource = new EventSource('http://localhost:8081/api/v1/notifications/subscribe');
+        const baseURL = api.defaults.baseURL || 'http://localhost:8081'; // axios 설정에 따라 유동적으로 작동
+        const token = localStorage.getItem('accessToken'); // 프로젝트에서 토큰을 저장하는 방식에 맞게 수정하세요!
+
+        // 헤더에 못 넣으니 URL 파라미터(?token=...)로 토큰을 찔러 넣어줍니다.
+        const sseUrl = `${baseURL}/api/v1/notifications/subscribe?token=${token}`;
+        const eventSource = new EventSource(sseUrl);
 
         eventSource.addEventListener('message', (event) => {
             const newNotification = JSON.parse(event.data);
@@ -167,48 +173,94 @@ const NotificationDropdown = () => {
         return `${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
     };
 
+    const handleToggle = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect(); // 종 버튼의 좌표
+
+        if (direction === 'up') {
+            // 사이드바용: 버튼 바로 위(top)에서 시작해서, 위로 100% 끌어올립니다.
+            setDropdownPosition({
+                top: `${rect.top - 15}px`,      // 버튼 위쪽으로 15px 여유
+                left: `${rect.left + (rect.width / 2) - 160}px`,
+                transform: 'translateY(-100%)'  // 🚀 핵심: 알림창 자기 자신의 높이만큼 위로 솟구침!
+            });
+        } else {
+            // 글로벌 헤더용: 버튼 바로 아래에 배치
+            setDropdownPosition({
+                top: `${rect.bottom + 15}px`,
+                right: `${window.innerWidth - rect.right}px`,
+                transform: 'none'
+            });
+        }
+        setIsOpen(!isOpen);
+    };
+
     return (
         <div className="notification-wrapper" ref={dropdownRef}>
             {/* 🔔 종 모양 버튼 */}
-            <button className="notification-bell-btn" onClick={() => setIsOpen(!isOpen)}>
+            <button
+                className="notification-bell-btn border-0 bg-transparent p-1 d-flex align-items-center justify-content-center"
+                onClick={handleToggle} // 💡 위에서 만든 똑똑한 함수 연결
+                style={{ position: 'relative' }} // 뱃지(빨간 동그라미)를 위해 추가
+            >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16ZM16 17H8V11C8 8.52 9.51 6.5 12 6.5C14.49 6.5 16 8.52 16 11V17Z" fill="#ffffff"/>
+                    <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16ZM16 17H8V11C8 8.52 9.51 6.5 12 6.5C14.49 6.5 16 8.52 16 11V17Z" fill={iconColor}/>
                 </svg>
-                {/* 안 읽은 알림이 있으면 파란색 배지 표시 */}
+
                 {unreadCount > 0 && (
-                    <span className="notification-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>
+                    <span className="notification-badge" style={{
+                        position: 'absolute', top: '0', right: '0', background: '#dc3545', color: 'white',
+                        borderRadius: '50%', padding: '2px 6px', fontSize: '10px', fontWeight: 'bold'
+                    }}>
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
                 )}
             </button>
 
             {/* 🔽 드롭다운 창 */}
             {isOpen && (
-                <div className="notification-dropdown shadow-sm">
-                    <div className="dropdown-header">
-                        <h6 className="fw-bold mb-0">알림</h6>
-                        {unreadCount > 0 && <span className="unread-count-text">{unreadCount}개 안읽음</span>}
+                <div
+                    className="notification-dropdown shadow-lg rounded-3 bg-white border"
+                    style={{
+                        position: 'fixed',
+                        width: '320px',
+                        zIndex: 99999,
+                        maxHeight: '400px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        ...dropdownPosition // ⬅️ 방금 만든 좌표와 transform이 여기에 쏙 들어갑니다.
+                    }}
+                >
+                    <div className="dropdown-header p-3 border-bottom d-flex justify-content-between align-items-center bg-light rounded-top-3">
+                        <h6 className="fw-bold mb-0 text-dark">알림</h6>
+                        {unreadCount > 0 && <span className="text-primary small fw-bold">{unreadCount}개 안읽음</span>}
                     </div>
 
-                    <div className="dropdown-body">
+                    <div className="dropdown-body overflow-auto p-2" style={{ maxHeight: '340px' }}>
                         {notifications.length === 0 ? (
-                            <div className="empty-notification">
+                            <div className="empty-notification text-center p-4 text-muted small">
                                 새로운 알림이 없습니다.
                             </div>
                         ) : (
                             notifications.map((noti) => (
                                 <div
                                     key={noti.id}
-                                    className={`notification-item ${noti.isRead ? 'read' : 'unread'}`}
+                                    className={`notification-item p-2 mb-1 rounded-2 d-flex gap-3 align-items-start ${noti.isRead ? 'bg-white' : 'bg-light'}`}
                                     onClick={() => handleNotificationClick(noti)}
+                                    style={{ cursor: 'pointer', position: 'relative' }}
                                 >
-                                    <div className="noti-icon">
+                                    <div className="noti-icon fs-5">
                                         {getIcon(noti.notificationType)}
                                     </div>
-                                    <div className="noti-content">
-                                        <p className="noti-message">{noti.message}</p>
-                                        <span className="noti-time">{formatTime(noti.createdAt)}</span>
+                                    <div className="noti-content flex-grow-1 pr-3">
+                                        <p className="noti-message mb-1 small text-dark" style={{ lineHeight: '1.4' }}>{noti.message}</p>
+                                        <span className="noti-time text-muted" style={{ fontSize: '0.75rem' }}>{formatTime(noti.createdAt)}</span>
                                     </div>
-                                    {!noti.isRead && <div className="noti-dot"></div>}
-                                    <button className="noti-delete-btn" onClick={(e) => handleDelete(e, noti.id)}>
+                                    {!noti.isRead && <div className="noti-dot rounded-circle bg-danger" style={{ width: '6px', height: '6px', marginTop: '6px' }}></div>}
+                                    <button
+                                        className="noti-delete-btn border-0 bg-transparent text-muted ms-2 p-0"
+                                        onClick={(e) => handleDelete(e, noti.id)}
+                                        style={{ fontSize: '14px' }}
+                                    >
                                         ✕
                                     </button>
                                 </div>
