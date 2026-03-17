@@ -9,3 +9,7 @@ npm i
 ```
 npm run dev
 ```
+
+파일 구조
+
+![img.png](img.png)
