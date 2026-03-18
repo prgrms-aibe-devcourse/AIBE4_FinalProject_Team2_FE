@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Button } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SyncTalkLogo from '../../assets/SyncTalk_Logo.png';
-import NotificationDropdown from "../../pages/NotificationDropdown.jsx";
+import axios from '../../api/axios.js'
 
 function Navigation() {
 
@@ -17,13 +17,24 @@ function Navigation() {
     const isLoggedIn = !!accessToken;
     const role = savedRole;
 
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('role');
+    const handleLogout = async () => {
+        try {
+            const response = await axios.get('/auth/logout', {
+                headers: {Authorization: `Bearer ${accessToken}`}
+            })
+            console.log(response);
 
-        alert("로그아웃되었습니다.");
-        navigate('/');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('role');
+
+            if (response.status === 200) {
+                alert("로그아웃되었습니다.");
+                navigate('/');
+            }
+        } catch (error) {
+            alert('로그아웃 실패\n' + error.message);
+        }
     };
 
     const isAdmin = role === 'ADMIN';
@@ -62,10 +73,10 @@ function Navigation() {
                     {/* 우측 아이콘 영역 */}
                     <Nav className="ms-auto align-items-center gap-3">
                         {!isLoggedIn ? (
-                            <Link className="btn btn-primary btn-lg" to="/login">
+                            <Button size="lg" variant="primary" as={Link} to="/login" style={{fontSize: '1.25rem'}}>
                                 {/*<PersonCircle className="text-dark" size={20} />*/}
                                 LOGIN
-                            </Link>
+                            </Button>
                         ) : (
                             <Button size="lg" variant="danger" onClick={handleLogout}>
                                 LOGOUT

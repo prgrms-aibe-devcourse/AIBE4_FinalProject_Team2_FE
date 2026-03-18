@@ -81,6 +81,7 @@ api.interceptors.response.use(
                     { refreshToken },
                     { withCredentials: true }
                 );
+                console.log(res);
 
                 const payload = res.data.data ?? res.data;
                 const newAccessToken = payload.accessToken;

@@ -106,29 +106,6 @@ const Home = () => {
         }
     `}</style>
                     </div>
-                    {/*<div className="d-flex justify-content-center gap-3">*/}
-                    {/*    <Button variant="primary"*/}
-                    {/*            style={{ padding: '2rem 4rem', fontSize: '2.5rem' }}*/}
-                    {/*            className="shadow-sm border border-light rounded-3 fw-bold d-flex align-items-center gap-2 mx-lg-auto"*/}
-                    {/*            onClick={() => navigate('/interview')}>*/}
-                    {/*        <img src={Interview} alt="CoverLetter" style={{ width: '10rem', height: '10rem' }} />*/}
-                    {/*        AI 모의 면접 시작*/}
-                    {/*    </Button>*/}
-                    {/*    <Button variant="primary"*/}
-                    {/*            style={{ padding: '2rem 4rem', fontSize: '2.5rem' }}*/}
-                    {/*            className="shadow-sm border border-light rounded-3 fw-bold d-flex align-items-center gap-2 mx-lg-auto"*/}
-                    {/*            onClick={() => navigate('/resume')}>*/}
-                    {/*        <img src={CoverLetter} alt="CoverLetter" style={{ width: '10rem', height: '10rem' }} />*/}
-                    {/*        AI 자기소개서 분석*/}
-                    {/*    </Button>*/}
-                    {/*    <Button variant="primary"*/}
-                    {/*            style={{ padding: '2rem 4rem', fontSize: '2.5rem' }}*/}
-                    {/*            className="shadow-sm border border-light rounded-3 fw-bold d-flex align-items-center gap-2 mx-lg-auto"*/}
-                    {/*            onClick={() => navigate('/resume')}>*/}
-                    {/*        <img src={Coaching} alt="CoverLetter" style={{ width: '10rem', height: '10rem' }} />*/}
-                    {/*        면접 코칭 컨설턴트*/}
-                    {/*    </Button>*/}
-                    {/*</div>*/}
                 </Container>
             </section>
 
@@ -162,7 +139,7 @@ const Home = () => {
                                     src={logo.url}
                                     alt={logo.name}
                                     style={{
-                                        height: '30px',
+                                        height: '2rem',
                                         filter: 'grayscale(100%) brightness(150%)', // 로고 톤 통일
                                         opacity: 0.7,
                                         transition: 'all 0.3s ease'
@@ -181,16 +158,6 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-            {/*<section className="py-5 border-top border-bottom border-light overflow-hidden">*/}
-            {/*    <Container className="text-center">*/}
-            {/*        <p className="text-muted small fw-bold mb-4 opacity-50 text-uppercase" style={{ letterSpacing: '0.1em' }}>합격자 배출 기업</p>*/}
-            {/*        <div className="d-flex justify-content-center align-items-center gap-5 grayscale opacity-50 flex-wrap">*/}
-            {/*            {['삼성전자', '네이버', '카카오', '쿠팡', '현대자동차'].map(brand => (*/}
-            {/*                <span key={brand} className="h5 fw-bold m-0">{brand}</span>*/}
-            {/*            ))}*/}
-            {/*        </div>*/}
-            {/*    </Container>*/}
-            {/*</section>*/}
 
             {/* 4. Features Section */}
             <section className="py-5 py-lg-10">
