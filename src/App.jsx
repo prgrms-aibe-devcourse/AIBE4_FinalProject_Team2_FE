@@ -112,7 +112,7 @@ function App() {
                 <Route path="/mypage/resume/edit/:id" element={<ResumeEdit />} />
                 <Route path="/mypage/interviews/:id" element={<MyInterviewDetail />} />
 
-                {/*면접*/}
+                {/*면 접*/}
                 <Route path="/interview/setup" element={<SetupPage />} />
                 <Route path="/interview/text/:sessionId" element={<TextInterview />} />
                 <Route path="/interview/voice/:sessionId" element={<VoiceInterview />} />
