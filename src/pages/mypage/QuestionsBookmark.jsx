@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import './QuestionBookmark.css';
 
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 const QuestionsBookmark = () => {
     const navigate = useNavigate();
@@ -57,10 +57,22 @@ const QuestionsBookmark = () => {
                     // 백엔드에 현재 페이지(page) 데이터를 10개씩 요청합니다.
                     const response = await api.get(`/mypage/bookmarks?page=${page}&size=10`);
 
-                    const newBookmarks = response.data?.data?.content || response.data?.content || [];
+                    const rawBookmarks = response.data?.data?.content || response.data?.content || [];
                     const total = response.data?.data?.totalPages || response.data?.totalPages || 0;
 
-                    // 핵심: 1페이지면 그냥 넣고, 2페이지부터는 기존 데이터 밑에 이어 붙입니다.
+// 💡 [핵심] 백엔드의 변수명을 프론트엔드 화면에 맞게 짝지어(매핑) 줍니다.
+                    const newBookmarks = rawBookmarks.map(item => ({
+                        questionId: item.scrapId,         // 북마크 삭제를 위해 scrapId를 연결!
+                        sessionId: item.linkedInterviewId,// 백엔드의 linkedInterviewId를 화면의 sessionId로 연결!
+                        category: item.category,
+                        title: item.questionText,         // 백엔드의 questionText를 화면의 title로 연결!
+                        myAnswer: item.answerText,        // 백엔드의 answerText를 화면의 myAnswer로 연결!
+                        feedbackType: "ai",               // 백엔드에 없으므로 고정값 부여
+                        feedbackText: item.feedbackText,
+                        tags: [],                         // 백엔드에 없으므로 일단 빈 배열
+                        isAnswered: !!item.answerText     // 답변(answerText)이 존재하면 true, 아니면 false로 변환
+                    }));
+
                     if (page === 0) {
                         setBookmarks(newBookmarks);
                     } else {
@@ -77,7 +89,7 @@ const QuestionsBookmark = () => {
         };
 
         void fetchData();
-    }, [page]); // page 숫자가 바뀔 때마다 이 안의 코드가 다시 실행됩니다.
+    }, [page, activeCategory]);
 
     const handleToggleBookmark = (questionId) => {
         if (USE_MOCK) {

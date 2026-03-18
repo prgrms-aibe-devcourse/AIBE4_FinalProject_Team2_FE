@@ -12,7 +12,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             // 💡 [핵심 스위치] true면 가짜 데이터 사용, false면 진짜 백엔드 API 연결!
-            const USE_MOCK = true;
+            const USE_MOCK = false;
 
             if (USE_MOCK) {
                 console.log("🚧 MOCK 프로필 조회 데이터를 렌더링합니다.");

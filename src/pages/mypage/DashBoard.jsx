@@ -21,7 +21,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchDashboardData = async () => {
-            const USE_MOCK = true;
+            const USE_MOCK = false;
 
             if (USE_MOCK) {
                 setDailyStats({ resumeReviewCount: 1, completedInterviewCount: 1 });

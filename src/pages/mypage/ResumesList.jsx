@@ -34,7 +34,7 @@ const ResumesList = () => {
             setIsLoading(true);
 
             // 💡 [개발용 스위치] 화면 렌더링 테스트 중에는 true, 백엔드 연동 시에는 false로 변경하세요.
-            const USE_MOCK = true;
+            const USE_MOCK = false;
 
             try {
                 if (USE_MOCK) {

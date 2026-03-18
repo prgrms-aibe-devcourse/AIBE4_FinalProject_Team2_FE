@@ -15,7 +15,7 @@ const MyResumeDetail = () => {
             setIsLoading(true);
 
             // 💡 [개발용 스위치] 화면 렌더링 테스트 중에는 true, 실제 백엔드 연동 시에는 false
-            const USE_MOCK = true;
+            const USE_MOCK = false;
             let rawData;
 
             try {
@@ -51,16 +51,26 @@ const MyResumeDetail = () => {
                         analyzedAt: "2026-03-16T14:30:00"
                     };
                 } else {
-                    const response = await api.get(`/mypage/resumes/${id}`);
+                    const response = await api.get(`/mypage/resumes/analysis/${id}`);
                     rawData = response.data?.data || response.data;
                 }
 
                 if (rawData) {
-                    // 날짜 포맷팅 등 UI에 필요한 추가 가공
+                    let parsedDate = '';
+                    let parsedTime = '';
+
+                    if (rawData.analyzedAt) {
+                        const dateObj = new Date(rawData.analyzedAt);
+
+                        // 💡 2. 한국 지역(ko-KR)에 맞는 날짜 및 시간 포맷으로 자동 변환
+                        parsedDate = dateObj.toLocaleDateString('ko-KR');
+                        parsedTime = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    }
+
                     const mappedData = {
                         ...rawData,
-                        formattedDate: rawData.analyzedAt ? rawData.analyzedAt.substring(0, 10).replace(/-/g, '. ') : '',
-                        formattedTime: rawData.analyzedAt ? rawData.analyzedAt.substring(11, 16) : ''
+                        formattedDate: parsedDate,
+                        formattedTime: parsedTime
                     };
                     setReportData(mappedData);
                 }

@@ -37,7 +37,7 @@ const MyInterviewDetail = () => {
             setIsLoading(true);
 
             // 💡 [개발용 스위치] 화면 테스트 중에는 true, 백엔드 연동할 때는 false로 바꾸세요!
-            const USE_MOCK = true;
+            const USE_MOCK = false;
             let rawData;
 
             if (USE_MOCK) {
@@ -164,7 +164,7 @@ const MyInterviewDetail = () => {
                         <Button
                             variant="white"
                             className="rounded-circle border shadow-sm p-0 d-flex align-items-center justify-content-center"
-                            onClick={() => navigate(-1)}
+                            onClick={() => navigate('/mypage/interviews')}
                             style={{ width: '40px', height: '40px' }}
                         >
                             ←

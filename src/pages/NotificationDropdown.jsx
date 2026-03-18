@@ -12,7 +12,7 @@ const NotificationDropdown = ({ direction = 'down', iconColor = '#ffffff' }) => 
     const dropdownRef = useRef(null);
 
     // 💡 [개발용 스위치] 백엔드 연동 시 false로 변경하세요!
-    const USE_MOCK = true;
+    const USE_MOCK = false;
 
     // 모의 데이터 세팅
     useEffect(() => {
