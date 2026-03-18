@@ -76,9 +76,6 @@ function AdminSidebar() {
                 <NavLink to="/ops/issues" style={menuStyle}>
                     Error Issues
                 </NavLink>
-                <NavLink to="/ops/logs" style={menuStyle}>
-                    Error Logs
-                </NavLink>
             </div>
 
             <div>

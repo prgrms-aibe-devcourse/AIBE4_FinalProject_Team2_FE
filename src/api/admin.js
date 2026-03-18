@@ -35,3 +35,6 @@ export const retryAdminOperation = (body) =>
 
 export const cancelAdminOperation = (body) =>
     api.post("/admin/operations/cancel", body);
+
+export const getAdminOperationTargetDetail = (params) =>
+    api.get("/admin/operations/target", { params });
