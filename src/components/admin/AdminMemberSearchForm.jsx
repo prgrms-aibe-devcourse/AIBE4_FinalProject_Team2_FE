@@ -21,23 +21,28 @@ function AdminMemberSearchForm({ onSearch }) {
             memberId: form.memberId || undefined,
             email: form.email || undefined,
             nickname: form.nickname || undefined,
-            status: form.status || undefined,
-            page: 0,
-            size: 10
+            status: form.status || undefined
         };
 
         onSearch(cleaned);
     };
 
     const handleReset = () => {
-        setForm({
+        const resetForm = {
             memberId: "",
             email: "",
             nickname: "",
             status: ""
-        });
+        };
 
-        onSearch({ page: 0, size: 10 });
+        setForm(resetForm);
+
+        onSearch({
+            memberId: undefined,
+            email: undefined,
+            nickname: undefined,
+            status: undefined
+        });
     };
 
     return (

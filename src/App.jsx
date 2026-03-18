@@ -14,6 +14,14 @@ import AdminMemberDetailPage from "./pages/admin/AdminMemberDetailPage.jsx";
 import AdminCreditsPage from "./pages/admin/AdminCreditsPage.jsx";
 import AdminUsageLogsPage from "./pages/admin/AdminUsageLogsPage.jsx";
 import AdminUsageStatisticsPage from "./pages/admin/AdminUsageStatisticsPage.jsx";
+import AdminOperationsPage from "./pages/admin/AdminOperationsPage.jsx";
+
+import OpsDashboardPage from "./pages/ops/OpsDashboardPage.jsx";
+import OpsAlertsPage from "./pages/ops/OpsAlertsPage.jsx";
+import OpsQueuePage from "./pages/ops/OpsQueuePage.jsx";
+import OpsIssuesPage from "./pages/ops/OpsIssuesPage.jsx";
+import OpsLogsPage from "./pages/ops/OpsLogsPage.jsx";
+
 import MyPageLayout from "./components/mypage/MyPageLayout.jsx";
 import Profile from './pages/mypage/Profile.jsx';
 import ProfileEdit from './pages/mypage/ProfileEdit.jsx';
@@ -29,14 +37,16 @@ import SetupPage from './pages/interview/SetupPage.jsx';
 import TextInterview from './pages/interview/TextInterview.jsx';
 import VoiceInterview from './pages/interview/VoiceInterview.jsx';
 import ReportPage from './pages/interview/ReportPage.jsx';
+import JobPostingPage from "./pages/jobposting/JobPostingPage";
 
 function App() {
     const location = useLocation();
-    const isAdminRoute = location.pathname.startsWith("/admin");
+    const isAdminOrOpsRoute =
+        location.pathname.startsWith("/admin") || location.pathname.startsWith("/ops");
 
     return (
         <>
-            {!isAdminRoute && <Navbar />}
+            {!isAdminOrOpsRoute && <Navbar />}
 
             <Routes>
                 <Route path="/" element={<Home />} />
@@ -45,6 +55,7 @@ function App() {
                 <Route path="/correction" element={<Correction />} />
                 <Route path="/oauth/callback" element={<OAuthCallback />} />
 
+                {/* 관리자 */}
                 <Route
                     path="/admin/dashboard"
                     element={
@@ -99,6 +110,64 @@ function App() {
                     }
                 />
 
+                <Route
+                    path="/admin/operations"
+                    element={
+                        <ProtectedRoute requireAdmin={true}>
+                            <AdminOperationsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* 운영 관제 */}
+                <Route
+                    path="/ops/dashboard"
+                    element={
+                        <ProtectedRoute requireAdmin={true}>
+                            <OpsDashboardPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/ops/alerts"
+                    element={
+                        <ProtectedRoute requireAdmin={true}>
+                            <OpsAlertsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/ops/queue"
+                    element={
+                        <ProtectedRoute requireAdmin={true}>
+                            <OpsQueuePage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/ops/issues"
+                    element={
+                        <ProtectedRoute requireAdmin={true}>
+                            <OpsIssuesPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/ops/logs"
+                    element={
+                        <ProtectedRoute requireAdmin={true}>
+                            <OpsLogsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* 마이페이지 */}
+                {/* AI 면접 코칭 받기 */}
+                <Route path="/job-posting" element={<JobPostingPage />} />
                 {/*마이페이지*/}
                 <Route path="/mypage" element={<MyPageLayout />}>
                     <Route path="dashboard" element={<DashBoard />} />
@@ -119,7 +188,8 @@ function App() {
                 <Route path="/interview/report/:sessionId" element={<ReportPage />} />
 
             </Routes>
-            <Footer />
+
+            {!isAdminOrOpsRoute && <Footer />}
         </>
     );
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
 import api from "../../api/axios.js";
+import defaultImage from '../../assets/defaultImage.png'
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -11,7 +12,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             // 💡 [핵심 스위치] true면 가짜 데이터 사용, false면 진짜 백엔드 API 연결!
-            const USE_MOCK = true;
+            const USE_MOCK = false;
 
             if (USE_MOCK) {
                 console.log("🚧 MOCK 프로필 조회 데이터를 렌더링합니다.");
@@ -51,7 +52,7 @@ const Profile = () => {
     if (isLoading) return <main className="main-content"><div>데이터를 불러오는 중입니다...</div></main>;
     if (!profile) return <main className="main-content"><div>프로필 정보가 없습니다.</div></main>;
 
-    const displayImageUrl = String(profile.profileImageUrl || '/AIBE4_FinalProject_Team2_FE/images/defaultImage.png');
+    const displayImageUrl = profile.profileImageUrl || defaultImage;
 
     // ✨ 2. 백엔드 DTO(JobPreferencesDto) 구조에 맞춰 데이터를 꺼냅니다.
     // 백엔드에서 이미 List<String>으로 주기 때문에 바로 배열로 사용 가능합니다!
