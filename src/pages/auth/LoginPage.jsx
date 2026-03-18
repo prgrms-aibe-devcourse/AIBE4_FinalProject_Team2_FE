@@ -8,7 +8,7 @@ import { EyeSlash, Envelope, Lock } from 'react-bootstrap-icons';
 import { FaLock, FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import api from '../../api/axios.js';
+import api, { setAuthToken } from '../../api/axios.js';
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -28,18 +28,25 @@ const LoginPage = () => {
         e.preventDefault();
         try {
             const response = await api.post('/auth/login', loginData);
+            console.log("login response:", response.data);
 
-            localStorage.setItem('accessToken', response.data.accessToken);
-            localStorage.setItem('refreshToken', response.data.refreshToken);
-            localStorage.setItem('role', response.data.role);
-            localStorage.setItem('email', response.data.email);
-            localStorage.setItem('nickname', response.data.nickname);
+            const payload = response.data.data ?? response.data;
+
+            localStorage.setItem('accessToken', payload.accessToken ?? "");
+            localStorage.setItem('refreshToken', payload.refreshToken ?? "");
+            localStorage.setItem('role', payload.role ?? "");
+            localStorage.setItem('email', payload.email ?? "");
+            localStorage.setItem('nickname', payload.nickname ?? "");
+
+            if (payload.accessToken) {
+                setAuthToken(payload.accessToken);
+            }
 
             alert("로그인 성공!");
             navigate('/');
         } catch (error) {
             console.error(error);
-            alert(error.message);
+            alert(error.response?.data?.message || error.message);
         }
     };
 

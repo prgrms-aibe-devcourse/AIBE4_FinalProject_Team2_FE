@@ -1,230 +1,109 @@
 import { useEffect, useState } from "react";
-import { Alert, Button, Card, Col, Form, Row, Table } from "react-bootstrap";
-import AdminLayout from "../../components/admin/AdminLayout";
-import { searchAdminUsageLogs } from "../../api/admin";
-
-const initialForm = {
-    memberId: "",
-    nickname: "",
-    email: "",
-    serviceType: "",
-    from: "",
-    to: "",
-    targetType: "",
-    page: 0,
-    size: 10,
-};
+import { Alert, Card, Spinner } from "react-bootstrap";
+import AdminLayout from "../../components/admin/AdminLayout.jsx";
+import PagingBar from "../../components/admin/PagingBar.jsx";
+import AdminUsageLogSearchForm from "../../components/admin/AdminUsageLogSearchForm.jsx";
+import AdminUsageLogsTable from "../../components/admin/AdminUsageLogsTable.jsx";
+import { searchAdminUsageLogs } from "../../api/admin.js";
 
 function AdminUsageLogsPage() {
-    const [form, setForm] = useState(initialForm);
     const [logs, setLogs] = useState([]);
-    const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const fetchLogs = async (params = initialForm) => {
+    const [searchCond, setSearchCond] = useState({
+        memberId: undefined,
+        nickname: undefined,
+        email: undefined,
+        serviceType: undefined,
+        from: undefined,
+        to: undefined,
+        targetType: undefined
+    });
+
+    const [pageInfo, setPageInfo] = useState({
+        page: 0,
+        size: 20,
+        totalPages: 0,
+        totalElements: 0
+    });
+
+    const fetchUsageLogs = async (cond = searchCond, page = pageInfo.page, size = pageInfo.size) => {
         try {
             setLoading(true);
-            setMessage("");
+            setError("");
 
-            const cleanedParams = {
-                memberId: params.memberId || undefined,
-                nickname: params.nickname || undefined,
-                email: params.email || undefined,
-                serviceType: params.serviceType || undefined,
-                from: params.from || undefined,
-                to: params.to || undefined,
-                targetType: params.targetType || undefined,
-                page: params.page ?? 0,
-                size: params.size ?? 10,
+            const params = {
+                ...cond,
+                page,
+                size
             };
 
-            const res = await searchAdminUsageLogs(cleanedParams);
-            const content = res.data?.data?.content ?? res.data?.content ?? [];
+            const res = await searchAdminUsageLogs(params);
 
-            setLogs(content);
-        } catch (error) {
-            console.error("사용량 로그 조회 실패:", error);
-            setMessage("사용량 로그를 불러오지 못했습니다.");
+            // 백엔드 응답: Page<UsageLogAdminRow> 기준
+            const pageData = res.data;
+
+            setLogs(pageData.content || []);
+            setPageInfo({
+                page: pageData.number ?? 0,
+                size: pageData.size ?? size,
+                totalPages: pageData.totalPages ?? 0,
+                totalElements: pageData.totalElements ?? 0
+            });
+        } catch (err) {
+            console.error("사용량 로그 조회 실패:", err);
+            setError("사용량 로그를 불러오지 못했습니다.");
+            setLogs([]);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchLogs(initialForm);
+        fetchUsageLogs(searchCond, 0, pageInfo.size);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+    const handleSearch = (cond) => {
+        setSearchCond(cond);
+        fetchUsageLogs(cond, 0, pageInfo.size);
     };
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        fetchLogs({ ...form, page: 0 });
-    };
-
-    const handleReset = () => {
-        setForm(initialForm);
-        setMessage("");
-        fetchLogs(initialForm);
+    const handlePageChange = (nextPage) => {
+        fetchUsageLogs(searchCond, nextPage, pageInfo.size);
     };
 
     return (
         <AdminLayout title="사용량 로그">
-            {message && <Alert variant="info">{message}</Alert>}
-
-            <Card className="shadow-sm mb-4">
+            <Card className="shadow-sm border-0">
                 <Card.Body>
-                    <Card.Title className="mb-3">로그 검색</Card.Title>
+                    <AdminUsageLogSearchForm onSearch={handleSearch} />
 
-                    <Form onSubmit={handleSearch}>
-                        <Row className="g-3">
-                            <Col md={2}>
-                                <Form.Control
-                                    name="memberId"
-                                    type="number"
-                                    placeholder="회원 ID"
-                                    value={form.memberId}
-                                    onChange={handleChange}
-                                />
-                            </Col>
+                    <div className="mb-3 text-muted">
+                        총 로그 수: <strong>{pageInfo.totalElements}</strong>건
+                    </div>
 
-                            <Col md={2}>
-                                <Form.Control
-                                    name="nickname"
-                                    placeholder="닉네임"
-                                    value={form.nickname}
-                                    onChange={handleChange}
-                                />
-                            </Col>
+                    {loading && (
+                        <div className="text-center py-5">
+                            <Spinner animation="border" />
+                        </div>
+                    )}
 
-                            <Col md={2}>
-                                <Form.Control
-                                    name="email"
-                                    placeholder="이메일"
-                                    value={form.email}
-                                    onChange={handleChange}
-                                />
-                            </Col>
+                    {!loading && error && (
+                        <Alert variant="danger">{error}</Alert>
+                    )}
 
-                            <Col md={2}>
-                                <Form.Select
-                                    name="serviceType"
-                                    value={form.serviceType}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">전체 서비스</option>
-                                    <option value="RESUME">RESUME</option>
-                                    <option value="INTERVIEW">INTERVIEW</option>
-                                    <option value="ADMIN">ADMIN</option>
-                                </Form.Select>
-                            </Col>
+                    {!loading && !error && (
+                        <>
+                            <AdminUsageLogsTable logs={logs} />
 
-                            <Col md={2}>
-                                <Form.Control
-                                    name="targetType"
-                                    placeholder="targetType"
-                                    value={form.targetType}
-                                    onChange={handleChange}
-                                />
-                            </Col>
-
-                            <Col md={1}>
-                                <Button type="submit" className="w-100">
-                                    검색
-                                </Button>
-                            </Col>
-
-                            <Col md={1}>
-                                <Button
-                                    type="button"
-                                    variant="secondary"
-                                    className="w-100"
-                                    onClick={handleReset}
-                                >
-                                    초기화
-                                </Button>
-                            </Col>
-
-                            <Col md={2}>
-                                <Form.Control
-                                    name="from"
-                                    type="date"
-                                    value={form.from}
-                                    onChange={handleChange}
-                                />
-                            </Col>
-
-                            <Col md={2}>
-                                <Form.Control
-                                    name="to"
-                                    type="date"
-                                    value={form.to}
-                                    onChange={handleChange}
-                                />
-                            </Col>
-                        </Row>
-                    </Form>
-                </Card.Body>
-            </Card>
-
-            <Card className="shadow-sm">
-                <Card.Body>
-                    <Card.Title className="mb-3">사용량 로그 목록</Card.Title>
-
-                    {loading ? (
-                        <div>로딩 중...</div>
-                    ) : (
-                        <Table striped bordered hover responsive>
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>회원 ID</th>
-                                <th>이메일</th>
-                                <th>서비스 유형</th>
-                                <th>처리량</th>
-                                <th>토큰 사용량 / 크레딧 변동량</th>
-                                <th>잔액</th>
-                                <th>대상 유형</th>
-                                <th>대상 ID</th>
-                                <th>설명</th>
-                                <th>로그 기록 시각</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {logs.length === 0 ? (
-                                <tr>
-                                    <td colSpan="11" className="text-center">
-                                        조회된 로그가 없습니다.
-                                    </td>
-                                </tr>
-                            ) : (
-                                logs.map((log) => (
-                                    <tr key={log.id}>
-                                        <td>{log.id}</td>
-                                        <td>{log.memberId}</td>
-                                        <td>{log.email}</td>
-                                        <td>{log.serviceType}</td>
-                                        <td>{log.amount}</td>
-                                        <td>{log.tokenUsage}</td>
-                                        <td>{log.balanceAfter}</td>
-                                        <td>{log.targetType || "-"}</td>
-                                        <td>{log.targetId ?? "-"}</td>
-                                        <td>{log.description || "-"}</td>
-                                        <td>
-                                            {log.createdAt
-                                                ? new Date(log.createdAt).toLocaleString("ko-KR")
-                                                : "-"}
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                            </tbody>
-                        </Table>
+                            <PagingBar
+                                page={pageInfo.page}
+                                totalPages={pageInfo.totalPages}
+                                onPageChange={handlePageChange}
+                            />
+                        </>
                     )}
                 </Card.Body>
             </Card>
