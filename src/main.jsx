@@ -7,7 +7,7 @@ import { HashRouter, BrowserRouter } from 'react-router-dom'; // Router 감싸�
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <BrowserRouter basename='/AIBE4_FinalProject_Team2_FE/'>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
             <App />
         </BrowserRouter>
     </React.StrictMode>
