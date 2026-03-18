@@ -25,7 +25,7 @@ const InterviewsList = () => {
         const fetchInterviews = async () => {
             setIsLoading(true);
 
-            const USE_MOCK = true;
+            const USE_MOCK = false;
 
             if (USE_MOCK) {
                 console.log("🚧 MOCK 데이터를 렌더링합니다.");
