@@ -33,6 +33,8 @@ import MyInterviewDetail from "./pages/mypage/MyInterviewDetail.jsx";
 import QuestionBookmark from "./pages/mypage/QuestionsBookmark.jsx";
 import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
+import JobPostingPage from "./pages/jobposting/JobPostingPage";
+
 function App() {
     const location = useLocation();
     const isAdminOrOpsRoute =
@@ -160,6 +162,9 @@ function App() {
                 />
 
                 {/* 마이페이지 */}
+                {/* AI 면접 코칭 받기 */}
+                <Route path="/job-posting" element={<JobPostingPage />} />
+                {/*마이페이지*/}
                 <Route path="/mypage" element={<MyPageLayout />}>
                     <Route path="dashboard" element={<DashBoard />} />
                     <Route path="resumes" element={<ResumesList />} />
@@ -168,7 +173,6 @@ function App() {
                     <Route path="profile" element={<Profile />} />
                     <Route path="profile/edit" element={<ProfileEdit />} />
                 </Route>
-
                 <Route path="/mypage/resumes/:id" element={<MyResumeDetail />} />
                 <Route path="/mypage/resume/edit/:id" element={<ResumeEdit />} />
                 <Route path="/mypage/interviews/:id" element={<MyInterviewDetail />} />

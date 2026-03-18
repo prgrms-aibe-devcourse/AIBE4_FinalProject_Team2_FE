@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, ProgressBar, Button } from 'react-bootstrap';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend,
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend,
     Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
 import api from "../../api/axios.js";
@@ -21,7 +21,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchDashboardData = async () => {
-            const USE_MOCK = true;
+            const USE_MOCK = false;
 
             if (USE_MOCK) {
                 setDailyStats({ resumeReviewCount: 1, completedInterviewCount: 1 });
@@ -60,7 +60,29 @@ const Dashboard = () => {
 
                 setDailyStats(dailyRes.data?.data || dailyRes.data);
                 setGrowthStats(growthRes.data || []);
-                setMonthlyUsage(monthlyRes.data || null);
+
+                const rawMonthlyStats = monthlyRes.data?.data?.monthlyStats || monthlyRes.data?.monthlyStats || [];
+
+                const formattedMonthly = Array.from({ length: 12 }, (_, i) => ({
+                    month: `${i + 1}월`,
+                    resumes: 0,
+                    interviews: 0
+                }));
+
+                rawMonthlyStats.forEach(stat => {
+                    const monthIndex = stat.month - 1; // 배열은 0부터 시작하므로 -1
+
+                    // count(이용 횟수) 또는 amount(토큰/크레딧 사용량) 중 차트에 보여줄 값을 더합니다.
+                    // 여기서는 count(이용 횟수)를 기준으로 작성했습니다.
+                    if (stat.serviceType === 'RESUME') {
+                        formattedMonthly[monthIndex].resumes += stat.count;
+                    } else if (stat.serviceType === 'INTERVIEW') {
+                        formattedMonthly[monthIndex].interviews += stat.count;
+                    }
+                });
+
+// 3. 완성된 배열을 상태에 저장
+                setMonthlyUsage({ monthlyStats: formattedMonthly });
 
                 const realRecentData = recentRes.data?.data || recentRes.data || [];
                 const formattedRecentData = realRecentData.map(activity => ({
@@ -176,14 +198,28 @@ const Dashboard = () => {
                     {monthlyUsage?.monthlyStats && monthlyUsage.monthlyStats.length > 0 ? (
                         <div style={{ width: '100%', height: 250 }}>
                             <ResponsiveContainer>
-                                <LineChart data={monthlyUsage.monthlyStats} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <BarChart data={monthlyUsage.monthlyStats} barGap={5} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#DEE2E6" vertical={false} />
                                     <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#6C757D' }} axisLine={false} tickLine={false} />
                                     <YAxis tick={{ fontSize: 12, fill: '#6C757D' }} axisLine={false} tickLine={false} />
-                                    <RechartsTooltip contentStyle={{ borderRadius: '8px', border: '1px solid #DEE2E6', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }} />
-                                    <Legend iconType="circle" wrapperStyle={{ color: '#6C757D' }}/>
-                                    <Line type="monotone" name="총 사용량" dataKey="resumes" stroke="#1976D2" strokeWidth={3} dot={{ r: 4, fill: '#1976D2' }} />
-                                </LineChart>
+                                    <RechartsTooltip cursor={{ fill: 'rgba(0,0,0,0.02)' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', padding: '10px 14px' }} />
+                                    <Legend
+                                        iconType="circle"
+                                        iconSize={12} // 💡 동그라미 크기를 살짝 조절해 잘림 공간 확보 (기본값 14)
+                                        wrapperStyle={{ marginTop: '15px' }} // 💡 paddingTop 대신 marginTop 사용 (찌그러짐 방지)
+                                        formatter={(value) => (
+                                            <span style={{ color: '#212529', fontWeight: 500, paddingLeft: '4px', verticalAlign: 'middle' }}>
+                                                {value}
+                                            </span>
+                                        )}
+                                    />
+
+                                    {/* 남색(Navy) 막대: 자소서 첨삭 */}
+                                    <Bar name="자소서 첨삭" dataKey="resumes" fill="#5783AF" barSize={12} radius={[4, 4, 0, 0]} />
+
+                                    {/* 형광 노랑(Neon Yellow) 막대: 모의 면접 */}
+                                    <Bar name="모의 면접" dataKey="interviews" fill="#DCE27F" barSize={12} radius={[4, 4, 0, 0]} />
+                                </BarChart>
                             </ResponsiveContainer>
                         </div>
                     ) : (

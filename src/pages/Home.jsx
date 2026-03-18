@@ -2,9 +2,40 @@ import React from 'react';
 import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import { Search, FileEarmarkTextFill, MicFill, BarChartLineFill, PencilSquare, RocketTakeoffFill } from 'react-bootstrap-icons';
 import {useNavigate} from "react-router-dom";
+import SyncTalkLogo from "../assets/SyncTalk_Logo.png";
+
+import CoverLetter from "../assets/buttons/cover_letter.png";
+import Interview from "../assets/buttons/interview.png";
+import Coaching from "../assets/buttons/coaching.png";
+
+import Samsung from "../assets/logos/samsung.jpg";
+import Naver from "../assets/logos/naver.png";
+import Coupang from "../assets/logos/coupang.png";
+import Kakao from "../assets/logos/kakao.png";
+import Baemin from "../assets/logos/beamin.png";
 
 const Home = () => {
     const navigate = useNavigate();
+
+    // 샘플 로고 데이터 (이미지 9의 기업 리스트 반영)
+    const logos = [
+        { name: 'Samsung', url: Samsung },
+        { name: 'Samsung', url: Naver },
+        { name: 'Samsung', url: Coupang },
+        { name: 'Samsung', url: Kakao },
+        { name: 'Samsung', url: Baemin },
+    ];
+
+    // 무한 루프를 위해 배열을 복제
+    const duplicatedLogos = [...logos, ...logos];
+
+    // 인라인 키프레임 애니메이션 정의
+    const marqueeKeyframes = `
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  `;
 
     const stPrimary = '#1976D2'; // SyncTalk 브랜드 블루
 
@@ -14,41 +45,152 @@ const Home = () => {
             {/* 2. Hero Section */}
             <section className="py-5 py-lg-10 text-center bg-gradient-light" style={{ background: 'linear-gradient(to bottom, #f8faff, #ffffff)' }}>
                 <Container>
-                    <Badge bg="primary" className="bg-opacity-10 text-primary mb-4 px-3 py-2 fw-normal rounded-pill">
-                        ● AI 기반 취업 성공 솔루션
-                    </Badge>
-                    <h1 className="display-4 fw-bold mb-4" style={{ letterSpacing: '-0.02em' }}>
+                    <h1 className="display-4 fw-bold" style={{ letterSpacing: '-0.02em' }}>
                         AI와 함께하는 맞춤형<br />
-                        취업 솔루션, <span style={{ color: stPrimary }}>SyncTalk</span>
+                        취업 솔루션
                     </h1>
-                    <p className="text-muted mx-auto mb-5" style={{ maxWidth: '600px', lineHeight: '1.8' }}>
+                    <img src={SyncTalkLogo} alt="Logo" style={{ width: '20rem', height: '10rem', objectFit: 'cover' }} className="my-4"/>
+                    <p className="mx-auto mb-5" style={{ maxWidth: '600px', lineHeight: '1.8' }}>
                         채용 공고에 맞춘 맞춤형 자기소개서 첨삭과 실전 같은 AI 모의 면접을 즉시 경험해보세요.
-                        치열한 경쟁 속에서 확실한 경쟁력을 만들어 드립니다.
                     </p>
 
                     {/* Feature Quick Links */}
-                    <div className="d-flex justify-content-center gap-3">
-                        <Button variant="white" className="btn btn-primary shadow-sm border border-light py-2 px-4 rounded-3 fw-bold d-flex align-items-center gap-2" onClick={() => navigate('/interview')}>
-                            AI 모의 면접 시작
-                        </Button>
-                        <Button variant="white" className="btn btn-primary shadow-sm border border-light py-2 px-4 rounded-3 fw-bold d-flex align-items-center gap-2" onClick={() => navigate('/resume')}>
-                            AI 자기소개서 분석
-                        </Button>
+                    <div className="d-flex justify-content-center gap-5 mt-5">
+                        {/* 1. AI 모의 면접 시작 */}
+                        <div
+                            className="d-flex flex-column align-items-center cursor-pointer img-btn-wrapper"
+                            onClick={() => navigate('/interview')}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <div className="bg-white shadow-sm rounded-4 p-4 mb-3 border border-light transition-hover">
+                                <img src={Interview} alt="Interview" style={{ width: '12rem', height: '12rem', objectFit: 'contain' }} />
+                            </div>
+                            <h3 className="fw-bold text-dark mt-2">AI 모의 면접 시작</h3>
+                        </div>
+
+                        {/* 2. AI 자기소개서 분석 */}
+                        <div
+                            className="d-flex flex-column align-items-center cursor-pointer img-btn-wrapper"
+                            onClick={() => navigate('/resume')}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <div className="bg-white shadow-sm rounded-4 p-4 mb-3 border border-light transition-hover">
+                                <img src={CoverLetter} alt="CoverLetter" style={{ width: '12rem', height: '12rem', objectFit: 'contain' }} />
+                            </div>
+                            <h3 className="fw-bold text-dark mt-2">AI 자기소개서 분석</h3>
+                        </div>
+
+                        {/* 3. 면접 코칭 컨설턴트 */}
+                        <div
+                            className="d-flex flex-column align-items-center cursor-pointer img-btn-wrapper"
+                            onClick={() => navigate('/job-posting')}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <div className="bg-white shadow-sm rounded-4 p-4 mb-3 border border-light transition-hover">
+                                <img src={Coaching} alt="Coaching" style={{ width: '12rem', height: '12rem', objectFit: 'contain' }} />
+                            </div>
+                            <h3 className="fw-bold text-dark mt-2">면접 코칭 컨설턴트</h3>
+                        </div>
+
+                        <style>{`
+        .transition-hover {
+            transition: all 0.3s ease;
+        }
+        .img-btn-wrapper:hover .transition-hover {
+            transform: translateY(-10px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+            border-color: #1976D2 !important;
+        }
+        .img-btn-wrapper:hover h3 {
+            color: #1976D2 !important;
+        }
+    `}</style>
                     </div>
+                    {/*<div className="d-flex justify-content-center gap-3">*/}
+                    {/*    <Button variant="primary"*/}
+                    {/*            style={{ padding: '2rem 4rem', fontSize: '2.5rem' }}*/}
+                    {/*            className="shadow-sm border border-light rounded-3 fw-bold d-flex align-items-center gap-2 mx-lg-auto"*/}
+                    {/*            onClick={() => navigate('/interview')}>*/}
+                    {/*        <img src={Interview} alt="CoverLetter" style={{ width: '10rem', height: '10rem' }} />*/}
+                    {/*        AI 모의 면접 시작*/}
+                    {/*    </Button>*/}
+                    {/*    <Button variant="primary"*/}
+                    {/*            style={{ padding: '2rem 4rem', fontSize: '2.5rem' }}*/}
+                    {/*            className="shadow-sm border border-light rounded-3 fw-bold d-flex align-items-center gap-2 mx-lg-auto"*/}
+                    {/*            onClick={() => navigate('/resume')}>*/}
+                    {/*        <img src={CoverLetter} alt="CoverLetter" style={{ width: '10rem', height: '10rem' }} />*/}
+                    {/*        AI 자기소개서 분석*/}
+                    {/*    </Button>*/}
+                    {/*    <Button variant="primary"*/}
+                    {/*            style={{ padding: '2rem 4rem', fontSize: '2.5rem' }}*/}
+                    {/*            className="shadow-sm border border-light rounded-3 fw-bold d-flex align-items-center gap-2 mx-lg-auto"*/}
+                    {/*            onClick={() => navigate('/resume')}>*/}
+                    {/*        <img src={Coaching} alt="CoverLetter" style={{ width: '10rem', height: '10rem' }} />*/}
+                    {/*        면접 코칭 컨설턴트*/}
+                    {/*    </Button>*/}
+                    {/*</div>*/}
                 </Container>
             </section>
 
             {/* 3. Logo Cloud */}
-            <section className="py-5 border-top border-bottom border-light overflow-hidden">
-                <Container className="text-center">
-                    <p className="text-muted small fw-bold mb-4 opacity-50 text-uppercase" style={{ letterSpacing: '0.1em' }}>합격자 배출 기업</p>
-                    <div className="d-flex justify-content-center align-items-center gap-5 grayscale opacity-50 flex-wrap">
-                        {['삼성전자', '네이버', '카카오', '쿠팡', '현대자동차'].map(brand => (
-                            <span key={brand} className="h5 fw-bold m-0">{brand}</span>
+            <div className="py-5" style={{ backgroundColor: 'var(--st-bg-light)', overflow: 'hidden' }}>
+                <style>{marqueeKeyframes}</style>
+
+                <div className="container mb-4 text-center">
+                    <p className="text-secondary small fw-bold" style={{ letterSpacing: '2px' }}>
+                        합격자 배출 기업
+                    </p>
+                </div>
+
+                <div className="d-flex position-relative w-100" style={{ overflow: 'hidden' }}>
+                    {/* 애니메이션이 적용된 로고 컨테이너 */}
+                    <div
+                        className="d-flex align-items-center"
+                        style={{
+                            animation: 'marquee 30s linear infinite',
+                            whiteSpace: 'nowrap',
+                            display: 'flex'
+                        }}
+                    >
+                        {duplicatedLogos.map((logo, index) => (
+                            <div
+                                key={index}
+                                className="px-5 d-flex align-items-center justify-content-center"
+                                style={{ flex: '0 0 auto' }}
+                            >
+                                <img
+                                    src={logo.url}
+                                    alt={logo.name}
+                                    style={{
+                                        height: '30px',
+                                        filter: 'grayscale(100%) brightness(150%)', // 로고 톤 통일
+                                        opacity: 0.7,
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onMouseOver={(e) => {
+                                        e.currentTarget.style.filter = 'grayscale(0%) brightness(100%)';
+                                        e.currentTarget.style.opacity = 1;
+                                    }}
+                                    onMouseOut={(e) => {
+                                        e.currentTarget.style.filter = 'grayscale(100%) brightness(150%)';
+                                        e.currentTarget.style.opacity = 0.7;
+                                    }}
+                                />
+                            </div>
                         ))}
                     </div>
-                </Container>
-            </section>
+                </div>
+            </div>
+            {/*<section className="py-5 border-top border-bottom border-light overflow-hidden">*/}
+            {/*    <Container className="text-center">*/}
+            {/*        <p className="text-muted small fw-bold mb-4 opacity-50 text-uppercase" style={{ letterSpacing: '0.1em' }}>합격자 배출 기업</p>*/}
+            {/*        <div className="d-flex justify-content-center align-items-center gap-5 grayscale opacity-50 flex-wrap">*/}
+            {/*            {['삼성전자', '네이버', '카카오', '쿠팡', '현대자동차'].map(brand => (*/}
+            {/*                <span key={brand} className="h5 fw-bold m-0">{brand}</span>*/}
+            {/*            ))}*/}
+            {/*        </div>*/}
+            {/*    </Container>*/}
+            {/*</section>*/}
 
             {/* 4. Features Section */}
             <section className="py-5 py-lg-10">

@@ -21,13 +21,20 @@ const ResumesList = () => {
         completedCount: 0
     });
 
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
+    useEffect(() => {
+        setPage(0);
+    }, [activeTab]);
+
     // 4. API 호출 로직
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
 
             // 💡 [개발용 스위치] 화면 렌더링 테스트 중에는 true, 백엔드 연동 시에는 false로 변경하세요.
-            const USE_MOCK = true;
+            const USE_MOCK = false;
 
             try {
                 if (USE_MOCK) {
@@ -80,9 +87,12 @@ const ResumesList = () => {
                     // [API 모드] 실제 서버 연동
                     // [1] 리스트 데이터 호출
                     if (activeTab === 'AI') {
-                        const response = await api.get('/mypage/resumes/analysis?page=0&size=10');
+                        const response = await api.get(`/mypage/resumes/analysis?page=${page}&size=10`);
                         const content = response.data?.data?.content || response.data?.content || [];
+                        const total = response.data?.data?.totalPages || response.data?.totalPages || 0;
+
                         setAiReports(content);
+                        setTotalPages(total);
                     } else {
                         const response = await api.get('/resumes');
                         const content = response.data?.data || response.data || [];
@@ -95,8 +105,8 @@ const ResumesList = () => {
 
                     if (statsData) {
                         setStats({
-                            aiCount: statsData.aiCount || 0,
-                            originalCount: statsData.originalCount || 0,
+                            aiCount: statsData.aiResumeCount || 0,
+                            originalCount: statsData.savedResumeCount || 0,
                             completedCount: statsData.completedCount || 0
                         });
                     }
@@ -109,7 +119,7 @@ const ResumesList = () => {
         };
 
         void fetchData();
-    }, [activeTab]);
+    }, [activeTab, page]);
 
     return (
         <main className="main-content">
@@ -171,7 +181,14 @@ const ResumesList = () => {
                                     return (
                                         <div key={targetId || idx} className="resume-card ai-card">
                                             <div className="card-badge ai-badge">AI Enhanced</div>
-                                            <h3 className="card-title">{report.title || '제목 없는 리포트'}</h3>
+                                            <h3 className="card-title text-truncate" title={report.resumeTitle}>
+                                                {report.resumeTitle || '제목 없는 리포트'}
+                                            </h3>
+                                            {(report.companyName || report.jobTitle) && (
+                                                <p className="card-desc mb-1" style={{ fontSize: '0.85rem', color: '#6C757D' }}>
+                                                    🏢 {report.companyName || '회사 미상'} / {report.jobTitle || '직무 미상'}
+                                                </p>
+                                            )}
                                             <p className="card-desc">매칭 점수: <strong style={{ color: '#1976D2' }}>{report.matchScore || 0}점</strong></p>
                                             <div className="card-footer">
                                                 <span className="card-date">
@@ -222,6 +239,27 @@ const ResumesList = () => {
                     </div>
                 )}
             </section>
+            {activeTab === 'AI' && !isLoading && totalPages > 0 && (
+                <div className="pagination d-flex justify-content-center gap-3 mt-4 mb-4">
+                    <button
+                        className="btn btn-outline-secondary"
+                        onClick={() => setPage(p => Math.max(0, p - 1))}
+                        disabled={page === 0}
+                    >
+                        &lt; 이전
+                    </button>
+                    <span className="page-indicator align-self-center fw-bold">
+                        현재 페이지: {page + 1} / {totalPages}
+                    </span>
+                    <button
+                        className="btn btn-outline-secondary"
+                        onClick={() => setPage(p => p + 1)}
+                        disabled={page >= totalPages - 1}
+                    >
+                        다음 &gt;
+                    </button>
+                </div>
+            )}
         </main>
     );
 };
