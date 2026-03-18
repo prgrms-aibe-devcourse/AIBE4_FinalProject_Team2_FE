@@ -50,6 +50,11 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        // ⭐ 로그인이나 유저 정보 확인 요청에서 401이 나면 재발급 시도 안 함
+        if (originalRequest.url.includes('/auth/login') || originalRequest.url.includes('/auth/me')) {
+            return Promise.reject(error);
+        }
+
         // 에러 상태가 401(Unauthorized)이고, 아직 재시도를 안 했다면
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true; // 무한 루프 방지용 플래그

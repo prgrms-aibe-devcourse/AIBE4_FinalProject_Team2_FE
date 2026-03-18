@@ -1,12 +1,13 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navigation.jsx';
+import Navbar from './components/global/Navigation.jsx';
+import Footer from './components/global/Footer.jsx';
 import Home from './pages/Home.jsx';
-import LoginPage from "./pages/LoginPage.jsx";
+import LoginPage from "./pages/auth/LoginPage.jsx";
 import Correction from "./pages/Correction.jsx";
-import Signup from './pages/Signup.jsx';
-import OAuthCallback from "./pages/OAuthCallback.jsx";
+import Signup from './pages/auth/Signup.jsx';
+import OAuthCallback from "./pages/auth/OAuthCallback.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ProtectedRoute from "./components/global/ProtectedRoute.jsx";
 
 import AdminMembersPage from "./pages/admin/AdminMembersPage.jsx";
 import AdminMemberDetailPage from "./pages/admin/AdminMemberDetailPage.jsx";
@@ -33,7 +34,7 @@ function App() {
             {!isAdminRoute && <Navbar />}
 
             <Routes>
-                <Route path="/main" element={<Home />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/correction" element={<Correction />} />
@@ -105,6 +106,7 @@ function App() {
                 <Route path="/mypage/resume/edit/:id" element={<ResumeEdit />} />
                 <Route path="/mypage/interviews/:id" element={<MyInterviewDetail />} />
             </Routes>
+            <Footer />
         </>
     );
 }
