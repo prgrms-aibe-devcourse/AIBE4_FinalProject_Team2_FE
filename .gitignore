@@ -26,3 +26,4 @@ dist-ssr
 # IDEA
 *.iml
 package.json
+package-lock.json
