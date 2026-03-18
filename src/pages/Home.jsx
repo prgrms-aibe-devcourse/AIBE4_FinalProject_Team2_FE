@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import { Search, FileEarmarkTextFill, MicFill, BarChartLineFill, PencilSquare, RocketTakeoffFill } from 'react-bootstrap-icons';
 import {useNavigate} from "react-router-dom";
+import SyncTalkLogo from "../assets/SyncTalk_Logo.png";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -14,24 +15,27 @@ const Home = () => {
             {/* 2. Hero Section */}
             <section className="py-5 py-lg-10 text-center bg-gradient-light" style={{ background: 'linear-gradient(to bottom, #f8faff, #ffffff)' }}>
                 <Container>
-                    <Badge bg="primary" className="bg-opacity-10 text-primary mb-4 px-3 py-2 fw-normal rounded-pill">
-                        ● AI 기반 취업 성공 솔루션
-                    </Badge>
-                    <h1 className="display-4 fw-bold mb-4" style={{ letterSpacing: '-0.02em' }}>
+                    <h1 className="display-4 fw-bold" style={{ letterSpacing: '-0.02em' }}>
                         AI와 함께하는 맞춤형<br />
-                        취업 솔루션, <span style={{ color: stPrimary }}>SyncTalk</span>
+                        취업 솔루션
                     </h1>
-                    <p className="text-muted mx-auto mb-5" style={{ maxWidth: '600px', lineHeight: '1.8' }}>
+                    <img src={SyncTalkLogo} alt="Logo" style={{ width: '20rem', height: '10rem', objectFit: 'cover' }} className="my-4"/>
+                    <p className="mx-auto mb-5" style={{ maxWidth: '600px', lineHeight: '1.8' }}>
                         채용 공고에 맞춘 맞춤형 자기소개서 첨삭과 실전 같은 AI 모의 면접을 즉시 경험해보세요.
-                        치열한 경쟁 속에서 확실한 경쟁력을 만들어 드립니다.
                     </p>
 
                     {/* Feature Quick Links */}
                     <div className="d-flex justify-content-center gap-3">
-                        <Button variant="white" className="btn btn-primary shadow-sm border border-light py-2 px-4 rounded-3 fw-bold d-flex align-items-center gap-2" onClick={() => navigate('/interview')}>
+                        <Button variant="primary"
+                                style={{ padding: '2rem 4rem', fontSize: '2.5rem' }}
+                                className="shadow-sm border border-light rounded-3 fw-bold d-flex align-items-center gap-2 mx-lg-auto"
+                                onClick={() => navigate('/interview')}>
                             AI 모의 면접 시작
                         </Button>
-                        <Button variant="white" className="btn btn-primary shadow-sm border border-light py-2 px-4 rounded-3 fw-bold d-flex align-items-center gap-2" onClick={() => navigate('/resume')}>
+                        <Button variant="primary"
+                                style={{ padding: '2rem 4rem', fontSize: '2.5rem' }}
+                                className="shadow-sm border border-light rounded-3 fw-bold d-flex align-items-center gap-2 mx-lg-auto"
+                                onClick={() => navigate('/resume')}>
                             AI 자기소개서 분석
                         </Button>
                     </div>

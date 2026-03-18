@@ -35,7 +35,7 @@ function Navigation() {
 
     return (
         <Navbar bg="white" expand="lg" className="border-bottom py-3 sticky-top">
-            <Container>
+            <Container style={{ marginLeft: '2rem', marginRight: '2rem', maxWidth: '100%'}}>
                 {/* 로고 영역 */}
                 <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 fw-bold fs-4">
                     <img src={SyncTalkLogo} alt="Logo" width="80" height="40" />
@@ -62,13 +62,13 @@ function Navigation() {
                     {/* 우측 아이콘 영역 */}
                     <Nav className="ms-auto align-items-center gap-3">
                         {!isLoggedIn ? (
-                            <Link className="btn btn-primary" to="/login">
+                            <Link className="btn btn-primary btn-lg" to="/login">
                                 {/*<PersonCircle className="text-dark" size={20} />*/}
-                                login
+                                LOGIN
                             </Link>
                         ) : (
-                            <Button variant="btn btn-danger" onClick={handleLogout}>
-                                logout
+                            <Button size="lg" variant="danger" onClick={handleLogout}>
+                                LOGOUT
                             </Button>
                         )}
                     </Nav>
