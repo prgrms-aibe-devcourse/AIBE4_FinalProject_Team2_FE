@@ -25,6 +25,8 @@ import MyInterviewDetail from "./pages/mypage/MyInterviewDetail.jsx";
 import QuestionBookmark from "./pages/mypage/QuestionsBookmark.jsx";
 import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
+import JobPostingPage from "./pages/jobposting/JobPostingPage";
+
 function App() {
     const location = useLocation();
     const isAdminRoute = location.pathname.startsWith("/admin");
@@ -93,6 +95,8 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+                {/* AI 면접 코칭 받기 */}
+                <Route path="/job-posting" element={<JobPostingPage />} />
                 {/*마이페이지*/}
                 <Route path="/mypage" element={<MyPageLayout />}>
                     <Route path="dashboard" element={<DashBoard />} />

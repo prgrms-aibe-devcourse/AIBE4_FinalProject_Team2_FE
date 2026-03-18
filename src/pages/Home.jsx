@@ -83,7 +83,7 @@ const Home = () => {
                         {/* 3. 면접 코칭 컨설턴트 */}
                         <div
                             className="d-flex flex-column align-items-center cursor-pointer img-btn-wrapper"
-                            onClick={() => navigate('/resume')}
+                            onClick={() => navigate('/job-posting')}
                             style={{ cursor: 'pointer' }}
                         >
                             <div className="bg-white shadow-sm rounded-4 p-4 mb-3 border border-light transition-hover">
