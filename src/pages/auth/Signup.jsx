@@ -65,6 +65,17 @@ const Signup = () => {
     agreed: false
   });
 
+  // 컴포넌트 내부 (render 직전)
+  const isPasswordMatch = formData.password === passwordCheck;
+  const isFormValid =
+      formData.nickname &&
+      formData.email &&
+      verified && // 이메일 인증이 완료되었는지 확인
+      formData.password &&
+      formData.password.length >= 8 && // 8자 이상 조건
+      isPasswordMatch && // 비밀번호 일치 확인
+      formData.agreed; // 약관 동의 확인
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
@@ -80,7 +91,7 @@ const Signup = () => {
     }
 
     // 비밀번호 일치 확인
-    if (passwordCheck !== formData.password) {
+    if (!isPasswordMatch) {
       alert("비밀번호가 일치하지 않습니다.")
       return;
     }
@@ -102,7 +113,7 @@ const Signup = () => {
       console.log(response);
 
       if (response.status === 200) {
-        alert(response.data.message); // "회원가입이 완료되었습니다."
+        alert(response.data.message + '\n로그인 후 마이페이지에서 관심 직무를 설정해주세요.'); // "회원가입이 완료되었습니다."
         navigate('/login');    // 가입 완료 후 로그인 페이지로 이동
       }
     } catch (error) {
@@ -127,7 +138,7 @@ const Signup = () => {
       alert(response.data.message);
     } catch (error) {
       setIsSent(false);
-      alert(error.response?.data || '일시적인 오류입니다. 다시 시도해주세요.');
+      alert(error.message || '일시적인 오류입니다. 다시 시도해주세요.');
     }
   };
 
@@ -218,16 +229,14 @@ const Signup = () => {
                   <Form.Label className="col-sm-3 col-form-label small fw-semibold">인증 코드 입력</Form.Label>
                   <div className="col-sm-9">
 
-                    <InputGroup
-                    >
+                    <InputGroup>
                       <Form.Control
                           disabled={!isSent}
                           type="text"
                           onChange={(e) => setCode(e.target.value)} />
-                      <Button disabled={!isSent} onClick={handleVerifyCode} > 확인
-                      </Button>
+                      <Button disabled={!isSent} onClick={handleVerifyCode} >확인</Button>
                     </InputGroup>
-                    <small>남은 시간: {formatTime(timer)}</small>
+                    {isSent && !verified && <p>남은 시간: {formatTime(timer)}</p>}
                   </div>
                 </Form.Group>
 
@@ -278,35 +287,6 @@ const Signup = () => {
                   </div>
                 </Form.Group>
 
-                {/*<div className="text-center my-4 position-relative">*/}
-                {/*    <hr />*/}
-                {/*    <span className="position-absolute top-50 start-50 translate-middle bg-light px-2 text-muted small">커리어 선호도</span>*/}
-                {/*</div>*/}
-
-                <Form.Group className="row mb-2">
-                  <Form.Label className="col-sm-3 col-form-label small fw-semibold">관심직무</Form.Label>
-                  <div className="col-sm-9">
-                    <Form.Select className="text-muted">
-                      <option>직무를 선택하세요.</option>
-                    </Form.Select>
-                  </div>
-                </Form.Group>
-
-                {/*<div className="mb-4">*/}
-                {/*    <Form.Label className="small fw-semibold">희망 산업군</Form.Label>*/}
-                {/*    <div className="d-flex gap-2">*/}
-                {/*        {['IT/기술', '금융', '헬스케어', '교육'].map((item) => (*/}
-                {/*            <Button key={item} variant="outline-secondary" size="sm" className="rounded-pill px-3">*/}
-                {/*                {item}*/}
-                {/*            </Button>*/}
-                {/*        ))}*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-
-                {/*<Form.Group className="mb-4" controlId="terms">*/}
-                {/*    <Form.Check onChange={handleChange} name="agreed" required type="checkbox" label={<span className="small"><span className="text-primary text-decoration-underline">이용약관</span> 및 <span className="text-primary text-decoration-underline">개인정보 처리방침</span>에 동의합니다.</span>} />*/}
-                {/*</Form.Group>*/}
-
                 <Form.Check className="mb-4 small">
                   <Form.Check.Input
                       type="checkbox"
@@ -317,28 +297,15 @@ const Signup = () => {
                   <Form.Check.Label>이용약관 및 개인정보 처리방침에 동의합니다.</Form.Check.Label>
                 </Form.Check>
 
-                <Button variant="primary" className="w-100 py-2 mb-4 fw-bold" style={{ backgroundColor: '#1976D2' }} type="submit">
+                <Button
+                    disabled={!isFormValid}
+                    variant="primary"
+                    className="w-100 py-2 mb-4 fw-bold"
+                    style={{ backgroundColor: '#1976D2' }}
+                    type="submit">
                   회원가입 완료
                 </Button>
               </Form>
-
-              {/*<div className="text-center mb-4 position-relative">*/}
-              {/*    <hr />*/}
-              {/*    <span className="position-absolute top-50 start-50 translate-middle bg-light px-2 text-muted small">또는 소셜 계정으로 시작</span>*/}
-              {/*</div>*/}
-
-              {/*<Row className="g-2">*/}
-              {/*    <Col>*/}
-              {/*        <Button variant="outline-secondary" className="w-100 d-flex align-items-center justify-content-center gap-2">*/}
-              {/*            <Google /> Google*/}
-              {/*        </Button>*/}
-              {/*    </Col>*/}
-              {/*    <Col>*/}
-              {/*        <Button variant="outline-secondary" className="w-100 d-flex align-items-center justify-content-center gap-2">*/}
-              {/*            <Linkedin className="text-info" /> LinkedIn*/}
-              {/*        </Button>*/}
-              {/*    </Col>*/}
-              {/*</Row>*/}
 
               <div className="text-center mt-4 small">
                 이미 계정이 있으신가요? <Link to="/login" className="text-primary fw-bold text-decoration-none">로그인</Link>
