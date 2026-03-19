@@ -34,7 +34,8 @@ import QuestionBookmark from "./pages/mypage/QuestionsBookmark.jsx";
 import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
 import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
-import ResumePage from "./pages/resume/ResumePage.jsx"; 
+import ResumePage from "./pages/resume/ResumePage.jsx";
+import LogDashboard from "./pages/log/LogDashboard.jsx";
 
 function App() {
     const location = useLocation();
@@ -47,6 +48,7 @@ function App() {
 
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/log" element={<LogDashboard />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/correction" element={<Correction />} />

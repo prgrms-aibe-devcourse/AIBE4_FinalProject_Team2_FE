@@ -59,6 +59,7 @@ function Navigation() {
                     {/* 중앙 메뉴 영역 */}
                     {isLoggedIn && (
                         <Nav className="mx-auto gap-4">
+                            <Nav.Link as={Link} to="/log" className="text-dark fw-medium">로그</Nav.Link>
                             <Nav.Link as={Link} to="/correction" className="text-dark fw-medium">자소서 첨삭</Nav.Link>
                             <Nav.Link as={Link} to="/interview" className="text-dark fw-medium">AI 모의면접</Nav.Link>
                             {/*<Nav.Link as={Link} to="#" className="text-dark fw-medium">채용공고</Nav.Link>*/}
