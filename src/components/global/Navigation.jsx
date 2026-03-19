@@ -62,7 +62,7 @@ function Navigation() {
                             <Nav.Link as={Link} to="/job-posting" className="fs-5 text-dark fw-medium">면접 코칭</Nav.Link>
                             <Nav.Link as={Link} to="/correction" className="fs-5 text-dark fw-medium">자소서 첨삭</Nav.Link>
                             <Nav.Link as={Link} to="/interview" className="fs-5 text-dark fw-medium">AI 모의면접</Nav.Link>
-                            <Nav.Link as={Link} to="/mypage" className="fs-5 text-dark fw-medium">마이 페이지</Nav.Link>
+                            <Nav.Link as={Link} to="/mypage/dashboard" className="fs-5 text-dark fw-medium">마이페이지</Nav.Link>
                             {isAdmin && (
                                 <Nav.Link as={Link} to="/admin/dashboard">관리자</Nav.Link>
                             )}
