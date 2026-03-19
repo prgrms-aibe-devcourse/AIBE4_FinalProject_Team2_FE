@@ -58,16 +58,16 @@ function Navigation() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     {/* 중앙 메뉴 영역 */}
                     {isLoggedIn && (
-                        <Nav className="mx-auto gap-4">
-                            <Nav.Link as={Link} to="/correction" className="text-dark fw-medium">자소서 첨삭</Nav.Link>
-                            <Nav.Link as={Link} to="/interview" className="text-dark fw-medium">AI 모의면접</Nav.Link>
-                            {/*<Nav.Link as={Link} to="#" className="text-dark fw-medium">채용공고</Nav.Link>*/}
-                            <Nav.Link as={Link} to="/mypage" className="text-dark fw-medium">마이페이지</Nav.Link>
+                        <Nav className="mx-auto gap-lg-5">
+                            <Nav.Link as={Link} to="/job-posting" className="fs-5 text-dark fw-medium">면접 코칭</Nav.Link>
+                            <Nav.Link as={Link} to="/correction" className="fs-5 text-dark fw-medium">자소서 첨삭</Nav.Link>
+                            <Nav.Link as={Link} to="/interview" className="fs-5 text-dark fw-medium">AI 모의면접</Nav.Link>
+                            <Nav.Link as={Link} to="/mypage" className="fs-5 text-dark fw-medium">마이 페이지</Nav.Link>
                             {isAdmin && (
                                 <Nav.Link as={Link} to="/admin/dashboard">관리자</Nav.Link>
                             )}
                         </Nav>
-                        )}
+                         )}
                 </Navbar.Collapse>
 
                     {/* 우측 아이콘 영역 */}
