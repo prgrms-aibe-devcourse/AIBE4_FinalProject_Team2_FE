@@ -15,31 +15,11 @@ import LogoStrip3 from "../assets/logos/logo3.png";
 const Home = () => {
     const navigate = useNavigate();
 
-    // 샘플 로고 데이터 (이미지 9의 기업 리스트 반영)
-    const logos = [
-        { name: 'LogoStrip1', url: LogoStrip1 },
-        { name: 'LogoStrip2', url: LogoStrip2 },
-        { name: 'LogoStrip3', url: LogoStrip3 },
-    ];
-
-    // 무한 루프를 위해 배열을 복제
-    const duplicatedLogos = [...logos, ...logos, ...logos, ...logos, ]; 
-
-    // 인라인 키프레임 애니메이션 정의
-    const marqueeKeyframes = `
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-  `;
-
-    const stPrimary = '#1976D2'; // SyncTalk 브랜드 블루
-
     return (
         <div className="bg-white min-vh-100 font-korean">
 
             {/* 2. Hero Section */}
-            <section className="py-5 py-lg-10 text-center bg-gradient-light" style={{ background: 'linear-gradient(to bottom, #f8faff, #ffffff)' }}>
+            <section className="py-5 py-lg-10 text-center bg-light">
                 <Container>
                     <h1 className="display-4 fw-bold" style={{ letterSpacing: '-0.02em' }}>
                         AI와 함께하는 취업 준비 플랫폼 
