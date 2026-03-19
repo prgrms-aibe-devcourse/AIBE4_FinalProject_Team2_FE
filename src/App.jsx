@@ -34,7 +34,12 @@ import QuestionBookmark from "./pages/mypage/QuestionsBookmark.jsx";
 import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
 import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
-import ResumePage from "./pages/resume/ResumePage.jsx"; 
+import ResumePage from "./pages/resume/ResumePage.jsx";
+
+import SetupPage from "./pages/interview/SetupPage.jsx";
+import TextInterview from "./pages/interview/TextInterview.jsx";
+import VoiceInterview from "./pages/interview/VoiceInterview.jsx";
+import ReportPage from "./pages/interview/ReportPage.jsx";
 
 function App() {
     const location = useLocation();
@@ -179,6 +184,12 @@ function App() {
                 <Route path="/mypage/resumes/:id" element={<MyResumeDetail />} />
                 <Route path="/mypage/resume/edit/:id" element={<ResumeEdit />} />
                 <Route path="/mypage/interviews/:id" element={<MyInterviewDetail />} />
+
+                {/*면접*/}
+                <Route path="/interview/setup" element={<SetupPage />} />
+                <Route path="/interview/text/:sessionId" element={<TextInterview />} />
+                <Route path="/interview/voice/:sessionId" element={<VoiceInterview />} />
+                <Route path="/interview/report/:sessionId" element={<ReportPage />} />
             </Routes>
 
             {!isAdminOrOpsRoute && <Footer />}
