@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../api/axios'; // 프로젝트에 설정된 axios 인스턴스 경로에 맞게 수정해주세요.
+import axios from '../../api/axios'; 
 import './ResumeOptionCard.css';
 
 const ResumeOptionCard = ({ type, title, description, placeholder, buttonText, note }) => {
