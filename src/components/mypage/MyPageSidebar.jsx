@@ -49,7 +49,7 @@ const MyPageSidebar = () => {
 
     return (
         <aside className="sidebar">
-            <Link to="/main" className="logo-link" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link to="/" className="logo-link" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="sidebar-logo">
                     <img
                         src={String(syncTalkLogo)}
