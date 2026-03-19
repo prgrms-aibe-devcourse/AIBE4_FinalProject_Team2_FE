@@ -27,7 +27,7 @@ const Home = () => {
     ];
 
     // 무한 루프를 위해 배열을 복제
-    const duplicatedLogos = [...logos, ...logos];
+    const duplicatedLogos = [...logos, ...logos, ...logos, ...logos, ]; 
 
     // 인라인 키프레임 애니메이션 정의
     const marqueeKeyframes = `
@@ -49,7 +49,7 @@ const Home = () => {
                         AI와 함께하는 취업 준비 <span style={{ color: stPrimary }}>SyncTalk</span>
                     </h1>
                     <img src={SyncTalkLogo} alt="Logo" style={{ width: '20rem', height: '10rem', objectFit: 'cover' }} className="my-4"/>
-                    <h3 className="mx-auto mb-15" style={{ maxWidth: '600px', lineHeight: '2.0' }}>
+                    <h3 className="fw-bold mb-3 mx-auto" style={{ maxWidth: '600px', lineHeight: '2.0' }}>
                         AI와 함께하는 취업 준비를 경험해보세요
                     </h3>
 
@@ -64,7 +64,7 @@ const Home = () => {
                             <div className="bg-white shadow-sm rounded-4 p-4 mb-3 border border-light transition-hover">
                                 <img src={Interview} alt="Interview" style={{ width: '12rem', height: '12rem', objectFit: 'contain' }} />
                             </div>
-                            <h3 className="fw-bold text-dark mt-2">AI 모의 면접 시작</h3>
+                            <h3 className="fw-bold text-dark mt-2">AI 모의 면접</h3>
                         </div>
 
                         {/* 2. AI 자기소개서 분석 */}
@@ -108,14 +108,14 @@ const Home = () => {
                 </Container>
             </section>
 
-            {/* 3. Logo Cloud */}
+           {/* 3. Logo Cloud */}
             <div className="py-5" style={{ backgroundColor: 'var(--st-bg-light)', overflow: 'hidden' }}>
                 <style>{marqueeKeyframes}</style>
 
-                <div className="container mb-4 text-center">
-                    <p className="text-secondary small fw-bold" style={{ letterSpacing: '2px' }}>
+                <div className="container text-center" style={{ marginBottom: '3.5rem' }}>
+                    <h3 className="large-text fw-bold" style={{ letterSpacing: '2px' }}>
                         합격자 배출 기업
-                    </p>
+                    </h3>
                 </div>
 
                 <div className="d-flex position-relative w-100" style={{ overflow: 'hidden' }}>
@@ -125,7 +125,8 @@ const Home = () => {
                         style={{
                             animation: 'marquee 30s linear infinite',
                             whiteSpace: 'nowrap',
-                            display: 'flex'
+                            display: 'flex',
+                            width: 'max-content',
                         }}
                     >
                         {duplicatedLogos.map((logo, index) => (
@@ -139,7 +140,7 @@ const Home = () => {
                                     alt={logo.name}
                                     style={{
                                         height: '2rem',
-                                        filter: 'grayscale(100%) brightness(150%)', // 로고 톤 통일
+                                        filter: 'grayscale(100%) brightness(150%)', 
                                         opacity: 0.7,
                                         transition: 'all 0.3s ease'
                                     }}
@@ -162,24 +163,46 @@ const Home = () => {
             <section className="py-5 py-lg-10">
                 <Container>
                     <div className="text-center mb-5">
-                        <h2 className="fw-bold mb-3">취업 성공을 위한 모든 것</h2>
-                        <p className="text-muted mx-auto" style={{ maxWidth: '560px' }}>
-                            인사 담당자가 원하는 것이 무엇인지 고민하지 마세요. 서류부터 면접까지 AI가 완벽하게 가이드해 드립니다.
+                        <h2 className="fw-bold mb-3">취업 성공을 위한 발걸음</h2>
+                        
+                        
+                        <p 
+                            className="text-muted mx-auto" 
+                            style={{ 
+                                maxWidth: '750px', 
+                                fontSize: '1.1rem', 
+                                wordBreak: 'keep-all', 
+                                lineHeight: '1.3'
+                            }}
+                        >
+                            인사 담당자가 원하는 핵심 면접까지 AI가 완벽한 가이드라인을 제시합니다.
                         </p>
                     </div>
                     <Row className="g-4">
                         {[
-                            { icon: FileEarmarkTextFill, title: 'AI 자소서 첨삭', text: '작성한 초안을 업로드하면 직무에 맞춘 즉각적인 피드백을 제공합니다.' },
-                            { icon: MicFill, title: '실시간 AI 모의 면접', text: '실제 직무 설명서를 기반으로 질문하는 AI 면접관과 연습하세요.' },
-                            { icon: BarChartLineFill, title: '맞춤형 상세 피드백', text: '답변 내용, 목소리 톤, 말하기 속도에 대한 상세 분석을 받아보세요.' }
+                            { 
+                                icon: FileEarmarkTextFill,
+                                title: 'AI 모의 면접',
+                                text: '초안을 업로드하면 직무에 맞춘 즉각적인 피드백을 제공합니다.' },
+                            {
+                                icon: MicFill,
+                                title: 'AI 자기소개서 분석',
+                                text: '실제 채용 공고를 기반으로 한 맞춤형 질문으로 실전 감각을 극대화 하세요.' },
+                            {
+                                icon: BarChartLineFill,
+                                title: '면접 코칭 컨설턴트',
+                                text: '답변의 논리성부터 목소리 톤까지, 합격을 위한 디테일한 분석 리포트를 받아보세요.' }
                         ].map((f, i) => (
                             <Col md={4} key={i}>
                                 <Card className="h-100 border-0 shadow-sm rounded-4 p-4 hover-up transition">
                                     <div className="bg-primary bg-opacity-10 p-3 rounded-3 mb-4 w-fit" style={{ width: 'fit-content' }}>
                                         <f.icon className="text-primary" size={24} />
                                     </div>
-                                    <h5 className="fw-bold mb-3">{f.title}</h5>
-                                    <p className="text-muted small m-0" style={{ lineHeight: '1.7' }}>{f.text}</p>
+
+                                    <h5 className="fw-bold mb-3" style={{ fontSize: '1.25rem' , letterSpacing: '-0.01em'}}>
+                                        {f.title}
+                                    </h5>
+                                    <p className="text-muted small m-0" style={{ fontSize: '0.95rem', lineHeight: '1.6', wordBreak:'keep-all' }}>{f.text}</p>
                                 </Card>
                             </Col>
                         ))}
@@ -192,23 +215,45 @@ const Home = () => {
                 <Container>
                     <div className="text-center mb-5">
                         <h2 className="fw-bold mb-3">이용 방법</h2>
-                        <p className="text-muted small">꿈의 직장에 합격하기 위한 3단계</p>
+                        <p className="text-muted mx-auto" style={{ fontSize: '1.1rem' }}>
+                            꿈의 직장에 합격하기 위한 <span className="text-primary fw-bold">3단계</span>
+                        </p>
                     </div>
                     <Row className="justify-content-center">
                         <Col lg={8}>
                             <div className="d-flex flex-column gap-5">
                                 {[
-                                    { icon: Search, title: '채용 공고 찾기', text: '지원하고자 하는 채용 공고의 URL을 입력하세요. AI가 핵심 요구사항을 분석합니다.' },
-                                    { icon: PencilSquare, title: '이력서 업로드', text: '현재 이력서를 등록하여 AI가 지원자의 배경을 이해할 수 있도록 도와주세요.' },
-                                    { icon: RocketTakeoffFill, title: '준비 완료', text: '즉시 자소서 첨삭을 받고 실전 모의 면접을 시작하세요.' }
+                                    { 
+                                        icon: Search, 
+                                        title: '1. 채용 공고 분석', 
+                                        text: '목표하는 기업의 채용 공고 URL만 입력하세요. AI가 직무의 핵심 요구사항과 키워드를 즉시 파악합니다.' 
+                                    },
+                                    { 
+                                        icon: PencilSquare, 
+                                        title: '2. 이력서 및 자소서 등록', 
+                                        text: '기존에 작성해둔 이력서나 자소서를 업로드해 주세요. AI가 지원자님의 역량과 강점을 깊이 있게 이해하고 맞춤형 전략을 세웁니다.' 
+                                    },
+                                    { 
+                                        icon: RocketTakeoffFill, 
+                                        title: '3. 맞춤형 실전 대비', 
+                                        text: '모든 준비가 끝났습니다! 정교한 자소서 첨삭과 실전 같은 AI 모의 면접을 바로 시작해 보세요.' 
+                                    }
                                 ].map((step, i) => (
-                                    <div key={i} className="d-flex gap-4">
-                                        <div className="bg-white border rounded-circle d-flex align-items-center justify-content-center shadow-sm" style={{ width: '48px', height: '48px', flexShrink: 0 }}>
-                                            <step.icon className="text-primary" size={20} />
+                                    <div key={i} className="d-flex align-items-start gap-4 hover-up transition p-3 rounded-4" style={{ cursor: 'default' }}>
+                                        {/* 아이콘 컨테이너 크기를 56px로 살짝 키우고 아이콘 사이즈도 24로 늘려 안정감을 주었습니다. */}
+                                        <div 
+                                            className="bg-white border border-light rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
+                                            style={{ width: '56px', height: '56px', flexShrink: 0, marginTop: '2px' }}
+                                        >
+                                            <step.icon className="text-primary" size={24} />
                                         </div>
                                         <div>
-                                            <h6 className="fw-bold mb-2">{step.title}</h6>
-                                            <p className="text-muted small m-0">{step.text}</p>
+                                            <h5 className="fw-bold mb-2" style={{ fontSize: '1.2rem', letterSpacing: '-0.01em' }}>
+                                                {step.title}
+                                            </h5>
+                                            <p className="text-muted m-0" style={{ fontSize: '0.95rem', lineHeight: '1.6', wordBreak: 'keep-all' }}>
+                                                {step.text}
+                                            </p>
                                         </div>
                                     </div>
                                 ))}
