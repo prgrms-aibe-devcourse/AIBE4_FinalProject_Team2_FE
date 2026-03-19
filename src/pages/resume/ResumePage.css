@@ -1,0 +1,46 @@
+/* src/pages/resume/ResumePage.css */
+
+.resume-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #F9FAFB; /* 밝은 오프화이트 배경 */
+  min-height: 100vh;
+}
+
+.resume-page-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 50px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #E1E4E8;
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid #E1E4E8;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666666;
+}
+
+.resume-page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  color: #1A1A1A;
+}
+
+.resume-page-main {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+}

@@ -46,13 +46,12 @@ const Home = () => {
             <section className="py-5 py-lg-10 text-center bg-gradient-light" style={{ background: 'linear-gradient(to bottom, #f8faff, #ffffff)' }}>
                 <Container>
                     <h1 className="display-4 fw-bold" style={{ letterSpacing: '-0.02em' }}>
-                        AI와 함께하는 맞춤형<br />
-                        취업 솔루션
+                        AI와 함께하는 취업 준비 <span style={{ color: stPrimary }}>SyncTalk</span>
                     </h1>
                     <img src={SyncTalkLogo} alt="Logo" style={{ width: '20rem', height: '10rem', objectFit: 'cover' }} className="my-4"/>
-                    <p className="mx-auto mb-5" style={{ maxWidth: '600px', lineHeight: '1.8' }}>
-                        채용 공고에 맞춘 맞춤형 자기소개서 첨삭과 실전 같은 AI 모의 면접을 즉시 경험해보세요.
-                    </p>
+                    <h3 className="mx-auto mb-15" style={{ maxWidth: '600px', lineHeight: '2.0' }}>
+                        AI와 함께하는 취업 준비를 경험해보세요
+                    </h3>
 
                     {/* Feature Quick Links */}
                     <div className="d-flex justify-content-center gap-5 mt-5">
