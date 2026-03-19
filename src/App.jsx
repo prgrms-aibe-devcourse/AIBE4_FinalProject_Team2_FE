@@ -33,7 +33,8 @@ import MyInterviewDetail from "./pages/mypage/MyInterviewDetail.jsx";
 import QuestionBookmark from "./pages/mypage/QuestionsBookmark.jsx";
 import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
-import JobPostingPage from "./pages/jobposting/JobPostingPage";
+import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
+import ResumePage from "./pages/resume/ResumePage.jsx"; 
 
 function App() {
     const location = useLocation();
@@ -161,9 +162,11 @@ function App() {
                     }
                 />
 
-                {/* 마이페이지 */}
-                {/* AI 면접 코칭 받기 */}
+                {/* 면접 코칭 컨설턴트 */}
                 <Route path="/job-posting" element={<JobPostingPage />} />
+                {/* AI 자기소개서 분석*/}
+                <Route path="/resume" element={<ResumePage />} />
+
                 {/*마이페이지*/}
                 <Route path="/mypage" element={<MyPageLayout />}>
                     <Route path="dashboard" element={<DashBoard />} />
