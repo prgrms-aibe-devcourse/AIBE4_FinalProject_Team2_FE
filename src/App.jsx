@@ -3,7 +3,6 @@ import Navbar from './components/global/Navigation.jsx';
 import Footer from './components/global/Footer.jsx';
 import Home from './pages/Home.jsx';
 import LoginPage from "./pages/auth/LoginPage.jsx";
-import Correction from "./pages/Correction.jsx";
 import Signup from './pages/auth/Signup.jsx';
 import OAuthCallback from "./pages/auth/OAuthCallback.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
@@ -35,6 +34,7 @@ import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
 import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
 import ResumePage from "./pages/resume/ResumePage.jsx"; 
+import Correction from "./pages/resume/Correction.jsx";
 
 function App() {
     const location = useLocation();

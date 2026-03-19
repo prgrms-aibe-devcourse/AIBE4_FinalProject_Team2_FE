@@ -42,7 +42,7 @@ const Home = () => {
             <section className="py-5 py-lg-10 text-center bg-gradient-light" style={{ background: 'linear-gradient(to bottom, #f8faff, #ffffff)' }}>
                 <Container>
                     <h1 className="display-4 fw-bold" style={{ letterSpacing: '-0.02em' }}>
-                        AI와 함께하는 취업 준비 <span style={{ color: stPrimary }}>SyncTalk</span>
+                        AI와 함께하는 취업 준비 플랫폼 
                     </h1>
                     <img src={SyncTalkLogo} alt="Logo" style={{ width: '20rem', height: '10rem', objectFit: 'cover' }} className="my-4"/>
                     <h3 className="fw-bold mb-3 mx-auto" style={{ maxWidth: '600px', lineHeight: '2.0' }}>
@@ -202,8 +202,8 @@ const Home = () => {
                                     },
                                     { 
                                         icon: PencilSquare, 
-                                        title: '2. 이력서 및 자소서 등록', 
-                                        text: '기존에 작성해둔 이력서나 자소서를 업로드해 주세요. AI가 지원자님의 역량과 강점을 깊이 있게 이해하고 맞춤형 전략을 세웁니다.' 
+                                        title: '2. 자기소개서 및 자소서 등록', 
+                                        text: '기존에 작성해둔 자소서를 업로드해 주세요. AI가 지원자님의 역량과 강점을 깊이 있게 이해하고 맞춤형 전략을 세웁니다.' 
                                     },
                                     { 
                                         icon: RocketTakeoffFill, 
