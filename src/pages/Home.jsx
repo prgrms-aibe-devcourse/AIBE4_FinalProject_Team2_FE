@@ -19,7 +19,7 @@ const Home = () => {
         <div className="bg-white min-vh-100 font-korean">
 
             {/* 2. Hero Section */}
-            <section className="py-5 py-lg-10 text-center bg-light" style={{ background: 'linear-gradient(to bottom, #f8faff, #ffffff)' }}>
+            <section className="py-5 py-lg-10 text-center bg-light">
                 <Container>
                     <h1 className="display-4 fw-bold" style={{ letterSpacing: '-0.02em' }}>
                         AI와 함께하는 취업 준비 플랫폼 
