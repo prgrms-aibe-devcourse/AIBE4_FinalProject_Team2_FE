@@ -8,22 +8,18 @@ import CoverLetter from "../assets/buttons/cover_letter.png";
 import Interview from "../assets/buttons/interview.png";
 import Coaching from "../assets/buttons/coaching.png";
 
-import Samsung from "../assets/logos/samsung.jpg";
-import Naver from "../assets/logos/naver.png";
-import Coupang from "../assets/logos/coupang.png";
-import Kakao from "../assets/logos/kakao.png";
-import Baemin from "../assets/logos/beamin.png";
+import LogoStrip1 from "../assets/logos/logo1.png";
+import LogoStrip2 from "../assets/logos/logo2.png";
+import LogoStrip3 from "../assets/logos/logo3.png";
 
 const Home = () => {
     const navigate = useNavigate();
 
     // 샘플 로고 데이터 (이미지 9의 기업 리스트 반영)
     const logos = [
-        { name: 'Samsung', url: Samsung },
-        { name: 'Samsung', url: Naver },
-        { name: 'Samsung', url: Coupang },
-        { name: 'Samsung', url: Kakao },
-        { name: 'Samsung', url: Baemin },
+        { name: 'LogoStrip1', url: LogoStrip1 },
+        { name: 'LogoStrip2', url: LogoStrip2 },
+        { name: 'LogoStrip3', url: LogoStrip3 },
     ];
 
     // 무한 루프를 위해 배열을 복제
@@ -108,56 +104,32 @@ const Home = () => {
                 </Container>
             </section>
 
-           {/* 3. Logo Cloud */}
-            <div className="py-5" style={{ backgroundColor: 'var(--st-bg-light)', overflow: 'hidden' }}>
-                <style>{marqueeKeyframes}</style>
-
-                <div className="container text-center" style={{ marginBottom: '3.5rem' }}>
-                    <h3 className="large-text fw-bold" style={{ letterSpacing: '2px' }}>
-                        합격자 배출 기업
-                    </h3>
+           {/* 3. Logo Cloud (프로그래머스 스타일 무한 롤링 배너) */}
+            <section style={{ backgroundColor: '#0a0a0a', padding: '1.2rem', overflow: 'hidden' }}>
+                <style>{`
+                    @keyframes marqueeBanner {
+                        0% { transform: translateX(0); }
+                        100% { transform: translateX(-50%); }
+                    }
+                    .marquee-track {
+                        display: flex;
+                        width: max-content;
+                        animation: marqueeBanner 40s linear infinite; 
+                    }
+                    .marquee-img {
+                        height: 60px; 
+                        width: auto;
+                        flex-shrink: 0; 
+                        display: block;
+                    }
+                `}</style>
+                <div className="marquee-track">
+                    <img src={LogoStrip1} className="marquee-img" alt="합격자 배출 기업 파트너스" />
+                    <img src={LogoStrip2} className="marquee-img" alt="합격자 배출 기업 파트너스" />
+                    <img src={LogoStrip3} className="marquee-img" alt="합격자 배출 기업 파트너스" />
+                    
                 </div>
-
-                <div className="d-flex position-relative w-100" style={{ overflow: 'hidden' }}>
-                    {/* 애니메이션이 적용된 로고 컨테이너 */}
-                    <div
-                        className="d-flex align-items-center"
-                        style={{
-                            animation: 'marquee 30s linear infinite',
-                            whiteSpace: 'nowrap',
-                            display: 'flex',
-                            width: 'max-content',
-                        }}
-                    >
-                        {duplicatedLogos.map((logo, index) => (
-                            <div
-                                key={index}
-                                className="px-5 d-flex align-items-center justify-content-center"
-                                style={{ flex: '0 0 auto' }}
-                            >
-                                <img
-                                    src={logo.url}
-                                    alt={logo.name}
-                                    style={{
-                                        height: '2rem',
-                                        filter: 'grayscale(100%) brightness(150%)', 
-                                        opacity: 0.7,
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                    onMouseOver={(e) => {
-                                        e.currentTarget.style.filter = 'grayscale(0%) brightness(100%)';
-                                        e.currentTarget.style.opacity = 1;
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.style.filter = 'grayscale(100%) brightness(150%)';
-                                        e.currentTarget.style.opacity = 0.7;
-                                    }}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            </section>
 
             {/* 4. Features Section */}
             <section className="py-5 py-lg-10">
@@ -236,11 +208,10 @@ const Home = () => {
                                     { 
                                         icon: RocketTakeoffFill, 
                                         title: '3. 맞춤형 실전 대비', 
-                                        text: '모든 준비가 끝났습니다! 정교한 자소서 첨삭과 실전 같은 AI 모의 면접을 바로 시작해 보세요.' 
+                                        text: '정교한 자소서 첨삭과 실전 같은 AI 모의 면접을 바로 시작해 보세요.' 
                                     }
                                 ].map((step, i) => (
                                     <div key={i} className="d-flex align-items-start gap-4 hover-up transition p-3 rounded-4" style={{ cursor: 'default' }}>
-                                        {/* 아이콘 컨테이너 크기를 56px로 살짝 키우고 아이콘 사이즈도 24로 늘려 안정감을 주었습니다. */}
                                         <div 
                                             className="bg-white border border-light rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
                                             style={{ width: '56px', height: '56px', flexShrink: 0, marginTop: '2px' }}
