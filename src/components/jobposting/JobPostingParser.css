@@ -80,3 +80,58 @@
 .job-parser-question-list li {
   margin-bottom: 5px;
 }
+
+.job-parser-bullet-list {
+  list-style-type: disc; 
+  margin: 5px 0 0 0;
+}
+
+.job-parser-bullet-list li {
+  margin-bottom: 4px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.job-parser-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #F1F3F5;
+}
+
+.job-parser-company-badge {
+  align-self: flex-start;
+  background-color: #E9ECEF;
+  color: #495057;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.job-parser-job-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+/* 요구 스택 태그 스타일 */
+.job-parser-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.job-parser-tag {
+  background-color: #FFF0F0;
+  color: #FF6B6B;
+  border: 1px solid #FFC9C9;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}

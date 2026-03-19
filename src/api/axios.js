@@ -14,7 +14,7 @@ const FRONT_BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 // 1. axios 인스턴스 생성
 const api = axios.create({
     baseURL: 'http://localhost:8081/api/v1', // 백엔드 서버 주소
-    timeout: 5000,
+    timeout: 30000,
     withCredentials: true,           // 쿠키(RefreshToken) 공유를 위해 필수
     headers: {
         'Content-Type': 'application/json',
