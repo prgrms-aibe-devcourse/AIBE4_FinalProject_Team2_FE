@@ -29,3 +29,12 @@ export const getAdminMemberUsageSummary = (memberId) =>
 
 export const getAdminServiceUsageSummary = () =>
     api.get("/admin/usage/service-summary");
+
+export const retryAdminOperation = (body) =>
+    api.post("/admin/operations/retry", body);
+
+export const cancelAdminOperation = (body) =>
+    api.post("/admin/operations/cancel", body);
+
+export const getAdminOperationTargetDetail = (params) =>
+    api.get("/admin/operations/target", { params });

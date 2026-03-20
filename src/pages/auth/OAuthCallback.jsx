@@ -18,15 +18,23 @@ const OAuthCallback = () => {
                  * 이 요청에서만 헤더를 명시적으로 비우거나 초기화합니다.
                  */
                 const response = await api.get('/auth/me', {
+                    withCredentials: true,
                     headers: {
-                        Authorization: null // 기존 헤더 무시
+                        Authorization: null
                     }
                 });
 
-                const { accessToken, nickname } = response.data;
+                console.log("auth/me response:", response.data);
+
+                const payload = response.data.data ?? response.data;
+                const { accessToken, nickname, role, email } = payload;
 
                 if (accessToken) {
                     localStorage.setItem('accessToken', accessToken);
+                    if (role) localStorage.setItem('role', role);
+                    if (email) localStorage.setItem('email', email);
+                    if (nickname) localStorage.setItem('nickname', nickname);
+
                     setAuthToken(accessToken);
 
                     alert(`${nickname || '사용자'}님, 환영합니다!`);

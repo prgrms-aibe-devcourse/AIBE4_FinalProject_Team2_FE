@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Link} from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom'; // 💡 useNavigate 추가
 import api from '../../api/axios';
 import './MyPageSidebar.css';
 import syncTalkLogo from '../../assets/SyncTalk_Logo.png';
 import defaultImage from '../../assets/defaultImage.png'
+import NotificationDropdown from "../../pages/NotificationDropdown.jsx";
 
 const MyPageSidebar = () => {
+    const navigate = useNavigate(); // 💡 페이지 이동을 위한 훅(Hook)
     const [user, setUser] = useState({
         nickname: "",
         profileImageUrl: defaultImage
@@ -33,14 +35,26 @@ const MyPageSidebar = () => {
         void fetchUserInfo();
     }, []);
 
+    // 💡 로그아웃 처리 함수 (새로 추가됨)
+    const handleLogout = () => {
+        // 1. 로컬 스토리지에서 토큰 삭제 (프로젝트 설정에 따라 다를 수 있음)
+        localStorage.removeItem('accessToken');
+
+        // 2. 알림창 띄우기 (선택 사항)
+        alert('로그아웃 되었습니다.');
+
+        // 3. 로그인 페이지 또는 메인 페이지로 리다이렉트(Redirect)
+        navigate('/login');
+    };
+
     return (
         <aside className="sidebar">
             <Link to="/" className="logo-link" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="sidebar-logo">
                     <img
-                        src={syncTalkLogo}
+                        src={String(syncTalkLogo)}
                         alt="SyncTalk 로고"
-                        className="logo-image" /* 💡 클래스명 변경! */
+                        className="logo-image"
                     />
                 </div>
             </Link>
@@ -73,10 +87,30 @@ const MyPageSidebar = () => {
                 </li>
             </ul>
 
-            <div className="sidebar-user">
-                <img src={user.profileImageUrl} alt="User ProfileEdit" />
-                <div>
-                    <strong>{user.nickname || "로딩중..."}</strong>
+            <div className="sidebar-user d-flex justify-content-between align-items-center w-100">
+                <div className="d-flex align-items-center gap-2 overflow-hidden">
+                    <img src={String(user.profileImageUrl)} alt="User ProfileEdit" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                    <div className="text-truncate" style={{ maxWidth: '80px' }}>
+                        <strong>{user.nickname || "로딩중..."}</strong>
+                    </div>
+                </div>
+
+                <div className="d-flex align-items-center gap-1" style={{ flexShrink: 0 }}>
+                    <NotificationDropdown direction="up" iconColor="#6c757d" />
+
+                    {/* 💡 수정된 로그아웃 버튼 */}
+                    <button
+                        // text-muted 클래스를 빼고, 우리가 만든 logout-btn 클래스를 넣었습니다.
+                        className="btn btn-link p-1 logout-btn d-flex align-items-center justify-content-center border-0"
+                        title="로그아웃"
+                        onClick={handleLogout} // 💡 위에서 만든 실제 함수 연결
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </aside>

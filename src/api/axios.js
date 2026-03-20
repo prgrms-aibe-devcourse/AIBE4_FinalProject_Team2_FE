@@ -9,11 +9,12 @@ const getCookie = (name) => {
     }
     return null;
 };
+const FRONT_BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // 1. axios 인스턴스 생성
 const api = axios.create({
-    baseURL: 'http://localhost:8081/api/v1', // 백엔드 서버 주소
-    timeout: 5000,
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/v1`, // 백엔드 서버 주소
+    timeout: 30000,
     withCredentials: true,           // 쿠키(RefreshToken) 공유를 위해 필수
     headers: {
         'Content-Type': 'application/json',
@@ -50,8 +51,18 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        if (!originalRequest) {
+            return Promise.reject(error);
+        }
+
         // ⭐ 로그인이나 유저 정보 확인 요청에서 401이 나면 재발급 시도 안 함
         if (originalRequest.url.includes('/auth/login') || originalRequest.url.includes('/auth/me')) {
+            return Promise.reject(error);
+        }
+
+        // 403은 재발급 대상 아님 (권한 문제)
+        if (error.response?.status === 403) {
+            console.error('권한이 없습니다.');
             return Promise.reject(error);
         }
 
@@ -60,31 +71,44 @@ api.interceptors.response.use(
             originalRequest._retry = true; // 무한 루프 방지용 플래그
 
             try {
-                const refreshToken = getCookie('refreshToken');
+                const refreshToken =
+                    getCookie('refreshToken') || localStorage.getItem('refreshToken');
 
                 // 백엔드 /reissue 엔드포인트 호출
                 // 주의: 인스턴스(api) 대신 기본 axios를 사용하여 헤더 꼬임을 방지합니다.
-                const res = await axios.post('http://localhost:8081/reissue',
+                const res = await axios.post(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/reissue`,
                     { refreshToken },
                     { withCredentials: true }
                 );
+                console.log(res);
 
-                if (res.status === 200) {
-                    const newAccessToken = res.data.accessToken;
+                const payload = res.data.data ?? res.data;
+                const newAccessToken = payload.accessToken;
+                const newRefreshToken = payload.refreshToken;
+
+                if (res.status === 200 && newAccessToken) {
 
                     // 새로운 토큰 저장 및 헤더 갱신
                     localStorage.setItem('accessToken', newAccessToken);
                     setAuthToken(newAccessToken);
+
+                    if (newRefreshToken) {
+                        localStorage.setItem('refreshToken', newRefreshToken);
+                    }
 
                     // 실패했던 원래 요청의 헤더를 새 토큰으로 교체 후 재요청
                     originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return api(originalRequest);
                 }
             } catch (reissueError) {
-                // Refresh Token도 만료되었거나 오류가 나면 로그아웃 처리
-                console.error('세션이 만료되었습니다. 다시 로그인해주세요.');
                 localStorage.removeItem('accessToken');
-                window.location.href = '/login';
+                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('role');
+                localStorage.removeItem('email');
+                localStorage.removeItem('nickname');
+
+                window.location.href = `${FRONT_BASE}/login`;
                 return Promise.reject(reissueError);
             }
         }

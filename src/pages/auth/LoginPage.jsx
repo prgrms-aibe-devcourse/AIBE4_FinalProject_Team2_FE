@@ -5,13 +5,20 @@ import { FaGithub } from "react-icons/fa"; // 깃허브 아이콘
 import React, { useState } from 'react';
 import {Container, Row, Col, Form, Button, InputGroup} from 'react-bootstrap';
 import { EyeSlash, Envelope, Lock } from 'react-bootstrap-icons';
+import { FaLock, FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import api from '../../api/axios.js';
+import api, { setAuthToken } from '../../api/axios.js';
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const [loginData, setLoginData] = useState({ email: '', password: '' });
+    const [showPassword, setShowPassword] = useState(false);
+
+    // 아이콘 클릭 시 상태를 토글하는 함수
+    const togglePasswordVisibility = () => {
+        setShowPassword(prevState => !prevState);
+    };
 
     const handleChange = (e) => {
         setLoginData({ ...loginData, [e.target.name]: e.target.value });
@@ -21,18 +28,25 @@ const LoginPage = () => {
         e.preventDefault();
         try {
             const response = await api.post('/auth/login', loginData);
+            console.log("login response:", response.data);
 
-            localStorage.setItem('accessToken', response.data.accessToken);
-            localStorage.setItem('refreshToken', response.data.refreshToken);
-            localStorage.setItem('role', response.data.role);
-            localStorage.setItem('email', response.data.email);
-            localStorage.setItem('nickname', response.data.nickname);
+            const payload = response.data.data ?? response.data;
+
+            localStorage.setItem('accessToken', payload.accessToken ?? "");
+            localStorage.setItem('refreshToken', payload.refreshToken ?? "");
+            localStorage.setItem('role', payload.role ?? "");
+            localStorage.setItem('email', payload.email ?? "");
+            localStorage.setItem('nickname', payload.nickname ?? "");
+
+            if (payload.accessToken) {
+                setAuthToken(payload.accessToken);
+            }
 
             alert("로그인 성공!");
             navigate('/');
         } catch (error) {
             console.error(error);
-            alert(error.message);
+            alert(error.response?.data?.message || error.message);
         }
     };
 
@@ -92,9 +106,20 @@ const LoginPage = () => {
                                     <InputGroup.Text className="bg-white border-0">
                                         <Lock className="text-muted" size={18} />
                                     </InputGroup.Text>
-                                    <Form.Control name="password" type="password" placeholder="비밀번호를 입력하세요" className="border-0 border-end-0" onChange={handleChange} />
+                                    <Form.Control name="password"
+                                                  type={showPassword ? 'text' : 'password'}
+                                                  placeholder="비밀번호를 입력하세요" className="border-0 border-end-0" onChange={handleChange} />
                                     <InputGroup.Text className="bg-white border-0">
-                                        <EyeSlash className="text-muted" size={18} />
+                                        <button
+                                            type="button"
+                                            style={{background: 'none', border: 'none', height: '100%'}}
+                                            onClick={togglePasswordVisibility}
+                                            aria-label={showPassword ? '비밀번호 가리기' : '비밀번호 보이기'} // 접근성 고려
+                                        >
+                                            {/* 상태(showPassword)에 따라 다른 아이콘 표시 */}
+                                            {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                                        </button>
+                                    {/*    <EyeSlash className="text-muted" size={18} />*/}
                                     </InputGroup.Text>
                                 </InputGroup>
                             </Form.Group>
@@ -115,47 +140,46 @@ const LoginPage = () => {
                             </Button>
                         </Form>
 
-                        {/* 구분선 (이미지 스타일 유지) */}
-                        <div className="text-center mb-4 position-relative">
-                            <hr className="text-border" />
-                            <span className="position-absolute top-50 start-50 translate-middle bg-light px-3 text-muted" style={{ fontSize: '0.75rem' }}>
-                  또는 소셜 계정으로 로그인
-                </span>
-                        </div>
+                        <div className="rounded-5 overflow-hidden" style={{ backgroundColor: '#f0f0f0' }}>
+                            {/* 1. 구분선 영역: Flex를 사용하여 양옆 선 구현 */}
+                            <div className="d-flex align-items-center px-4 pt-3">
+                                <div className="flex-grow-1" style={{ height: '1px', backgroundColor: '#ccc' }}></div>
+                                <span
+                                    className="px-3 text-muted fw-bold"
+                                    style={{ fontSize: '0.875rem', whiteSpace: 'nowrap' }}>
+                                    소셜 계정으로 로그인
+                                </span>
+                                <div className="flex-grow-1" style={{ height: '1px', backgroundColor: '#ccc' }}></div>
+                            </div>
 
-                        {/* 소셜 로그인 아이콘 버튼 영역 (가로 배치) */}
-                        <div className="d-flex justify-content-center gap-3 mb-4">
-                            {/* Google - 심플한 테두리 원형 */}
-                            <button className="btn btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center m-2"
-                                    style={{ width: '60px', height: '60px', backgroundColor: "white", border: "none" }}
-                                    title="Google 로그인"
-                                    type="button"
-                                    onClick={() => handleSocialLogin('google')}>
-                                <FcGoogle size={24} />
-                            </button>
+                            {/* 2. 소셜 로그인 아이콘 버튼 영역 */}
+                            <div className="d-flex justify-content-center gap-2 pb-4 pt-4">
+                                {/* Google */}
+                                <button className="mx-2 btn rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+                                        style={{ width: '60px', height: '60px', backgroundColor: "white", border: "none" }}
+                                        onClick={() => handleSocialLogin('google')}>
+                                    <FcGoogle size={30} />
+                                </button>
 
-                            {/* Kakao - 브랜드 컬러 원형 */}
-                            <button className="btn rounded-circle p-0 d-flex align-items-center justify-content-center m-2"
-                                    style={{ width: '60px', height: '60px', backgroundColor: '#FEE500', color: '#191919', border: 'none' }}
-                                    title="카카오 로그인"
-                                    type="button"
-                                    onClick={() => handleSocialLogin('kakao')}>
-                                <RiKakaoTalkFill size={26} />
-                            </button>
+                                {/* Kakao */}
+                                <button className="mx-2 btn rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+                                        style={{ width: '60px', height: '60px', backgroundColor: '#FEE500', border: 'none' }}
+                                        onClick={() => handleSocialLogin('kakao')}>
+                                    <RiKakaoTalkFill size={32} color="#191919" />
+                                </button>
 
-                            {/* GitHub - 다크 모드 원형 */}
-                            <button className="btn btn-dark rounded-circle p-0 d-flex align-items-center justify-content-center border-secondary m-2"
-                                    style={{ width: '60px', height: '60px', backgroundColor: '#24292f', borderColor: '#30363d' }}
-                                    title="GitHub 로그인"
-                                    type="button"
-                                    onClick={() => handleSocialLogin('github')}>
-                                <FaGithub size={24} className="text-white" />
-                            </button>
+                                {/* GitHub */}
+                                <button className="mx-2 btn rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+                                        style={{ width: '60px', height: '60px', backgroundColor: '#24292f', border: 'none' }}
+                                        onClick={() => handleSocialLogin('github')}>
+                                    <FaGithub size={30} color="white" />
+                                </button>
+                            </div>
                         </div>
 
                         {/* 회원가입 링크 (Primary 블루 적용) */}
-                        <div className="text-center small">
-                            아직 회원이 아니신가요? <Link to="/signup" className="fw-bold text-primary text-decoration-none">지금 회원가입</Link>
+                        <div className="text-center small mt-2" style={{fontSize: '0.875rem'}}>
+                            아직 회원이 아니신가요? <Link to="/signup" className="fw-bold text-primary">지금 회원가입</Link>
                         </div>
                     </div>
                 </Col>

@@ -84,3 +84,14 @@
     font-size: 12px;
     color: #888;
 }
+
+/* 로그아웃 버튼 기본 상태 */
+.logout-btn {
+    color: #6c757d;
+    transition: color 0.2s; /* 색상이 부드럽게 변하도록 설정 */
+}
+
+/* 마우스를 올렸을 때 (Hover) 상태 */
+.logout-btn:hover {
+    color: #dc3545; /* 빨간색으로 변경 */
+}

@@ -26,3 +26,7 @@ dist-ssr
 # IDEA
 *.iml
 package.json
+
+.env
+.env.*
+!.env.example

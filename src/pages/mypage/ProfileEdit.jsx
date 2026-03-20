@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import './ProfileEdit.css'
+import defaultImage from '../../assets/defaultImage.png';
 
 const regionData = {
     "서울": ["서울 전체", "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
@@ -46,7 +47,7 @@ const ProfileEdit = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             // 💡 [핵심 스위치] true면 가짜 데이터 사용, false면 진짜 백엔드 API 연결!
-            const USE_MOCK = true;
+            const USE_MOCK = false;
 
             if (USE_MOCK) {
                 console.log("🚧 MOCK 프로필 데이터를 렌더링합니다.");
@@ -113,7 +114,7 @@ const ProfileEdit = () => {
 
             setImageFile(null);
             setImagePreview(null);
-            setProfile(prev => ({ ...prev, profileImageUrl: '' }));
+            setProfile({ ...profile, profileImageUrl: '' });
             if (fileInputRef.current) fileInputRef.current.value = '';
 
             alert("프로필 사진이 삭제되었습니다.");
@@ -171,7 +172,7 @@ const ProfileEdit = () => {
             // 💡 [참고] 저장 버튼 클릭 시에도 백엔드가 꺼져있다면 에러가 날 수 있습니다.
             // 저장 로직도 Mocking이 필요하다면 여기에 분기 처리를 할 수 있습니다.
 
-            if (imageFile) {
+            if (imageFile instanceof File) {
                 const formData = new FormData();
                 formData.append('file', imageFile);
                 await api.patch('/mypage/profile/image', formData, {
@@ -223,7 +224,7 @@ const ProfileEdit = () => {
         }
     };
 
-    const displayImageUrl = String(imagePreview || profile.profileImageUrl || '/AIBE4_FinalProject_Team2_FE/images/defaultImage.png');
+    const displayImageUrl = imagePreview || profile.profileImageUrl || defaultImage;
 
     // 6. JSX (화면 렌더링)
     return (
@@ -241,7 +242,7 @@ const ProfileEdit = () => {
             <section className="card">
                 <h3>프로필 사진</h3>
                 <div className="profile-upload-section">
-                    <img src={displayImageUrl} className="profile-img" alt="ProfileEdit" />
+                    <img src={String(displayImageUrl)} className="profile-img" alt="ProfileEdit" />
                     <div className="upload-info">
                         <p className="help-text">최소 200x200 픽셀의 JPG 또는 PNG 파일을 권장합니다.<br />최대 파일 크기: 5MB</p>
                         <div className="action-buttons">
