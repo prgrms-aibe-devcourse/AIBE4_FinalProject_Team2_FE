@@ -27,5 +27,6 @@ dist-ssr
 *.iml
 package.json
 
-# ENV
 .env
+.env.*
+!.env.example
