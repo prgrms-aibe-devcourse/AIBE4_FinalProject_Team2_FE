@@ -4,7 +4,6 @@ const Correction = () => {
     return (
         <Container className="py-5" style={{ maxWidth: '850px' }}>
             <div className="text-center mb-5">
-                <Badge bg="primary" className="mb-2 bg-opacity-10 text-primary">BETA AI 자소서 첨삭 v2.0</Badge>
                 <h2 className="fw-bold">AI 자소서 첨삭</h2>
                 <p className="text-muted small">지원하려는 직무 공고와 작성 중인 자기소개서를 입력해주세요.</p>
             </div>
