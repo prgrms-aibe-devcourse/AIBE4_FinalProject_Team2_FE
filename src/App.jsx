@@ -36,6 +36,7 @@ import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
 
 </* AI 자기소개서 분석 페이지 */></>
 import ResumeWrite from "./pages/resume/ResumeWrite.jsx"; 
+import ResumeResult from './pages/resume/ResumeResult.jsx';
 
 function App() {
     const location = useLocation();
@@ -167,7 +168,8 @@ function App() {
                 <Route path="/job-posting" element={<JobPostingPage />} />
                 {/* AI 자기소개서 분석*/}
                 <Route path="/resume" element={<ResumeWrite />} />
-                
+                <Route path="/resumes/:resumeId}/reports/:reportId" element={<ResumeResult />} />
+
                 {/*마이페이지*/}
                 <Route path="/mypage" element={<MyPageLayout />}>
                     <Route path="dashboard" element={<DashBoard />} />
