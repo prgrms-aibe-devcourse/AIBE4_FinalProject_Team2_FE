@@ -24,4 +24,5 @@ src/
 └── pages/            # 라우트별 페이지 컴포넌트
     ├── domain1/      
     ├── domain2/      
-    └── domain3/      
+    └── domain3/
+```
