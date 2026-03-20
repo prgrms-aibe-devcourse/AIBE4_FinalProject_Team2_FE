@@ -44,8 +44,6 @@ import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
 import ResumeWrite from "./pages/resume/ResumeWrite.jsx"; 
 import ResumeResult from './pages/resume/ResumeResult.jsx';
 
-import Correction from "./pages/resume/Correction.jsx";
-
 function App() {
     const location = useLocation();
     const isAdminOrOpsRoute =
