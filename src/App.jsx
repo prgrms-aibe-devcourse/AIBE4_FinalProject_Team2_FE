@@ -32,8 +32,6 @@ import MyInterviewDetail from "./pages/mypage/MyInterviewDetail.jsx";
 import QuestionBookmark from "./pages/mypage/QuestionsBookmark.jsx";
 import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
-import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
-
 import SetupPage from "./pages/interview/SetupPage.jsx";
 import TextInterview from "./pages/interview/TextInterview.jsx";
 import VoiceInterview from "./pages/interview/VoiceInterview.jsx";
