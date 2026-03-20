@@ -37,62 +37,74 @@ export default function TextInterview() {
 
         const memberId = 1;
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        const url = `${baseUrl}/api/interviews/${sessionId}/text/stream?answer=${encodeURIComponent(userText)}&memberId=${memberId}&interviewMode=${mode}`;
 
-        const eventSource = new EventSource(url);
+        const params = new URLSearchParams({
+            answer: userText,
+            memberId: memberId.toString(),
+            interviewMode: mode,
+        });
 
-        eventSource.onmessage = (event) => {
-            if (event.data === "[DONE]") {
+        const url = `${baseUrl}/api/interviews/${sessionId}/text/stream?${params.toString()}`;
+
+        try {
+            const eventSource = new EventSource(url);
+
+            eventSource.onmessage = (event) => {
+                if (event.data === "[DONE]") {
+                    eventSource.close();
+                    setIsGenerating(false);
+                    return;
+                }
+
+                let chunk = ""; // 빈 문자열로 초기화하여 쓰레기값 노출 방지
+
+                try {
+                    const data = JSON.parse(event.data);
+
+                    // 텍스트 데이터 안전 추출 로직
+                    if (data?.candidates?.[0]?.content?.parts?.[0]) {
+                        chunk = data.candidates[0].content.parts[0].text || '';
+                    } else if (data?.text) {
+                        chunk = data.text;
+                    }
+                } catch (e) {
+                    // 파싱 에러 발생 시 (긴 데이터가 쪼개져서 들어온 경우)
+                    const rawData = event.data.trim();
+
+                    if (rawData.startsWith('{') || rawData.startsWith('[')) {
+                        // JSON 형태로 시작하는데 파싱 에러가 났다면 깨진 청크이므로 조용히 무시합니다.
+                        console.warn("부분적으로 잘린 JSON 스트림 무시됨");
+                    } else {
+                        // 순수한 텍스트 메시지(서버 에러 메시지 등)일 경우에만 출력
+                        chunk = rawData;
+                    }
+                }
+
+                // 추가할 텍스트가 없으면(thoughtSignature 등) 렌더링 최적화를 위해 스킵
+                if (!chunk) return;
+
+                setMessages(prev => {
+                    const newMsgs = [...prev];
+                    const lastIdx = newMsgs.length - 1;
+
+                    // 상태 불변성 유지 (글자 중복 타이핑 버그 방지)
+                    newMsgs[lastIdx] = {
+                        ...newMsgs[lastIdx],
+                        text: newMsgs[lastIdx].text + chunk
+                    };
+                    return newMsgs;
+                });
+            };
+
+            eventSource.onerror = (err) => {
+                // 스트리밍이 정상 종료되어 서버가 연결을 끊은 경우 콘솔 에러가 나지 않도록 조용히 닫기
                 eventSource.close();
                 setIsGenerating(false);
-                return;
-            }
-
-            let chunk = ""; // 빈 문자열로 초기화하여 쓰레기값 노출 방지
-
-            try {
-                const data = JSON.parse(event.data);
-
-                // 텍스트 데이터 안전 추출 로직
-                if (data?.candidates?.[0]?.content?.parts?.[0]) {
-                    chunk = data.candidates[0].content.parts[0].text || '';
-                } else if (data?.text) {
-                    chunk = data.text;
-                }
-            } catch (e) {
-                // 파싱 에러 발생 시 (긴 데이터가 쪼개져서 들어온 경우)
-                const rawData = event.data.trim();
-
-                if (rawData.startsWith('{') || rawData.startsWith('[')) {
-                    // JSON 형태로 시작하는데 파싱 에러가 났다면 깨진 청크이므로 조용히 무시합니다.
-                    console.warn("부분적으로 잘린 JSON 스트림 무시됨");
-                } else {
-                    // 순수한 텍스트 메시지(서버 에러 메시지 등)일 경우에만 출력
-                    chunk = rawData;
-                }
-            }
-
-            // 추가할 텍스트가 없으면(thoughtSignature 등) 렌더링 최적화를 위해 스킵
-            if (!chunk) return;
-
-            setMessages(prev => {
-                const newMsgs = [...prev];
-                const lastIdx = newMsgs.length - 1;
-
-                // 상태 불변성 유지 (글자 중복 타이핑 버그 방지)
-                newMsgs[lastIdx] = {
-                    ...newMsgs[lastIdx],
-                    text: newMsgs[lastIdx].text + chunk
-                };
-                return newMsgs;
-            });
-        };
-
-        eventSource.onerror = (err) => {
-            // 스트리밍이 정상 종료되어 서버가 연결을 끊은 경우 콘솔 에러가 나지 않도록 조용히 닫기
-            eventSource.close();
+            };
+        } catch (err) {
+            console.error("EventSource connection failed:", err);
             setIsGenerating(false);
-        };
+        }
     };
 
     const handleEndInterview = async () => {

@@ -90,3 +90,188 @@
 @keyframes ping {
     75%, 100% { transform: scale(1.5); opacity: 0; }
 }
+
+.report-main {
+    background: #f8f9fa !important;
+    padding: 2rem 1rem !important;
+    font-family: sans-serif;
+}
+.report-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+}
+.report-badge {
+    background: #e0f2fe;
+    color: #0d6efd;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+.report-title {
+    font-size: 1.75rem;
+    margin: 1rem 0 0.5rem 0;
+}
+.report-btn-group {
+    display: flex;
+    gap: 0.5rem;
+}
+.report-btn-outline {
+    background: white;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 1rem;
+    border-radius: 50rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.report-btn-primary {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 50rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.report-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+.report-left-panel {
+    flex: 1 1 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.report-card-horizontal {
+    background: white;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+.report-score-box {
+    flex: 0 0 120px;
+}
+.report-score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 6px solid #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+.report-score-num {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+.report-score-text {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+}
+.report-feedback-box {
+    flex: 1;
+}
+.report-feedback-text {
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+.report-card {
+    background: white;
+    border-radius: 1rem;
+}
+.report-progress-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+.report-progress-col {
+    flex: 1 1 calc(50% - 0.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+.report-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+}
+.report-progress-bg {
+    height: 6px;
+    background: #f1f3f5;
+    border-radius: 3px;
+    overflow: hidden;
+}
+.report-progress-bar {
+    height: 100%;
+}
+.report-context-row {
+    display: flex;
+    gap: 1rem;
+}
+.report-context-box {
+    flex: 1;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    text-align: center;
+}
+.report-right-panel {
+    flex: 1 1 400px;
+}
+.report-chat-card {
+    background: white;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    max-height: 800px;
+}
+.report-chat-list {
+    flex: 1;
+    overflow-y: auto;
+}
+.report-chat-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.report-ai-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #1e293b;
+    flex-shrink: 0;
+}
+.report-chat-q {
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+.report-chat-a {
+    border-radius: 0 0.75rem 0.75rem 0.75rem;
+    white-space: pre-wrap;
+}
+.report-chat-feedback {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+}
+.report-chat-feedback-text {
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #92400e;
+}
+.report-copy-btn {
+    background: white;
+}
