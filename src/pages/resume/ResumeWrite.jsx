@@ -1,11 +1,11 @@
 import React, { useRef, useState } from "react";
 import { Container, Card, Form, Button, Spinner } from "react-bootstrap";
-// import { useNavigate } from "react-router-dom"; // 추후 결과 페이지 이동 시 주석 해제하여 사용하세요
+import { useNavigate } from "react-router-dom"; 
 import axios from "../../api/axios";
 import { parseJobPosting } from "../../api/jobPosting";
 
 const ResumeWrite = () => {
-  // const navigate = useNavigate();
+const navigate = useNavigate();
 
   // 1. 채용 공고 상태 관리
   const [jobDescription, setJobDescription] = useState("");
@@ -207,7 +207,7 @@ const ResumeWrite = () => {
       alert("AI 첨삭 요청이 완료되었습니다!");
 
       // 4. 추후 결과 페이지가 만들어지면 라우팅 이동
-      // navigate(`/resumes/${resumeId}/reports/${reportId}`);
+        navigate(`/resumes/${resumeId}/reports/${reportId}`);
     } catch (error) {
       console.error("AI 첨삭 요청 에러:", error);
       alert("AI 첨삭 처리 중 오류가 발생했습니다.");
