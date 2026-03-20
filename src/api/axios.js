@@ -14,7 +14,7 @@ const FRONT_BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 // 1. axios 인스턴스 생성
 const api = axios.create({
     baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/v1`, // 백엔드 서버 주소
-    timeout: 5000,
+    timeout: 30000,
     withCredentials: true,           // 쿠키(RefreshToken) 공유를 위해 필수
     headers: {
         'Content-Type': 'application/json',
@@ -77,10 +77,11 @@ api.interceptors.response.use(
                 // 백엔드 /reissue 엔드포인트 호출
                 // 주의: 인스턴스(api) 대신 기본 axios를 사용하여 헤더 꼬임을 방지합니다.
                 const res = await axios.post(
-                    '${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/reissue',
+                    `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/reissue`,
                     { refreshToken },
                     { withCredentials: true }
                 );
+                console.log(res);
 
                 const payload = res.data.data ?? res.data;
                 const newAccessToken = payload.accessToken;

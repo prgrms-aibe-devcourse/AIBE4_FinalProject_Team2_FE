@@ -80,3 +80,122 @@
 .job-parser-question-list li {
   margin-bottom: 5px;
 }
+
+.job-parser-bullet-list {
+  list-style-type: disc; 
+  margin: 5px 0 0 0;
+}
+
+.job-parser-bullet-list li {
+  margin-bottom: 4px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.job-parser-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #F1F3F5;
+}
+
+.job-parser-company-badge {
+  align-self: flex-start;
+  background-color: #E9ECEF;
+  color: #495057;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.job-parser-job-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+/* 요구 스택 태그 스타일 */
+.job-parser-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.job-parser-tag {
+  background-color: #FFF0F0;
+  color: #FF6B6B;
+  border: 1px solid #FFC9C9;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* src/components/jobposting/JobPostingParser.css 맨 아래에 추가 */
+
+/* AI 면접 예상 질문 섹션 포장 */
+.job-parser-questions-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px dashed #E1E4E8; /* 구분선 추가 */
+}
+
+.job-parser-questions-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1A1A1A;
+  margin: 0 0 8px 0;
+}
+
+.job-parser-questions-desc {
+  font-size: 14px;
+  color: #868E96;
+  margin: 0 0 20px 0;
+}
+
+.job-parser-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px; /* 카드 간격 */
+}
+
+.job-parser-question-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  background-color: #F8F9FA; /* 부드러운 회색 배경 */
+  border: 1px solid #E9ECEF;
+  border-radius: 12px;
+  padding: 18px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* 마우스 호버 시 살짝 위로 떠오르며 강조되는 효과 */
+.job-parser-question-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  border-color: #FFC9C9; /* 테두리가 옅은 핑크/주황색으로 변경 */
+}
+
+.job-parser-question-badge {
+  background-color: #FF6B6B; /* 포인트 컬러 */
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  flex-shrink: 0; /* 텍스트가 길어도 뱃지 모양 유지 */
+}
+
+.job-parser-question-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #343A40;
+  font-weight: 600;
+  margin-top: 4px; /* 뱃지와 시각적 균형 맞춤 */
+}

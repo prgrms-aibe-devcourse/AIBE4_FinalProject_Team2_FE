@@ -3,7 +3,6 @@ import Navbar from './components/global/Navigation.jsx';
 import Footer from './components/global/Footer.jsx';
 import Home from './pages/Home.jsx';
 import LoginPage from "./pages/auth/LoginPage.jsx";
-import Correction from "./pages/Correction.jsx";
 import Signup from './pages/auth/Signup.jsx';
 import OAuthCallback from "./pages/auth/OAuthCallback.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
@@ -33,7 +32,10 @@ import MyInterviewDetail from "./pages/mypage/MyInterviewDetail.jsx";
 import QuestionBookmark from "./pages/mypage/QuestionsBookmark.jsx";
 import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
-import JobPostingPage from "./pages/jobposting/JobPostingPage";
+import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
+
+</* AI 자기소개서 분석 페이지 */></>
+import ResumeWrite from "./pages/resume/ResumeWrite.jsx"; 
 
 function App() {
     const location = useLocation();
@@ -48,7 +50,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/correction" element={<Correction />} />
+                <Route path="/resume" element={<ResumeWrite />} />
                 <Route path="/oauth/callback" element={<OAuthCallback />} />
 
                 {/* 관리자 */}
@@ -161,9 +163,11 @@ function App() {
                     }
                 />
 
-                {/* 마이페이지 */}
-                {/* AI 면접 코칭 받기 */}
+                {/* 면접 코칭 컨설턴트 */}
                 <Route path="/job-posting" element={<JobPostingPage />} />
+                {/* AI 자기소개서 분석*/}
+                <Route path="/resume" element={<ResumeWrite />} />
+                
                 {/*마이페이지*/}
                 <Route path="/mypage" element={<MyPageLayout />}>
                     <Route path="dashboard" element={<DashBoard />} />

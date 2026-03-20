@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Button } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SyncTalkLogo from '../../assets/SyncTalk_Logo.png';
-import NotificationDropdown from "../../pages/NotificationDropdown.jsx";
+import axios from '../../api/axios.js'
 
 function Navigation() {
 
@@ -17,13 +17,24 @@ function Navigation() {
     const isLoggedIn = !!accessToken;
     const role = savedRole;
 
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('role');
+    const handleLogout = async () => {
+        try {
+            const response = await axios.get('/auth/logout', {
+                headers: {Authorization: `Bearer ${accessToken}`}
+            })
+            console.log(response);
 
-        alert("로그아웃되었습니다.");
-        navigate('/');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('role');
+
+            if (response.status === 200) {
+                alert("로그아웃되었습니다.");
+                navigate('/');
+            }
+        } catch (error) {
+            alert('로그아웃 실패\n' + error.message);
+        }
     };
 
     const isAdmin = role === 'ADMIN';
@@ -47,25 +58,25 @@ function Navigation() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     {/* 중앙 메뉴 영역 */}
                     {isLoggedIn && (
-                        <Nav className="mx-auto gap-4">
-                            <Nav.Link as={Link} to="/correction" className="text-dark fw-medium">자소서 첨삭</Nav.Link>
-                            <Nav.Link as={Link} to="/interview" className="text-dark fw-medium">AI 모의면접</Nav.Link>
-                            {/*<Nav.Link as={Link} to="#" className="text-dark fw-medium">채용공고</Nav.Link>*/}
-                            <Nav.Link as={Link} to="/mypage" className="text-dark fw-medium">마이페이지</Nav.Link>
+                        <Nav className="mx-auto gap-lg-5">
+                            <Nav.Link as={Link} to="/job-posting" className="fs-5 text-dark fw-medium">면접 코칭</Nav.Link>
+                            <Nav.Link as={Link} to="/resume" className="fs-5 text-dark fw-medium">자소서 첨삭</Nav.Link>
+                            <Nav.Link as={Link} to="/interview" className="fs-5 text-dark fw-medium">AI 모의면접</Nav.Link>
+                            <Nav.Link as={Link} to="/mypage/dashboard" className="fs-5 text-dark fw-medium">마이페이지</Nav.Link>
                             {isAdmin && (
                                 <Nav.Link as={Link} to="/admin/dashboard">관리자</Nav.Link>
                             )}
                         </Nav>
-                        )}
+                         )}
                 </Navbar.Collapse>
 
                     {/* 우측 아이콘 영역 */}
                     <Nav className="ms-auto align-items-center gap-3">
                         {!isLoggedIn ? (
-                            <Link className="btn btn-primary btn-lg" to="/login">
+                            <Button size="lg" variant="primary" as={Link} to="/login" style={{fontSize: '1.25rem'}}>
                                 {/*<PersonCircle className="text-dark" size={20} />*/}
                                 LOGIN
-                            </Link>
+                            </Button>
                         ) : (
                             <Button size="lg" variant="danger" onClick={handleLogout}>
                                 LOGOUT

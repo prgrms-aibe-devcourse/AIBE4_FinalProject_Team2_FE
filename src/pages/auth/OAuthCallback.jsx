@@ -18,6 +18,7 @@ const OAuthCallback = () => {
                  * 이 요청에서만 헤더를 명시적으로 비우거나 초기화합니다.
                  */
                 const response = await api.get('/auth/me', {
+                    withCredentials: true,
                     headers: {
                         Authorization: null
                     }
