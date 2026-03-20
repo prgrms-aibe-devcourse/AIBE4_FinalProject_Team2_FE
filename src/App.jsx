@@ -33,8 +33,9 @@ import QuestionBookmark from "./pages/mypage/QuestionsBookmark.jsx";
 import ResumeEdit from "./pages/mypage/ResumeEdit.jsx";
 
 import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
-import ResumePage from "./pages/resume/ResumePage.jsx"; 
-import Correction from "./pages/resume/Correction.jsx";
+
+</* AI 자기소개서 분석 페이지 */></>
+import ResumeWrite from "./pages/resume/ResumeWrite.jsx"; 
 
 function App() {
     const location = useLocation();
@@ -49,7 +50,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/correction" element={<Correction />} />
+                <Route path="/resume" element={<ResumeWrite />} />
                 <Route path="/oauth/callback" element={<OAuthCallback />} />
 
                 {/* 관리자 */}
@@ -165,8 +166,8 @@ function App() {
                 {/* 면접 코칭 컨설턴트 */}
                 <Route path="/job-posting" element={<JobPostingPage />} />
                 {/* AI 자기소개서 분석*/}
-                <Route path="/resume" element={<ResumePage />} />
-
+                <Route path="/resume" element={<ResumeWrite />} />
+                
                 {/*마이페이지*/}
                 <Route path="/mypage" element={<MyPageLayout />}>
                     <Route path="dashboard" element={<DashBoard />} />

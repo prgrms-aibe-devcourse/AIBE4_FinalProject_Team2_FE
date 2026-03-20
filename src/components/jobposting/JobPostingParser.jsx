@@ -72,7 +72,7 @@ const JobPostingParser = () => {
 
   return (
     <div className="job-parser-container">
-      <h3 className="job-parser-title">채용 공고 AI 분석기</h3>
+      <h3 className="job-parser-title">채용 공고 AI 분석</h3>
 
       <div className="job-parser-input-group">
         <input
@@ -87,7 +87,7 @@ const JobPostingParser = () => {
           onClick={handleParseClick}
           disabled={isLoading}
         >
-          {isLoading ? "AI 분석 중..." : "파싱하기"}
+          {isLoading ? "AI 분석 중..." : "AI 분석 시작"}
         </button>
       </div>
 
