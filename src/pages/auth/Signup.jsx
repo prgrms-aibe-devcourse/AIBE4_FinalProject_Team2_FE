@@ -138,7 +138,7 @@ const Signup = () => {
       alert(response.data.message);
     } catch (error) {
       setIsSent(false);
-      alert(error.message || '일시적인 오류입니다. 다시 시도해주세요.');
+      alert(error.response?.data?.message || '일시적인 오류입니다. 다시 시도해주세요.');
     }
   };
 
