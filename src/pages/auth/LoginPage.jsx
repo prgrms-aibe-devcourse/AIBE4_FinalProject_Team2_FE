@@ -36,8 +36,7 @@ const LoginPage = () => {
     };
 
     const handleSocialLogin = (provider) => {
-        window.location.href = `https://api.synctalk.it.com/oauth2/authorization/${provider}`;
-        // window.location.href = `http://localhost:8081/oauth2/authorization/${provider}`; // 로컬 테스트
+        window.location.href = `${import.meta.env.VITE_API_BASE_URL}/oauth2/authorization/${provider}`;
     };
 
     return (
