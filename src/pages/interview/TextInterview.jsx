@@ -103,8 +103,6 @@ export default function TextInterview() {
                 });
             };
 
-            // 백엔드 구현 방식에 따른 이벤트 리스너 이중 연결 (안전 보장)
-            eventSource.onmessage = messageHandler;
             eventSource.addEventListener('message', messageHandler);
 
             eventSource.onerror = (err) => {
