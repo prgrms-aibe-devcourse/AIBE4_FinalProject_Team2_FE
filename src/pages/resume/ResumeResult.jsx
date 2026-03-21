@@ -46,35 +46,63 @@ const ResumeResult = () => {
     }
   };
 
-  // 📝 세부 문장 교정 렌더러
+  // 📝 세부 문장 교정 렌더러 (🔥 어느 문항인지 찾아주는 로직 추가!)
   const formatSentenceCorrections = (text) => {
     if (!text) return null;
 
     const jsonData = tryParseJSON(text);
     
     if (jsonData) {
-      return jsonData.map((item, idx) => (
-        <Card key={idx} className="mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
-          <div className="p-3" style={{ backgroundColor: "#fff1f2", borderBottom: "1px dashed #ffe4e6" }}>
-            <Badge bg="danger" className="mb-2 px-2 py-1 shadow-sm">수정 전</Badge>
-            <div style={{ color: "#be123c", fontSize: "14.5px", textDecoration: "line-through", lineHeight: "1.6" }}>
-              {item.original || item.Original}
+      return jsonData.map((item, idx) => {
+        const targetOriginal = item.original || item.Original || "";
+        
+        // 원본 텍스트와 대조하여 해당 소제목(문항) 찾기
+        let qLabel = null;
+        if (targetOriginal && originalResume.length > 0) {
+          // 공백 제거 후 비교하여 정확도 향상
+          const cleanTarget = targetOriginal.replace(/\s+/g, '');
+          const foundIdx = originalResume.findIndex(resume => 
+            resume.content.replace(/\s+/g, '').includes(cleanTarget)
+          );
+          
+          if (foundIdx !== -1) {
+            qLabel = originalResume[foundIdx].subtitle || `문항 ${foundIdx + 1}`;
+          }
+        }
+
+        return (
+          <Card key={idx} className="mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+            {/* 🔥 찾아낸 문항(소제목)을 카드 최상단에 뱃지로 표시 */}
+            {qLabel && (
+              <div className="px-3 py-2 border-bottom d-flex align-items-center gap-2" style={{ backgroundColor: "#f8fafc", borderColor: "#e2e8f0" }}>
+                <Badge bg="secondary" className="rounded-pill shadow-sm">대상 문항</Badge>
+                <span className="fw-bold" style={{ fontSize: "13.5px", color: "#475569" }}>
+                  {qLabel}
+                </span>
+              </div>
+            )}
+
+            <div className="p-3" style={{ backgroundColor: "#fff1f2", borderBottom: "1px dashed #ffe4e6" }}>
+              <Badge bg="danger" className="mb-2 px-2 py-1 shadow-sm">수정 전</Badge>
+              <div style={{ color: "#be123c", fontSize: "14.5px", textDecoration: "line-through", lineHeight: "1.6" }}>
+                {targetOriginal}
+              </div>
             </div>
-          </div>
-          <div className="p-3" style={{ backgroundColor: "#f0fdf4", borderBottom: "1px dashed #dcfce7" }}>
-            <Badge bg="success" className="mb-2 px-2 py-1 shadow-sm">수정 후</Badge>
-            <div style={{ color: "#166534", fontSize: "14.5px", fontWeight: "600", lineHeight: "1.6" }}>
-              {item.corrected || item.Corrected}
+            <div className="p-3" style={{ backgroundColor: "#f0fdf4", borderBottom: "1px dashed #dcfce7" }}>
+              <Badge bg="success" className="mb-2 px-2 py-1 shadow-sm">수정 후</Badge>
+              <div style={{ color: "#166534", fontSize: "14.5px", fontWeight: "600", lineHeight: "1.6" }}>
+                {item.corrected || item.Corrected}
+              </div>
             </div>
-          </div>
-          <div className="p-3 bg-white">
-            <Badge bg="secondary" className="mb-2 px-2 py-1 shadow-sm">💡 교정 이유</Badge>
-            <div style={{ color: "#475569", fontSize: "14px", lineHeight: "1.6" }}>
-              {item.reason || item.Reason}
+            <div className="p-3 bg-white">
+              <Badge bg="secondary" className="mb-2 px-2 py-1 shadow-sm">💡 교정 이유</Badge>
+              <div style={{ color: "#475569", fontSize: "14px", lineHeight: "1.6" }}>
+                {item.reason || item.Reason}
+              </div>
             </div>
-          </div>
-        </Card>
-      ));
+          </Card>
+        );
+      });
     }
 
     return <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.8", fontSize: "14.5px", color: "#495057" }}>{text}</div>;
@@ -321,7 +349,6 @@ const ResumeResult = () => {
             <Card.Header className="bg-transparent border-0 pt-4 pb-2 px-4">
               <h5 className="fw-bold mb-3 text-dark">✨ AI 첨삭 및 피드백 결과</h5>
               
-              {/* 🔥 분리된 탭 네비게이션 */}
               <Nav variant="pills" className="gap-2 mb-2 custom-nav-pills d-flex flex-wrap">
                 <Nav.Item>
                   <Nav.Link 
