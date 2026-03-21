@@ -27,7 +27,7 @@ const ResumeResult = () => {
     }).filter(item => item.content.length > 0); 
   };
 
-  // 🌟 AI 원시 데이터(JSON 문자열) 파싱 헬퍼 함수
+  // 🌟 AI 원시 데이터 파싱 헬퍼 함수
   const tryParseJSON = (text) => {
     try {
       const cleaned = text.replace(/```json/gi, "").replace(/```/g, "").trim();
@@ -46,7 +46,7 @@ const ResumeResult = () => {
     }
   };
 
-  // 📝 세부 문장 교정 렌더러 (🔥 어느 문항인지 찾아주는 로직 추가!)
+  // 📝 세부 문장 교정 렌더러
   const formatSentenceCorrections = (text) => {
     if (!text) return null;
 
@@ -56,10 +56,8 @@ const ResumeResult = () => {
       return jsonData.map((item, idx) => {
         const targetOriginal = item.original || item.Original || "";
         
-        // 원본 텍스트와 대조하여 해당 소제목(문항) 찾기
         let qLabel = null;
         if (targetOriginal && originalResume.length > 0) {
-          // 공백 제거 후 비교하여 정확도 향상
           const cleanTarget = targetOriginal.replace(/\s+/g, '');
           const foundIdx = originalResume.findIndex(resume => 
             resume.content.replace(/\s+/g, '').includes(cleanTarget)
@@ -72,7 +70,6 @@ const ResumeResult = () => {
 
         return (
           <Card key={idx} className="mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
-            {/* 🔥 찾아낸 문항(소제목)을 카드 최상단에 뱃지로 표시 */}
             {qLabel && (
               <div className="px-3 py-2 border-bottom d-flex align-items-center gap-2" style={{ backgroundColor: "#f8fafc", borderColor: "#e2e8f0" }}>
                 <Badge bg="secondary" className="rounded-pill shadow-sm">대상 문항</Badge>
@@ -172,11 +169,13 @@ const ResumeResult = () => {
     );
   }
 
-  // 👉 분리된 탭 컨텐츠 렌더링
+  // 🔥 하드코딩 제거: "MATCH" 글자가 포함되어 있으면 무조건 직무 분석으로 간주
+  const isMatchAnalysis = reportData.analysisType && reportData.analysisType.includes("MATCH");
+
+  // 👉 탭 렌더링
   const renderTabContent = () => {
     switch (activeTab) {
       
-      // 1. 세부 문장 교정 탭
       case "correction":
         const hasCorrection = reportData.sentenceCorrections?.trim();
         if (!hasCorrection) {
@@ -191,7 +190,6 @@ const ResumeResult = () => {
           </div>
         );
 
-      // 2. 핵심 문단 요약 탭
       case "summary":
         const hasSummary = reportData.paragraphSummaries?.trim();
         if (!hasSummary) {
@@ -206,7 +204,6 @@ const ResumeResult = () => {
           </div>
         );
 
-      // 3. 최종 완성본 탭
       case "revised":
         const hasRevised = reportData.revisedFullContent?.trim();
         if (!hasRevised) {
@@ -223,7 +220,6 @@ const ResumeResult = () => {
           </div>
         );
 
-      // 4. 종합 피드백 탭
       case "overall":
         return reportData.overallFeedback?.trim() ? (
           <div className="p-4 rounded-4 bg-light border-0">
@@ -238,7 +234,6 @@ const ResumeResult = () => {
           <div className="text-center p-5 text-muted mt-5 bg-light rounded-4">해당 항목에 대한 분석 결과가 없습니다.</div>
         );
         
-      // 5. 직무 적합도 매칭 탭
       case "match":
         return (
           <div className="p-4 rounded-4 bg-white border shadow-sm">
@@ -276,7 +271,6 @@ const ResumeResult = () => {
           </div>
         );
         
-      // 6. 예상 면접 질문 탭
       case "interview":
         return reportData.expectedQuestions?.trim() ? (
           <div className="p-4 rounded-4 bg-light border-0">
@@ -302,8 +296,9 @@ const ResumeResult = () => {
       {/* 🔝 상단 헤더 및 네비게이션 */}
       <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
         <div className="d-flex flex-column align-items-start">
-          <Badge bg={reportData.analysisType === "FIT_MATCH" ? "success" : "primary"} className="px-3 py-2 mb-2 rounded-pill shadow-sm" style={{ fontSize: "13px", fontWeight: "600" }}>
-            {reportData.analysisType === "FIT_MATCH" ? "맞춤형 직무 매칭 분석" : "일반 자소서 첨삭"}
+          {/* 🔥 뱃지도 유동적으로 변경되도록 연동 */}
+          <Badge bg={isMatchAnalysis ? "success" : "primary"} className="px-3 py-2 mb-2 rounded-pill shadow-sm" style={{ fontSize: "13px", fontWeight: "600" }}>
+            {isMatchAnalysis ? "맞춤형 직무 매칭 분석" : "일반 자소서 첨삭"}
           </Badge>
           <h3 className="fw-bold m-0 text-dark">AI 자소서 분석 리포트</h3>
         </div>
@@ -317,7 +312,6 @@ const ResumeResult = () => {
         </div>
       </div>
 
-      {/* ↔️ 좌우 레이아웃 영역 */}
       <Row className="g-4" style={{ height: "calc(100vh - 160px)" }}>
         
         {/* 👈 좌측 원본 자소서 */}
@@ -391,7 +385,8 @@ const ResumeResult = () => {
                   </Nav.Link>
                 </Nav.Item>
                 
-                {reportData.analysisType === "FIT_MATCH" && (
+                {/* 🔥 조건문 업데이트 완료! MATCH 글자가 있으면 탭 활성화 */}
+                {isMatchAnalysis && (
                   <>
                     <Nav.Item>
                       <Nav.Link 
