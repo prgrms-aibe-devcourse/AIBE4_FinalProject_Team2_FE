@@ -5,7 +5,7 @@ import axios from "../../api/axios";
 import { parseJobPosting } from "../../api/jobPosting";
 
 const ResumeWrite = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // 1. 채용 공고 상태 관리
   const [jobDescription, setJobDescription] = useState("");
@@ -77,14 +77,10 @@ const navigate = useNavigate();
 
       if (parsedItems && parsedItems.length > 0) {
         const mappedItems = parsedItems.map((item) => {
-          // 파싱된 데이터도 500자가 넘으면 잘라내기
-          let content = item.answer || "";
-          if (content.length > 500) {
-            content = content.substring(0, 500);
-          }
+          // 🔥 500자 자르기 로직 제거: 원본 내용 그대로 저장
           return {
             subtitle: item.question || "",
-            content: content,
+            content: item.answer || "",
           };
         });
         setResumeItems(mappedItems);
@@ -130,12 +126,7 @@ const navigate = useNavigate();
       formattedText +
       currentText.substring(end);
 
-    // 포맷팅 후에도 500자 제한 적용
-    if (newContent.length > 500) {
-      newContent = newContent.substring(0, 500);
-      alert("최대 500자까지만 입력 가능합니다.");
-    }
-
+    // 🔥 500자 제한 방어 로직 제거
     updateResumeItem(index, "content", newContent);
 
     setTimeout(() => {
@@ -166,7 +157,6 @@ const navigate = useNavigate();
   // ✨ 5. AI 첨삭 요청 기능
   // ==========================================
   const handleAiAnalysis = async () => {
-    // 내용이 하나라도 입력되어 있는지 확인
     const hasContent = resumeItems.some((item) => item.content.trim() !== "");
     if (!hasContent) {
       alert("자기소개서 내용을 최소 한 문항 이상 입력해주세요.");
@@ -175,28 +165,20 @@ const navigate = useNavigate();
 
     setIsAnalyzing(true);
     try {
-      // 1. 백엔드의 ResumeRequest DTO 구조(title, content)에 맞게 데이터 병합
       const combinedContent = resumeItems
         .filter((item) => item.content.trim() !== "")
         .map((item) => `[${item.subtitle}]\n${item.content}`)
         .join("\n\n");
 
-      // 임의의 제목 생성 (예: 자기소개서_20240510)
       const today = new Date().toISOString().split("T")[0].replace(/-/g, "");
       const resumePayload = {
         title: `자기소개서_${today}`,
         content: combinedContent,
       };
 
-      // 2. 이력서 임시 생성 (저장) API 호출 -> resumeId 획득
-      // 🔥 형민님의 axios 설정에 맞춰 baseURL을 뺀 상대 경로로 수정
       const saveResponse = await axios.post("/resumes", resumePayload);
-      
-      // ApiResponse 구조에서 id값 추출 (id 또는 객체 형태로 올 수 있음)
       const resumeId = saveResponse.data.data.id || saveResponse.data.data;
 
-      // 3. 발급받은 resumeId로 일반 첨삭 분석(normal) API 호출
-      // 🔥 상대 경로로 수정
       const analyzeResponse = await axios.post(
         `/resumes/${resumeId}/analyze/normal`
       );
@@ -204,9 +186,8 @@ const navigate = useNavigate();
       const reportId = analyzeResponse.data.data;
 
       alert("AI 첨삭 요청이 완료되었습니다!");
-
-      // 4. 추후 결과 페이지가 만들어지면 라우팅 이동
-        navigate(`/resumes/${resumeId}/reports/${reportId}`);
+      // 🔥 Progress 창으로 라우팅되도록 수정된 부분
+      navigate(`/resumes/${resumeId}/reports/${reportId}/progress`);
     } catch (error) {
       console.error("AI 첨삭 요청 에러:", error);
       alert("AI 첨삭 처리 중 오류가 발생했습니다.");
@@ -218,7 +199,7 @@ const navigate = useNavigate();
   return (
     <Container className="py-5" style={{ maxWidth: "850px" }}>
       <div className="text-center mb-5">
-        <h2 className="fw-bold">AI 자소서/이력서 작성</h2>
+        <h2 className="fw-bold">AI 자기소개서 작성</h2>
         <p className="text-muted small">
           지원하려는 직무 공고와 작성 중인 자기소개서를 입력해주세요.
         </p>
@@ -269,13 +250,9 @@ const navigate = useNavigate();
           </div>
 
           <div className="d-flex align-items-center gap-3">
-            {/* 상단: 전체 글자 수 표시 */}
-            <span
-              className={`small fw-bold ${
-                totalCharCount > 2000 ? "text-danger" : "text-muted"
-              }`}
-            >
-              {totalCharCount.toLocaleString()}자 / 2,000자
+            {/* 🔥 상단: 전체 글자 수 제한 없이 '총 N자'로 표시 */}
+            <span className="small fw-bold text-muted">
+              총 {totalCharCount.toLocaleString()}자
             </span>
             <input
               type="file"
@@ -365,12 +342,11 @@ const navigate = useNavigate();
               style={{ fontSize: "16px" }}
             />
 
-            {/* 내용 입력칸 (ID 부여 및 최대 글자 수 제한) */}
+            {/* 내용 입력칸 (🔥 maxLength 속성 제거됨) */}
             <Form.Control
               id={`content-textarea-${index}`}
               as="textarea"
               rows={6}
-              maxLength={500} // 🔥 500자 제한
               value={item.content}
               onChange={(e) =>
                 updateResumeItem(index, "content", e.target.value)
@@ -384,16 +360,10 @@ const navigate = useNavigate();
               }}
             />
 
-            {/* 🔥 각 문항별 글자 수 카운터 (오직 '내용' 길이만 카운트) */}
+            {/* 🔥 문항별 글자 수 카운터 ('N자 / 500자'에서 'N자'로 변경) */}
             <div className="text-end mt-2">
-              <small
-                className={`fw-bold ${
-                  (item.content || "").length >= 500
-                    ? "text-danger"
-                    : "text-muted"
-                }`}
-              >
-                {(item.content || "").length}자 / 500자
+              <small className="fw-bold text-muted">
+                {(item.content || "").length.toLocaleString()}자
               </small>
             </div>
 
@@ -453,7 +423,7 @@ const navigate = useNavigate();
               임시 저장
             </Button>
 
-            {/* 🌟 AI 첨삭 받기 버튼 이벤트 및 로딩 연결 */}
+            {/* AI 첨삭 받기 버튼 */}
             <Button
               variant="primary"
               className="fw-bold px-4 d-flex align-items-center gap-2"

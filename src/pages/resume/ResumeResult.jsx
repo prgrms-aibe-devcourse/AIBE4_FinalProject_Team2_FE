@@ -12,7 +12,7 @@ const ResumeResult = () => {
   const [activeTab, setActiveTab] = useState("correction"); 
   const [isLoading, setIsLoading] = useState(true);
 
-  // 🌟 원본 자소서 파싱 로직 ("문항" 등 임의의 글자 없이 소제목만 추출)
+  // 🌟 원본 자소서 파싱 로직
   const parseResumeContent = (text) => {
     if (!text) return [];
     
@@ -23,8 +23,83 @@ const ResumeResult = () => {
       if (match) {
         return { subtitle: match[1].trim(), content: match[2].trim() };
       }
-      return { subtitle: "", content: block.trim() }; // 소제목이 없으면 비워둠
-    });
+      return { subtitle: "", content: block.trim() }; 
+    }).filter(item => item.content.length > 0); 
+  };
+
+  // 🌟 AI 원시 데이터(JSON 문자열) 파싱 헬퍼 함수
+  const tryParseJSON = (text) => {
+    try {
+      const cleaned = text.replace(/```json/gi, "").replace(/```/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      
+      if (Array.isArray(parsed)) return parsed;
+      
+      if (typeof parsed === 'object' && parsed !== null) {
+        for (const key in parsed) {
+          if (Array.isArray(parsed[key])) return parsed[key];
+        }
+      }
+      return null;
+    } catch (e) {
+      return null; 
+    }
+  };
+
+  // 📝 세부 문장 교정 렌더러
+  const formatSentenceCorrections = (text) => {
+    if (!text) return null;
+
+    const jsonData = tryParseJSON(text);
+    
+    if (jsonData) {
+      return jsonData.map((item, idx) => (
+        <Card key={idx} className="mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+          <div className="p-3" style={{ backgroundColor: "#fff1f2", borderBottom: "1px dashed #ffe4e6" }}>
+            <Badge bg="danger" className="mb-2 px-2 py-1 shadow-sm">수정 전</Badge>
+            <div style={{ color: "#be123c", fontSize: "14.5px", textDecoration: "line-through", lineHeight: "1.6" }}>
+              {item.original || item.Original}
+            </div>
+          </div>
+          <div className="p-3" style={{ backgroundColor: "#f0fdf4", borderBottom: "1px dashed #dcfce7" }}>
+            <Badge bg="success" className="mb-2 px-2 py-1 shadow-sm">수정 후</Badge>
+            <div style={{ color: "#166534", fontSize: "14.5px", fontWeight: "600", lineHeight: "1.6" }}>
+              {item.corrected || item.Corrected}
+            </div>
+          </div>
+          <div className="p-3 bg-white">
+            <Badge bg="secondary" className="mb-2 px-2 py-1 shadow-sm">💡 교정 이유</Badge>
+            <div style={{ color: "#475569", fontSize: "14px", lineHeight: "1.6" }}>
+              {item.reason || item.Reason}
+            </div>
+          </div>
+        </Card>
+      ));
+    }
+
+    return <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.8", fontSize: "14.5px", color: "#495057" }}>{text}</div>;
+  };
+
+  // 📑 문단 요약 렌더러
+  const formatParagraphSummaries = (text) => {
+    if (!text) return null;
+
+    const jsonData = tryParseJSON(text);
+
+    if (jsonData) {
+      return jsonData.map((item, idx) => (
+        <div key={idx} className="mb-3 p-3 bg-white rounded-4 border shadow-sm d-flex gap-3 align-items-start">
+          <Badge bg="dark" className="rounded-circle d-flex justify-content-center align-items-center flex-shrink-0 shadow-sm" style={{ width: "28px", height: "28px", fontSize: "13px" }}>
+            {item.paragraphNumber || item.ParagraphNumber || (idx + 1)}
+          </Badge>
+          <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.7", fontSize: "14.5px", color: "#334155", marginTop: "2px" }}>
+            {item.summary || item.Summary}
+          </div>
+        </div>
+      ));
+    }
+
+    return <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.8", fontSize: "14.5px", color: "#495057" }}>{text}</div>;
   };
 
   useEffect(() => {
@@ -69,9 +144,58 @@ const ResumeResult = () => {
     );
   }
 
-  // 👉 우측 탭 렌더링 (좌우측 CSS 디자인 완벽 통일)
+  // 👉 분리된 탭 컨텐츠 렌더링
   const renderTabContent = () => {
     switch (activeTab) {
+      
+      // 1. 세부 문장 교정 탭
+      case "correction":
+        const hasCorrection = reportData.sentenceCorrections?.trim();
+        if (!hasCorrection) {
+          return <div className="text-center p-5 text-muted mt-5 bg-light rounded-4">세부 교정 결과가 없습니다.</div>;
+        }
+        return (
+          <div className="p-4 rounded-4 bg-light border-0">
+            <h5 className="fw-bold mb-4 d-flex align-items-center gap-2 text-dark">
+              📝 세부 문장 교정 포인트
+            </h5>
+            {formatSentenceCorrections(reportData.sentenceCorrections)}
+          </div>
+        );
+
+      // 2. 핵심 문단 요약 탭
+      case "summary":
+        const hasSummary = reportData.paragraphSummaries?.trim();
+        if (!hasSummary) {
+          return <div className="text-center p-5 text-muted mt-5 bg-light rounded-4">문단 요약 결과가 없습니다.</div>;
+        }
+        return (
+          <div className="p-4 rounded-4 bg-light border-0">
+            <h5 className="fw-bold mb-4 d-flex align-items-center gap-2 text-dark">
+              📑 핵심 문단 요약
+            </h5>
+            {formatParagraphSummaries(reportData.paragraphSummaries)}
+          </div>
+        );
+
+      // 3. 최종 완성본 탭
+      case "revised":
+        const hasRevised = reportData.revisedFullContent?.trim();
+        if (!hasRevised) {
+          return <div className="text-center p-5 text-muted mt-5 bg-light rounded-4">최종 완성본 결과가 없습니다.</div>;
+        }
+        return (
+          <div className="p-4 rounded-4 bg-white border shadow-sm">
+            <h5 className="fw-bold mb-4 d-flex align-items-center gap-2 text-dark border-bottom pb-3">
+              ✨ AI 최종 교정 완성본
+            </h5>
+            <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.9", fontSize: "15px", color: "#212529" }}>
+              {reportData.revisedFullContent}
+            </div>
+          </div>
+        );
+
+      // 4. 종합 피드백 탭
       case "overall":
         return reportData.overallFeedback?.trim() ? (
           <div className="p-4 rounded-4 bg-light border-0">
@@ -86,52 +210,7 @@ const ResumeResult = () => {
           <div className="text-center p-5 text-muted mt-5 bg-light rounded-4">해당 항목에 대한 분석 결과가 없습니다.</div>
         );
         
-      case "correction":
-        const hasCorrection = reportData.sentenceCorrections?.trim();
-        const hasSummary = reportData.paragraphSummaries?.trim();
-        const hasRevised = reportData.revisedFullContent?.trim();
-
-        if (!hasCorrection && !hasSummary && !hasRevised) {
-          return <div className="text-center p-5 text-muted mt-5 bg-light rounded-4">해당 항목에 대한 분석 결과가 없습니다.</div>;
-        }
-
-        return (
-          <div className="d-flex flex-column gap-4">
-            {hasCorrection && (
-              <div className="p-4 rounded-4 bg-light border-0">
-                <h5 className="fw-bold mb-3 d-flex align-items-center gap-2 text-dark">
-                  📝 세부 문장 교정 포인트
-                </h5>
-                <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.8", fontSize: "14.5px", color: "#495057" }}>
-                  {reportData.sentenceCorrections}
-                </div>
-              </div>
-            )}
-
-            {hasSummary && (
-              <div className="p-4 rounded-4 bg-light border-0">
-                <h5 className="fw-bold mb-3 d-flex align-items-center gap-2 text-dark">
-                  📑 핵심 문단 요약
-                </h5>
-                <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.8", fontSize: "14.5px", color: "#495057" }}>
-                  {reportData.paragraphSummaries}
-                </div>
-              </div>
-            )}
-
-            {hasRevised && (
-              <div className="p-4 rounded-4 bg-white border shadow-sm">
-                <h5 className="fw-bold mb-4 d-flex align-items-center gap-2 text-dark border-bottom pb-3">
-                  ✨ AI 최종 교정 완성본
-                </h5>
-                <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.9", fontSize: "15px", color: "#212529" }}>
-                  {reportData.revisedFullContent}
-                </div>
-              </div>
-            )}
-          </div>
-        );
-        
+      // 5. 직무 적합도 매칭 탭
       case "match":
         return (
           <div className="p-4 rounded-4 bg-white border shadow-sm">
@@ -169,6 +248,7 @@ const ResumeResult = () => {
           </div>
         );
         
+      // 6. 예상 면접 질문 탭
       case "interview":
         return reportData.expectedQuestions?.trim() ? (
           <div className="p-4 rounded-4 bg-light border-0">
@@ -212,7 +292,7 @@ const ResumeResult = () => {
       {/* ↔️ 좌우 레이아웃 영역 */}
       <Row className="g-4" style={{ height: "calc(100vh - 160px)" }}>
         
-        {/* 👈 좌측 원본 자소서 (우측과 디자인 통일: bg-light, p-4, rounded-4) */}
+        {/* 👈 좌측 원본 자소서 */}
         <Col lg={5} className="h-100">
           <Card className="shadow-sm border-0 rounded-4 h-100 d-flex flex-column" style={{ backgroundColor: "#ffffff" }}>
             <Card.Header className="bg-transparent border-0 pt-4 pb-3 px-4">
@@ -240,7 +320,9 @@ const ResumeResult = () => {
           <Card className="shadow-sm border-0 rounded-4 h-100 d-flex flex-column" style={{ backgroundColor: "#ffffff" }}>
             <Card.Header className="bg-transparent border-0 pt-4 pb-2 px-4">
               <h5 className="fw-bold mb-3 text-dark">✨ AI 첨삭 및 피드백 결과</h5>
-              <Nav variant="pills" className="gap-2 mb-2 custom-nav-pills">
+              
+              {/* 🔥 분리된 탭 네비게이션 */}
+              <Nav variant="pills" className="gap-2 mb-2 custom-nav-pills d-flex flex-wrap">
                 <Nav.Item>
                   <Nav.Link 
                     eventKey="correction" 
@@ -248,7 +330,27 @@ const ResumeResult = () => {
                     onClick={() => setActiveTab("correction")}
                     className={`fw-bold rounded-pill px-4 py-2 ${activeTab === 'correction' ? 'bg-primary text-white shadow-sm' : 'text-secondary bg-light'}`}
                   >
-                    세부 교정 및 완성본
+                    세부 문장 교정
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link 
+                    eventKey="summary" 
+                    active={activeTab === "summary"} 
+                    onClick={() => setActiveTab("summary")}
+                    className={`fw-bold rounded-pill px-4 py-2 ${activeTab === 'summary' ? 'bg-primary text-white shadow-sm' : 'text-secondary bg-light'}`}
+                  >
+                    핵심 문단 요약
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link 
+                    eventKey="revised" 
+                    active={activeTab === "revised"} 
+                    onClick={() => setActiveTab("revised")}
+                    className={`fw-bold rounded-pill px-4 py-2 ${activeTab === 'revised' ? 'bg-primary text-white shadow-sm' : 'text-secondary bg-light'}`}
+                  >
+                    최종 교정 완성본
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
@@ -261,6 +363,7 @@ const ResumeResult = () => {
                     종합 피드백
                   </Nav.Link>
                 </Nav.Item>
+                
                 {reportData.analysisType === "FIT_MATCH" && (
                   <>
                     <Nav.Item>
@@ -300,7 +403,7 @@ const ResumeResult = () => {
           .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
           .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
           .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
-          .custom-nav-pills .nav-link { transition: all 0.2s ease-in-out; cursor: pointer; border: 1px solid transparent; }
+          .custom-nav-pills .nav-link { transition: all 0.2s ease-in-out; cursor: pointer; border: 1px solid transparent; margin-bottom: 5px; }
           .custom-nav-pills .nav-link:not(.active):hover { background-color: #e2e8f0 !important; border-color: #cbd5e1; }
         `}
       </style>
