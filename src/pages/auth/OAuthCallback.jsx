@@ -80,17 +80,6 @@ const OAuthCallback = () => {
                     안전한 접속을 위해 인증 정보를 확인하고 있습니다.<br />
                     잠시만 기다려 주세요.
                 </p>
-
-                {/* 하단 진행 바 (이미지 디자인 반영) */}
-                <div className="mx-auto mt-4" style={{ width: '160px' }}>
-                    <div className="progress" style={{ height: '4px', backgroundColor: '#E3F2FD' }}>
-                        <div
-                            className="progress-bar progress-bar-animated progress-bar-striped"
-                            role="progressbar"
-                            style={{ width: '100%', backgroundColor: '#1976D2' }}
-                        ></div>
-                    </div>
-                </div>
             </div>
 
             <style>{`

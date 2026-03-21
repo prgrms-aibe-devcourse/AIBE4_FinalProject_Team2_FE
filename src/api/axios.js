@@ -55,11 +55,6 @@ api.interceptors.response.use(
             return Promise.reject(error);
         }
 
-        // ⭐ 로그인이나 유저 정보 확인 요청에서 401이 나면 재발급 시도 안 함
-        if (originalRequest.url.includes('/auth/login') || originalRequest.url.includes('/auth/me')) {
-            return Promise.reject(error);
-        }
-
         // 403은 재발급 대상 아님 (권한 문제)
         if (error.response?.status === 403) {
             console.error('권한이 없습니다.');
@@ -68,6 +63,13 @@ api.interceptors.response.use(
 
         // 에러 상태가 401(Unauthorized)이고, 아직 재시도를 안 했다면
         if (error.response?.status === 401 && !originalRequest._retry) {
+
+            // ⭐ 로그인이나 유저 정보 확인 요청에서 401이 나면 재발급 시도 안 함
+            if (originalRequest.url.includes('/auth/login') || originalRequest.url.includes('/auth/me')) {
+                handleLogoutAndRedirect()
+                return Promise.reject(error);
+            }
+
             originalRequest._retry = true; // 무한 루프 방지용 플래그
 
             try {
@@ -100,15 +102,12 @@ api.interceptors.response.use(
                     // 실패했던 원래 요청의 헤더를 새 토큰으로 교체 후 재요청
                     originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return api(originalRequest);
+                } else {
+                    throw new Error("Reissue failed")
                 }
             } catch (reissueError) {
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                localStorage.removeItem('role');
-                localStorage.removeItem('email');
-                localStorage.removeItem('nickname');
-
-                window.location.href = `${FRONT_BASE}/login`;
+                alert("세션이 만료되었습니다. 다시 로그인 해주세요.")
+                handleLogoutAndRedirect()
                 return Promise.reject(reissueError);
             }
         }
@@ -116,5 +115,10 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+const handleLogoutAndRedirect = () => {
+    localStorage.clear(); // 모든 정보 삭제 (accessToken, role, email 등)
+    window.location.href = `${FRONT_BASE}/login`;
+};
 
 export default api;

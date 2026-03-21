@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import {Routes, Route, useLocation, Navigate} from 'react-router-dom';
 import Navbar from './components/global/Navigation.jsx';
 import Footer from './components/global/Footer.jsx';
 import Home from './pages/Home.jsx';
@@ -37,12 +37,11 @@ import TextInterview from "./pages/interview/TextInterview.jsx";
 import VoiceInterview from "./pages/interview/VoiceInterview.jsx";
 import ReportPage from "./pages/interview/ReportPage.jsx";
 
-</* 면접 코칭 컨설턴트 */></>
 import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
 
-</* AI 자기소개서 분석 페이지 */></>
 import ResumeWrite from "./pages/resume/ResumeWrite.jsx"; 
 import ResumeResult from './pages/resume/ResumeResult.jsx';
+import AuthProtectedRoute from "./components/auth/AuthProtectedRoute.jsx";
 
 function App() {
     const location = useLocation();
@@ -57,7 +56,6 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/resume" element={<ResumeWrite />} />
                 <Route path="/oauth/callback" element={<OAuthCallback />} />
 
                 {/* 관리자 */}
@@ -170,30 +168,35 @@ function App() {
                     }
                 />
 
-                {/* 면접 코칭 컨설턴트 */}
-                <Route path="/job-posting" element={<JobPostingPage />} />
-                {/* AI 자기소개서 분석*/}
-                <Route path="/resume" element={<ResumeWrite />} />
-                <Route path="/resumes/:resumeId}/reports/:reportId" element={<ResumeResult />} />
+                <Route element={<AuthProtectedRoute />}>
+                    {/* 면접 코칭 컨설턴트 */}
+                    <Route path="/job-posting" element={<JobPostingPage />} />
+                    {/* AI 자기소개서 분석*/}
+                    <Route path="/resume" element={<ResumeWrite />} />
+                    <Route path="/resumes/:resumeId/reports/:reportId" element={<ResumeResult />} />
 
-                {/*마이페이지*/}
-                <Route path="/mypage" element={<MyPageLayout />}>
-                    <Route path="dashboard" element={<DashBoard />} />
-                    <Route path="resumes" element={<ResumesList />} />
-                    <Route path="interviews" element={<InterviewsList />} />
-                    <Route path="bookmarks" element={<QuestionBookmark />} />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="profile/edit" element={<ProfileEdit />} />
+                    {/*마이페이지*/}
+                    <Route path="/mypage" element={<MyPageLayout />}>
+                        <Route path="dashboard" element={<DashBoard />} />
+                        <Route path="resumes" element={<ResumesList />} />
+                        <Route path="interviews" element={<InterviewsList />} />
+                        <Route path="bookmarks" element={<QuestionBookmark />} />
+                        <Route path="profile" element={<Profile />} />
+                        <Route path="profile/edit" element={<ProfileEdit />} />
+                    </Route>
+                    <Route path="/mypage/resumes/:id" element={<MyResumeDetail />} />
+                    <Route path="/mypage/resume/edit/:id" element={<ResumeEdit />} />
+                    <Route path="/mypage/interviews/:id" element={<MyInterviewDetail />} />
+
+                    {/*면접*/}
+                    <Route path="/interview" element={<SetupPage />} />
+                    <Route path="/interview/text/:sessionId" element={<TextInterview />} />
+                    <Route path="/interview/voice/:sessionId" element={<VoiceInterview />} />
+                    <Route path="/interview/report/:sessionId" element={<ReportPage />} />
                 </Route>
-                <Route path="/mypage/resumes/:id" element={<MyResumeDetail />} />
-                <Route path="/mypage/resume/edit/:id" element={<ResumeEdit />} />
-                <Route path="/mypage/interviews/:id" element={<MyInterviewDetail />} />
 
-                {/*면접*/}
-                <Route path="/interview" element={<SetupPage />} />
-                <Route path="/interview/text/:sessionId" element={<TextInterview />} />
-                <Route path="/interview/voice/:sessionId" element={<VoiceInterview />} />
-                <Route path="/interview/report/:sessionId" element={<ReportPage />} />
+                {/* 잘못된 경로는 메인으로 리다이렉트 */}
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
 
             {!isAdminOrOpsRoute && <Footer />}
