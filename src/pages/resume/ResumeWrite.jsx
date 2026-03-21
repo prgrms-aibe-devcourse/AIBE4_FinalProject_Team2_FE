@@ -68,7 +68,6 @@ const navigate = useNavigate();
 
     setIsFileLoading(true);
     try {
-      // 🔥 형민님의 원본 경로 복구
       const response = await axios.post("/resumes/extract", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });

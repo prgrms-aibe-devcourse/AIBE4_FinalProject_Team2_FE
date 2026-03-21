@@ -41,6 +41,7 @@ import ReportPage from "./pages/interview/ReportPage.jsx";
 import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
 
 </* AI 자기소개서 분석 페이지 */></>
+import ResumeProgress from "./pages/resume/ResumeProgress.jsx";
 import ResumeWrite from "./pages/resume/ResumeWrite.jsx"; 
 import ResumeResult from './pages/resume/ResumeResult.jsx';
 
@@ -172,9 +173,11 @@ function App() {
 
                 {/* 면접 코칭 컨설턴트 */}
                 <Route path="/job-posting" element={<JobPostingPage />} />
+                
                 {/* AI 자기소개서 분석*/}
+                <Route path="/resumes/:resumeId/reports/:reportId/progress" element={<ResumeProgress />} />
+                <Route path="/resumes/:resumeId/reports/:reportId" element={<ResumeResult />} />
                 <Route path="/resume" element={<ResumeWrite />} />
-                <Route path="/resumes/:resumeId}/reports/:reportId" element={<ResumeResult />} />
 
                 {/*마이페이지*/}
                 <Route path="/mypage" element={<MyPageLayout />}>
