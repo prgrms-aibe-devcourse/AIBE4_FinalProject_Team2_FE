@@ -36,58 +36,65 @@ export default function TextInterview() {
         setMessages(prev => [...prev, { role: 'ai', text: '' }]);
 
         const memberId = 1;
-        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
 
+        // 🚀 수정 1: 안정적인 최신 모델 명시 (백엔드 에러 방지)
         const params = new URLSearchParams({
             answer: userText,
             memberId: memberId.toString(),
-            interviewMode: mode,
+            interviewMode: mode
         });
 
         const url = `${baseUrl}/api/interviews/${sessionId}/text/stream?${params.toString()}`;
 
         try {
-            const eventSource = new EventSource(url);
+            // 🚀 수정 2: CORS 및 JWT 인증 정보를 보내기 위한 필수 옵션
+            const eventSource = new EventSource(url, { withCredentials: true });
 
-            eventSource.onmessage = (event) => {
+            eventSource.onopen = () => {
+                console.log("🟢 SSE 서버 연결 성공!");
+            };
+
+            const messageHandler = (event) => {
+                // 🚀 수정 3: 수신된 원본 데이터를 콘솔에 출력하여 확인
+                console.log("📥 [SSE 수신 데이터]:", event.data);
+
                 if (event.data === "[DONE]") {
                     eventSource.close();
                     setIsGenerating(false);
                     return;
                 }
 
-                let chunk = ""; // 빈 문자열로 초기화하여 쓰레기값 노출 방지
+                let chunk = "";
 
                 try {
-                    const data = JSON.parse(event.data);
+                    let data = JSON.parse(event.data);
 
-                    // 텍스트 데이터 안전 추출 로직
-                    if (data?.candidates?.[0]?.content?.parts?.[0]) {
-                        chunk = data.candidates[0].content.parts[0].text || '';
+                    // Spring이 JSON을 문자열로 한 번 더 감싸서 보냈을 경우 방어
+                    if (typeof data === 'string') {
+                        data = JSON.parse(data);
+                    }
+
+                    if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        chunk = data.candidates[0].content.parts[0].text;
                     } else if (data?.text) {
                         chunk = data.text;
+                    } else {
+                        console.warn("⚠️ 텍스트 필드를 찾을 수 없습니다:", data);
                     }
                 } catch (e) {
-                    // 파싱 에러 발생 시 (긴 데이터가 쪼개져서 들어온 경우)
+                    console.error("❌ JSON 파싱 실패:", e, "원본:", event.data);
                     const rawData = event.data.trim();
-
-                    if (rawData.startsWith('{') || rawData.startsWith('[')) {
-                        // JSON 형태로 시작하는데 파싱 에러가 났다면 깨진 청크이므로 조용히 무시합니다.
-                        console.warn("부분적으로 잘린 JSON 스트림 무시됨");
-                    } else {
-                        // 순수한 텍스트 메시지(서버 에러 메시지 등)일 경우에만 출력
+                    if (!rawData.startsWith('{') && !rawData.startsWith('[')) {
                         chunk = rawData;
                     }
                 }
 
-                // 추가할 텍스트가 없으면(thoughtSignature 등) 렌더링 최적화를 위해 스킵
                 if (!chunk) return;
 
                 setMessages(prev => {
                     const newMsgs = [...prev];
                     const lastIdx = newMsgs.length - 1;
-
-                    // 상태 불변성 유지 (글자 중복 타이핑 버그 방지)
                     newMsgs[lastIdx] = {
                         ...newMsgs[lastIdx],
                         text: newMsgs[lastIdx].text + chunk
@@ -96,13 +103,17 @@ export default function TextInterview() {
                 });
             };
 
+            eventSource.addEventListener('message', messageHandler);
+
             eventSource.onerror = (err) => {
-                // 스트리밍이 정상 종료되어 서버가 연결을 끊은 경우 콘솔 에러가 나지 않도록 조용히 닫기
+                // 🚀 수정 4: 에러 발생 시 숨기지 않고 무조건 콘솔에 출력
+                console.error("🚨 EventSource 통신 에러 (연결 끊김):", err);
                 eventSource.close();
                 setIsGenerating(false);
             };
+
         } catch (err) {
-            console.error("EventSource connection failed:", err);
+            console.error("🚨 EventSource 객체 생성 실패:", err);
             setIsGenerating(false);
         }
     };
