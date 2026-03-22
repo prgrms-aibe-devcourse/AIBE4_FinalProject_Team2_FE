@@ -23,3 +23,6 @@ export const getOpsIssueLogs = (issueId, params) =>
 
 export const getOpsLogDetail = (logId) =>
     api.get(`/admin/logs/${logId}`);
+
+export const updateOpsIssueStatus = (issueId, status) =>
+    api.patch(`/admin/error-issues/${issueId}/status`, { status });
