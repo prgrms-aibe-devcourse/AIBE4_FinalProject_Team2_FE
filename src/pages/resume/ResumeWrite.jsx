@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Container, Card, Form, Button, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import { parseJobPosting } from "../../api/jobPosting";
 
@@ -9,6 +9,8 @@ const ResumeWrite = () => {
 
   // 1. 채용 공고 상태 관리
   const [jobDescription, setJobDescription] = useState("");
+  // 🔥 채용 공고 ID를 저장할 상태 추가
+  const [jobPostingId, setJobPostingId] = useState(null);
   const [isJobLoading, setIsJobLoading] = useState(false);
 
   // 2. 자기소개서 상태 관리
@@ -21,36 +23,39 @@ const ResumeWrite = () => {
   // 3. AI 첨삭 로딩 상태 관리
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  // 전체 글자 수 계산 (모든 문항의 내용 길이 합산)
   const totalCharCount = resumeItems.reduce(
     (acc, item) => acc + (item.content?.length || 0),
-    0
+    0,
   );
 
   // ==========================================
   // 💼 1. 채용 공고 불러오기 기능
   // ==========================================
   const handleLoadJobPosting = async () => {
-    const url = window.prompt("분석할 원티드 채용 공고 URL을 입력해주세요:");
-    if (!url) return;
+      const url = window.prompt("분석할 원티드 채용 공고 URL을 입력해주세요:");
+      if (!url) return;
 
-    setIsJobLoading(true);
-    try {
-      const response = await parseJobPosting(url);
-      if (response.success) {
-        const data = response.data;
-        const jdText = `[${data.companyName}] ${data.jobTitle}\n\n[주요 업무]\n${data.mainTasks}\n\n[자격 요건]\n${data.qualifications}`;
-        setJobDescription(jdText);
-      } else {
-        alert("공고를 불러오는데 실패했습니다.");
+      setIsJobLoading(true);
+      try {
+        const response = await parseJobPosting(url);
+        if (response.success) {
+          const data = response.data;
+          console.log("🔥 채용공고 파싱 응답 데이터:", data);
+
+          // 🔥 수정된 부분: URL과 공고 제목을 [ ] 대괄호 섹션으로 예쁘게 묶어서 텍스트로 만듭니다.
+          const jdText = `[URL]\n${url}\n\n[공고 제목]\n[${data.companyName}] ${data.jobTitle}\n\n[주요 업무]\n${data.mainTasks}\n\n[자격 요건]\n${data.qualifications}`;
+          
+          setJobDescription(jdText);
+        } else {
+          alert("공고를 불러오는데 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("공고 파싱 에러:", error);
+        alert("공고를 불러오는 중 오류가 발생했습니다.");
+      } finally {
+        setIsJobLoading(false);
       }
-    } catch (error) {
-      console.error("공고 파싱 에러:", error);
-      alert("공고를 불러오는 중 오류가 발생했습니다.");
-    } finally {
-      setIsJobLoading(false);
-    }
-  };
+    };
 
   // ==========================================
   // 📄 2. 자기소개서 파일 업로드 및 API 연동
@@ -73,11 +78,9 @@ const ResumeWrite = () => {
       });
 
       const parsedItems = response.data.data;
-      console.log("백엔드에서 넘겨준 파싱 데이터:", parsedItems);
 
       if (parsedItems && parsedItems.length > 0) {
         const mappedItems = parsedItems.map((item) => {
-          // 🔥 500자 자르기 로직 제거: 원본 내용 그대로 저장
           return {
             subtitle: item.question || "",
             content: item.answer || "",
@@ -126,7 +129,6 @@ const ResumeWrite = () => {
       formattedText +
       currentText.substring(end);
 
-    // 🔥 500자 제한 방어 로직 제거
     updateResumeItem(index, "content", newContent);
 
     setTimeout(() => {
@@ -159,6 +161,7 @@ const ResumeWrite = () => {
   const handleAiAnalysis = async () => {
     const hasContent = resumeItems.some((item) => item.content.trim() !== "");
     if (!hasContent) {
+      consloe.log("AI 첨삭 요청 실패: 자기소개서 내용이 비어있음");
       alert("자기소개서 내용을 최소 한 문항 이상 입력해주세요.");
       return;
     }
@@ -176,17 +179,31 @@ const ResumeWrite = () => {
         content: combinedContent,
       };
 
+      // 이력서 먼저 저장
       const saveResponse = await axios.post("/resumes", resumePayload);
       const resumeId = saveResponse.data.data.id || saveResponse.data.data;
 
-      const analyzeResponse = await axios.post(
-        `/resumes/${resumeId}/analyze/normal`
-      );
-      
+      let analyzeResponse;
+
+      // 🔥 jobPostingId 유무에 따른 API 분기 처리
+      if (jobDescription && jobDescription.trim() !== "") {
+        // 채용 공고 텍스트가 있으면 '맞춤형 직무 매칭 분석(FIT_MATCH)' 호출
+        analyzeResponse = await axios.post(
+          `/resumes/${resumeId}/analyze/match`,
+          {
+            jobDescriptionText: jobDescription, 
+          },
+        );
+      } else {
+        // 채용 공고 텍스트가 비어있으면 '일반 첨삭(NORMAL)' 호출
+        analyzeResponse = await axios.post(
+          `/resumes/${resumeId}/analyze/normal`,
+        );
+      }
+
       const reportId = analyzeResponse.data.data;
 
       alert("AI 첨삭 요청이 완료되었습니다!");
-      // 🔥 Progress 창으로 라우팅되도록 수정된 부분
       navigate(`/resumes/${resumeId}/reports/${reportId}/progress`);
     } catch (error) {
       console.error("AI 첨삭 요청 에러:", error);
@@ -199,7 +216,7 @@ const ResumeWrite = () => {
   return (
     <Container className="py-5" style={{ maxWidth: "850px" }}>
       <div className="text-center mb-5">
-        <h2 className="fw-bold">AI 자기소개서 작성</h2>
+        <h2 className="fw-bold">AI 자소서/이력서 작성</h2>
         <p className="text-muted small">
           지원하려는 직무 공고와 작성 중인 자기소개서를 입력해주세요.
         </p>
@@ -208,7 +225,14 @@ const ResumeWrite = () => {
       {/* 1. 채용 공고 영역 */}
       <Card className="shadow-sm border-0 rounded-4 mb-4 p-4">
         <div className="d-flex justify-content-between mb-3 align-items-center">
-          <h6 className="fw-bold m-0">💼 채용 공고 (선택 사항)</h6>
+          <div className="d-flex align-items-center gap-2">
+            <h6 className="fw-bold m-0">💼 채용 공고 (선택 사항)</h6>
+            {jobPostingId && (
+              <Badge bg="success" className="rounded-pill">
+                연동 완료
+              </Badge>
+            )}
+          </div>
           <Button
             variant="link"
             className="text-decoration-none p-0 small text-primary fw-bold"
@@ -228,7 +252,11 @@ const ResumeWrite = () => {
           className="bg-light border-0 p-3"
           placeholder="직무 설명(JD)이나 주요 자격 요건을 입력하세요. (우측 상단의 '공고 불러오기'를 통해 자동 입력 가능)"
           value={jobDescription}
-          onChange={(e) => setJobDescription(e.target.value)}
+          onChange={(e) => {
+            setJobDescription(e.target.value);
+            // 텍스트를 수동으로 지우면 연동된 ID도 초기화 (옵션)
+            if (e.target.value === "") setJobPostingId(null);
+          }}
           style={{ fontSize: "14px", lineHeight: "1.6", resize: "none" }}
         />
       </Card>
@@ -250,7 +278,6 @@ const ResumeWrite = () => {
           </div>
 
           <div className="d-flex align-items-center gap-3">
-            {/* 🔥 상단: 전체 글자 수 제한 없이 '총 N자'로 표시 */}
             <span className="small fw-bold text-muted">
               총 {totalCharCount.toLocaleString()}자
             </span>
@@ -330,7 +357,6 @@ const ResumeWrite = () => {
               </span>
             </div>
 
-            {/* 소제목 입력칸 */}
             <Form.Control
               type="text"
               value={item.subtitle}
@@ -342,7 +368,6 @@ const ResumeWrite = () => {
               style={{ fontSize: "16px" }}
             />
 
-            {/* 내용 입력칸 (🔥 maxLength 속성 제거됨) */}
             <Form.Control
               id={`content-textarea-${index}`}
               as="textarea"
@@ -360,14 +385,12 @@ const ResumeWrite = () => {
               }}
             />
 
-            {/* 🔥 문항별 글자 수 카운터 ('N자 / 500자'에서 'N자'로 변경) */}
             <div className="text-end mt-2">
               <small className="fw-bold text-muted">
                 {(item.content || "").length.toLocaleString()}자
               </small>
             </div>
 
-            {/* 삭제 버튼 */}
             {resumeItems.length > 1 && (
               <Button
                 variant="link"
@@ -423,7 +446,6 @@ const ResumeWrite = () => {
               임시 저장
             </Button>
 
-            {/* AI 첨삭 받기 버튼 */}
             <Button
               variant="primary"
               className="fw-bold px-4 d-flex align-items-center gap-2"

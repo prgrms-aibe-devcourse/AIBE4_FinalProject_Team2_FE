@@ -123,7 +123,7 @@ const Dashboard = () => {
                         <p className="text-sub mt-2 mb-0">{userName}님의 취업 준비 진행 상황을 한눈에 확인하세요.</p>
                     </div>
                     <div className="d-flex gap-2">
-                        <Button className="fw-bold px-4 rounded-pill shadow-sm" style={{ backgroundColor: '#ffffff', color: '#212529', border: '1px solid #DEE2E6' }} onClick={() => navigate('/correction')}>
+                        <Button className="fw-bold px-4 rounded-pill shadow-sm" style={{ backgroundColor: '#ffffff', color: '#212529', border: '1px solid #DEE2E6' }} onClick={() => navigate('/resume')}>
                             ✍️ 자기소개서 첨삭
                         </Button>
                         <Button className="fw-bold px-4 rounded-pill shadow-sm" style={{ backgroundColor: '#1976D2', color: '#ffffff', border: 'none' }} onClick={() => navigate('/interview')}>
