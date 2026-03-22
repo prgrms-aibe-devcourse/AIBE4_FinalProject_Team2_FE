@@ -175,6 +175,7 @@ function App() {
                     {/* AI 자기소개서 분석*/}
                     <Route path="/resume" element={<ResumeWrite />} />
                     <Route path="/resumes/:resumeId/reports/:reportId" element={<ResumeResult />} />
+                    <Route path="/resumes/:resumeId/reports/:reportId/progress" element={<ResumeProgress />} />
 
                     {/*마이페이지*/}
                     <Route path="/mypage" element={<MyPageLayout />}>

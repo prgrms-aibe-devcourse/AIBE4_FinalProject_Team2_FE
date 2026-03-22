@@ -116,8 +116,11 @@ api.interceptors.response.use(
     }
 );
 
-const handleLogoutAndRedirect = () => {
-    localStorage.clear(); // 모든 정보 삭제 (accessToken, role, email 등)
+const handleLogoutAndRedirect = () => {localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('role');
+    localStorage.removeItem('email');
+    localStorage.removeItem('nickname');
     window.location.href = `${FRONT_BASE}/login`;
 };
 
