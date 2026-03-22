@@ -138,6 +138,15 @@ function AdminUsageStatisticsPage() {
                                     </div>
 
                                     <div className="text-muted small mt-2">
+                                        ※ 사용자 크레딧은 서비스 이용 정책용 재화이며,
+                                        실제 AI 비용은 운영 통계 기준으로 별도 관리됩니다.
+                                    </div>
+
+                                    <div className="text-muted small mt-2">
+                                        ※ 채용공고 요약은 자소서 첨삭의 보조 기능으로, 별도 크레딧 차감 없이 제공합니다.
+                                    </div>
+
+                                    <div className="text-muted small mt-2">
                                         ※ 통계 데이터는 usage_log 기준으로 집계됩니다.
                                     </div>
                                 </>
