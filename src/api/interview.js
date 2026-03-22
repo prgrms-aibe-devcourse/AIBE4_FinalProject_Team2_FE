@@ -19,26 +19,20 @@ export const interviewApi = {
     },
 
     // 2. 음성 면접 시작 (Retell 토큰 발급)
-    startVoiceSession: async (sessionId, memberId = 1) => {
-        const response = await api.post(`/api/interviews/${sessionId}/voice/start`, null, {
-            params: { memberId }
-        });
+    startVoiceSession: async (sessionId) => {
+        const response = await api.post(`/api/interviews/${sessionId}/voice/start`);
         return response.data;
     },
 
     // 3. 면접 종료 처리 (상태를 DONE으로 변경)
-    endInterview: async (sessionId, memberId = 1) => {
-        const response = await api.patch(`/api/interviews/${sessionId}/end`, null, {
-            params: { memberId }
-        });
+    endInterview: async (sessionId) => {
+        const response = await api.patch(`/api/interviews/${sessionId}/end`);
         return response.data;
     },
 
     // 4. 결과 리포트 조회
-    getReport: async (sessionId, memberId = 1) => {
-        const response = await api.get(`/api/interviews/${sessionId}/report`, {
-            params: { memberId }
-        });
+    getReport: async (sessionId) => {
+        const response = await api.get(`/api/interviews/${sessionId}/report`);
         return response.data;
     }
 };
