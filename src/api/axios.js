@@ -116,7 +116,8 @@ api.interceptors.response.use(
     }
 );
 
-const handleLogoutAndRedirect = () => {localStorage.removeItem('accessToken');
+const handleLogoutAndRedirect = () => {
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('role');
     localStorage.removeItem('email');
