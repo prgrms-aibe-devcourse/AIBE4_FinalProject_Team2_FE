@@ -38,7 +38,7 @@ export default function TextInterview() {
         const memberId = 1;
         const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
 
-        // 🚀 수정 1: 안정적인 최신 모델 명시 (백엔드 에러 방지)
+        // 수정 1: 안정적인 최신 모델 명시 (백엔드 에러 방지)
         const params = new URLSearchParams({
             answer: userText,
             memberId: memberId.toString(),
@@ -48,7 +48,7 @@ export default function TextInterview() {
         const url = `${baseUrl}/api/interviews/${sessionId}/text/stream?${params.toString()}`;
 
         try {
-            // 🚀 수정 2: CORS 및 JWT 인증 정보를 보내기 위한 필수 옵션
+            // 수정 2: CORS 및 JWT 인증 정보를 보내기 위한 필수 옵션
             const eventSource = new EventSource(url, { withCredentials: true });
 
             eventSource.onopen = () => {
@@ -56,7 +56,7 @@ export default function TextInterview() {
             };
 
             const messageHandler = (event) => {
-                // 🚀 수정 3: 수신된 원본 데이터를 콘솔에 출력하여 확인
+                // 수정 3: 수신된 원본 데이터를 콘솔에 출력하여 확인
                 console.log("📥 [SSE 수신 데이터]:", event.data);
 
                 if (event.data === "[DONE]") {
@@ -106,7 +106,7 @@ export default function TextInterview() {
             eventSource.addEventListener('message', messageHandler);
 
             eventSource.onerror = (err) => {
-                // 🚀 수정 4: 에러 발생 시 숨기지 않고 무조건 콘솔에 출력
+                // 수정 4: 에러 발생 시 숨기지 않고 무조건 콘솔에 출력
                 console.error("🚨 EventSource 통신 에러 (연결 끊김):", err);
                 eventSource.close();
                 setIsGenerating(false);
