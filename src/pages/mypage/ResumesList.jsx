@@ -205,7 +205,7 @@ const ResumesList = () => {
                                         </div>
                                     )
                                 })}
-                                <div className="resume-card create-card" onClick={() => navigate('/resume/write')} style={{ cursor: 'pointer' }}>
+                                <div className="resume-card create-card" onClick={() => navigate('/resume')} style={{ cursor: 'pointer' }}>
                                     <div className="create-icon">+</div>
                                     <p>새 AI 자소서 생성</p>
                                     <span className="create-desc">AI의 도움을 받아 자소서를 완성하세요</span>

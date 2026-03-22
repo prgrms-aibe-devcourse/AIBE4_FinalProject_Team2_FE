@@ -39,6 +39,7 @@ import ReportPage from "./pages/interview/ReportPage.jsx";
 
 import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
 
+import ResumeProgress from "./pages/resume/ResumeProgress.jsx";
 import ResumeWrite from "./pages/resume/ResumeWrite.jsx"; 
 import ResumeResult from './pages/resume/ResumeResult.jsx';
 import AuthProtectedRoute from "./components/auth/AuthProtectedRoute.jsx";
