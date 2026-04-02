@@ -56,7 +56,7 @@ const ResumeResult = () => {
     }
   };
 
-  // 📝 1. 세부 문장 교정 렌더러
+  // 📝 1. 세부 문장 교정 렌더러 (🔥 담당 문항 디자인 + 텍스트 가독성 극대화)
   const formatSentenceCorrections = (text) => {
     const parsedData = tryParseJSON(text);
     const jsonData = Array.isArray(parsedData)
@@ -68,75 +68,110 @@ const ResumeResult = () => {
         const targetOriginal =
           item.original || item.Original || item.원문 || item["수정 전"] || "";
         const targetCorrected =
-          item.corrected ||
-          item.Corrected ||
-          item.수정본 ||
-          item["수정 후"] ||
-          "";
+          item.corrected || item.Corrected || item.수정본 || item["수정 후"] || "";
         const targetReason =
           item.reason || item.Reason || item.이유 || item["교정 이유"] || "";
+
+        // 🚀 담당 문항 매칭 로직
+        let matchedSubtitle = "";
+        if (targetOriginal && originalResume.length > 0) {
+          const normalizedTarget = targetOriginal.replace(/\s+/g, "");
+          const matchedItem = originalResume.find(resume => 
+            resume.content.replace(/\s+/g, "").includes(normalizedTarget) ||
+            normalizedTarget.includes(resume.content.replace(/\s+/g, ""))
+          );
+          
+          if (matchedItem && matchedItem.subtitle) {
+            // 디자인을 위해 겉에 있는 대괄호 [ ] 를 깔끔하게 제거합니다.
+            matchedSubtitle = matchedItem.subtitle.replace(/^\[|\]$/g, '').trim();
+          }
+        }
 
         return (
           <Card
             key={idx}
-            className="mb-4 border-0 shadow-sm rounded-4 overflow-hidden"
+            className="mb-4 border shadow-sm rounded-4 overflow-hidden"
           >
+            {/* 🔥 예쁘게 꾸며진 담당 문항(소제목) 헤더 영역 */}
+            {matchedSubtitle && (
+              <div 
+                className="px-4 py-3 d-flex align-items-start border-bottom" 
+                style={{ backgroundColor: "#f8fafc" }}
+              >
+                <Badge 
+                  bg="dark" 
+                  className="me-3 mt-1 shadow-sm flex-shrink-0 px-2 py-1" 
+                  style={{ fontSize: "12.5px", borderRadius: "6px" }}
+                >
+                  담당 문항
+                </Badge>
+                <h6 
+                  className="fw-bold text-secondary m-0" 
+                  style={{ fontSize: "15px", lineHeight: "1.6", wordBreak: "keep-all" }}
+                >
+                  {matchedSubtitle}
+                </h6>
+              </div>
+            )}
+
+            {/* 수정 전 원문 */}
             {targetOriginal && (
               <div
-                className="p-3"
-                style={{
-                  backgroundColor: "#fff1f2",
-                  borderBottom: "1px dashed #ffe4e6",
-                }}
+                className="p-4"
+                style={{ backgroundColor: "#fff1f2", borderBottom: "1px dashed #ffe4e6" }}
               >
-                <Badge bg="danger" className="mb-2 px-2 py-1 shadow-sm">
-                  수정 전
-                </Badge>
+                <div className="mb-2">
+                  <Badge bg="danger" className="px-2 py-1 shadow-sm rounded-pill">수정 전</Badge>
+                </div>
                 <div
                   style={{
                     color: "#be123c",
-                    fontSize: "14.5px",
+                    fontSize: "15px",
                     textDecoration: "line-through",
-                    lineHeight: "1.6",
+                    lineHeight: "1.7",
+                    wordBreak: "keep-all"
                   }}
                 >
                   {targetOriginal}
                 </div>
               </div>
             )}
+
+            {/* 수정 후 제안 */}
             {targetCorrected && (
               <div
-                className="p-3"
-                style={{
-                  backgroundColor: "#f0fdf4",
-                  borderBottom: "1px dashed #dcfce7",
-                }}
+                className="p-4"
+                style={{ backgroundColor: "#f0fdf4", borderBottom: "1px dashed #dcfce7" }}
               >
-                <Badge bg="success" className="mb-2 px-2 py-1 shadow-sm">
-                  수정 후 (제안)
-                </Badge>
+                <div className="mb-2">
+                  <Badge bg="success" className="px-2 py-1 shadow-sm rounded-pill">✨ 수정 후 (제안)</Badge>
+                </div>
                 <div
                   style={{
                     color: "#166534",
-                    fontSize: "14.5px",
+                    fontSize: "15px",
                     fontWeight: "600",
-                    lineHeight: "1.6",
+                    lineHeight: "1.7",
+                    wordBreak: "keep-all"
                   }}
                 >
                   {targetCorrected}
                 </div>
               </div>
             )}
+
+            {/* 교정 이유 */}
             {targetReason && (
-              <div className="p-3 bg-white">
-                <Badge bg="secondary" className="mb-2 px-2 py-1 shadow-sm">
-                  💡 교정 이유
-                </Badge>
+              <div className="p-4 bg-white">
+                <div className="mb-2">
+                  <Badge bg="secondary" className="px-2 py-1 shadow-sm rounded-pill">💡 교정 이유</Badge>
+                </div>
                 <div
                   style={{
                     color: "#475569",
-                    fontSize: "14px",
-                    lineHeight: "1.6",
+                    fontSize: "14.5px",
+                    lineHeight: "1.7",
+                    wordBreak: "keep-all"
                   }}
                 >
                   {targetReason}

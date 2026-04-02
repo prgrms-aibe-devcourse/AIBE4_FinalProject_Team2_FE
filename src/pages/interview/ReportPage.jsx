@@ -23,7 +23,7 @@ export default function ReportPage() {
 
         const fetchReport = async () => {
             try {
-                const data = await interviewApi.getReport(sessionId || 1, 1);
+                const data = await interviewApi.getReport(sessionId);
 
                 if (data.finalScore == null && !data.overallFeedback) {
                     console.log(`AI 분석 진행 중 (데이터 생성 대기)... ${currentDelay / 1000}초 뒤 재확인합니다.`);

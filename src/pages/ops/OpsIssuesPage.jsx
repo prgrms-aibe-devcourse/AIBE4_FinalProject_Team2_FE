@@ -15,6 +15,8 @@ import {
 import AdminLayout from "../../components/admin/AdminLayout.jsx";
 import { getOpsIssueDetail, getOpsIssues } from "../../api/ops.js";
 import { useNavigate } from "react-router-dom";
+import ErrorIssueStatusBadge from "../../components/admin/ErrorIssueStatusBadge.jsx";
+import ErrorIssueStatusEditor from "../../components/admin/ErrorIssueStatusEditor.jsx";
 
 function OpsIssuesPage() {
     const navigate = useNavigate();
@@ -132,6 +134,7 @@ function OpsIssuesPage() {
                                     <option value="OPEN">OPEN</option>
                                     <option value="IN_PROGRESS">IN_PROGRESS</option>
                                     <option value="RESOLVED">RESOLVED</option>
+                                    <option value="IGNORED">IGNORED</option>
                                 </Form.Select>
                             </Col>
 
@@ -160,13 +163,17 @@ function OpsIssuesPage() {
                                     }
                                 >
                                     <option value="">전체</option>
+                                    <option value="GLOBAL">GLOBAL</option>
                                     <option value="AUTH">AUTH</option>
                                     <option value="RESUME">RESUME</option>
                                     <option value="INTERVIEW">INTERVIEW</option>
+                                    <option value="JOB_POSTING">JOB_POSTING</option>
                                     <option value="FILE">FILE</option>
-                                    <option value="ADMIN">ADMIN</option>
                                     <option value="STATISTICS">STATISTICS</option>
-                                    <option value="GLOBAL">GLOBAL</option>
+                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="QUEUE">QUEUE</option>
+                                    <option value="EXTERNAL_API">EXTERNAL_API</option>
+                                    <option value="SYSTEM">SYSTEM</option>
                                 </Form.Select>
                             </Col>
 
@@ -220,13 +227,15 @@ function OpsIssuesPage() {
                                     <th>도메인</th>
                                     <th>발생 횟수</th>
                                     <th>최근 발생</th>
+                                    <th>보조 표시</th>
+                                    <th>상태 변경</th>
                                     <th>액션</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {issues.length === 0 ? (
                                     <tr>
-                                        <td colSpan="9" className="text-center">
+                                        <td colSpan="11" className="text-center">
                                             조회된 이슈가 없습니다.
                                         </td>
                                     </tr>
@@ -240,7 +249,7 @@ function OpsIssuesPage() {
                                                 <SeverityBadge severity={issue.severity} />
                                             </td>
                                             <td>
-                                                <StatusBadge status={issue.status} />
+                                                <ErrorIssueStatusBadge status={issue.status} />
                                             </td>
                                             <td>{issue.errorDomain}</td>
                                             <td>{issue.occurrenceCount}</td>
@@ -248,6 +257,18 @@ function OpsIssuesPage() {
                                                 {issue.lastOccurredAt
                                                     ? new Date(issue.lastOccurredAt).toLocaleString("ko-KR")
                                                     : "-"}
+                                            </td>
+                                            <td>
+                                                <span className={issue.recentlyOccurred ? "text-danger fw-semibold" : "text-muted"}>
+                                                    {issue.statusHint || "-"}
+                                                </span>
+                                            </td>
+                                            <td style={{ minWidth: "220px" }}>
+                                                <ErrorIssueStatusEditor
+                                                    issueId={issue.issueId}
+                                                    currentStatus={issue.status}
+                                                    onUpdated={() => fetchIssues(pageInfo.number, filters)}
+                                                />
                                             </td>
                                             <td className="d-flex gap-2 flex-wrap">
                                                 <Button
@@ -299,15 +320,6 @@ function SeverityBadge({ severity }) {
     else if (severity === "LOW") bg = "success";
 
     return <Badge bg={bg}>{severity}</Badge>;
-}
-
-function StatusBadge({ status }) {
-    let bg = "secondary";
-    if (status === "OPEN") bg = "danger";
-    else if (status === "IN_PROGRESS") bg = "warning";
-    else if (status === "RESOLVED") bg = "success";
-
-    return <Badge bg={bg}>{status}</Badge>;
 }
 
 function PagingBar({ pageInfo, onMove }) {
