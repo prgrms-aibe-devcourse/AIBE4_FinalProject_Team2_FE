@@ -1,4 +1,6 @@
 import {Routes, Route, useLocation, Navigate} from 'react-router-dom';
+
+import AccountRecoveryPage from "./pages/auth/AccountRecoveryPage.jsx";
 import Navbar from './components/global/Navigation.jsx';
 import Footer from './components/global/Footer.jsx';
 import Home from './pages/Home.jsx';
@@ -43,9 +45,23 @@ import ResumeProgress from "./pages/resume/ResumeProgress.jsx";
 import ResumeWrite from "./pages/resume/ResumeWrite.jsx"; 
 import ResumeResult from './pages/resume/ResumeResult.jsx';
 import AuthProtectedRoute from "./components/auth/AuthProtectedRoute.jsx";
+import useDuplicateLoginCheck from "./components/auth/useDuplicateLoginCheck.jsx";
+import {useState} from "react";
 
 function App() {
     const location = useLocation();
+
+    // 1. 로그인한 유저의 이메일 상태 관리
+    const [userEmail, setUserEmail] = useState(localStorage.getItem('email'));
+
+    // 2. 중복 로그인 체크 훅 호출 (userEmail이 바뀔 때마다 내부 useEffect 실행)
+    useDuplicateLoginCheck(userEmail);
+
+    // 3. LoginPage에서 호출할 로그인 성공 핸들러
+    const handleLoginSuccess = () => {
+        setUserEmail(localStorage.getItem('email'));
+    };
+
     const isAdminOrOpsRoute =
         location.pathname.startsWith("/admin") || location.pathname.startsWith("/ops");
 
@@ -57,7 +73,12 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route
+                    path="/login"
+                    element={<LoginPage onLoginSuccess={handleLoginSuccess} />}
+                />
                 <Route path="/oauth/callback" element={<OAuthCallback />} />
+                <Route path="/find" element={<AccountRecoveryPage />} />
 
                 {/* 관리자 */}
                 <Route
