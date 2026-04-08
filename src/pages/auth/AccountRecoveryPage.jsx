@@ -24,7 +24,7 @@ const AccountRecoveryPage = () => {
     const handleFindPassword = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/auth/find/password', { email });
+           await api.get(`/auth/find/password?email=${email}`);
             alert("입력하신 이메일로 임시 비밀번호가 발송되었습니다.");
         } catch (error) {
             alert(error.response?.data?.message || "오류가 발생했습니다.");
