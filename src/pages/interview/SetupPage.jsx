@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, MessageSquare, ShieldAlert, Play, Settings, FileText, Briefcase, Info } from 'lucide-react';
+import { BookOpen, MessageSquare, ShieldAlert, Play, Settings, FileText, Briefcase, Info, User, Star } from 'lucide-react';
 import { interviewApi } from '../../api/interview';
 import axios from '../../api/axios';
 import { parseJobPosting } from '../../api/jobPosting';
@@ -13,6 +13,10 @@ export default function SetupPage() {
     const [interviewMode, setInterviewMode] = useState('TEXT');
     const [interviewType, setInterviewType] = useState('NORMAL');
     const [isLoading, setIsLoading] = useState(false);
+
+    // 🚀 [추가] 직무 및 연차 상태 변수
+    const [jobRole, setJobRole] = useState('BACKEND');
+    const [experience, setExperience] = useState('NEWBIE');
 
     // 자기소개서 상태
     const [myResumes, setMyResumes] = useState([]);
@@ -76,7 +80,7 @@ export default function SetupPage() {
     const handleStartInterview = async () => {
         setIsLoading(true);
         try {
-            // 음성 면접일 경우 부가 정보(이력서, 공고)는 null로 전송하여 백엔드 오류 방지
+            // [수정] 음성/텍스트 면접에 관계없이 직무와 연차 정보를 함께 전송
             const sessionData = await interviewApi.startInterview({
                 resumeId: (interviewMode === 'TEXT' && selectedResumeId) ? Number(selectedResumeId) : null,
                 jobPostingId: (interviewMode === 'TEXT' && selectedJobPostingId) ? selectedJobPostingId : null,
@@ -84,7 +88,9 @@ export default function SetupPage() {
                 interviewType: interviewMode,
                 interviewMode: interviewType,
                 aiProvider: interviewMode === 'TEXT' ? 'GEMINI' : 'RETELL',
-                modelVariant: 'gemini-2.5-flash'
+                modelVariant: 'gemini-2.5-flash',
+                jobRole: jobRole,           // 추가된 직무 데이터
+                experience: experience // 추가된 연차 데이터
             });
 
             const sessionId = sessionData.sessionId || sessionData.id;
@@ -112,7 +118,43 @@ export default function SetupPage() {
             <div className="mb-5 text-center">
                 <span className="badge bg-primary bg-opacity-10 text-primary mb-2 px-3 py-2 rounded-pill">AI 면접 설정</span>
                 <h2 className="fw-bold mb-3">맞춤형 모의 면접 준비</h2>
-                <p className="text-muted">내 이력서와 채용 공고를 추가하면 훨씬 더 정교한 꼬리질문을 받을 수 있습니다.</p>
+                <p className="text-muted">내 직무/연차 정보와 이력서를 추가하면 훨씬 더 정교한 질문을 받을 수 있습니다.</p>
+            </div>
+
+            {/* 🚀 [추가] 0. 지원자 기본 정보 설정 */}
+            <div className="setup-card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
+                <h5 className="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <User size={20} className="text-primary" /> 기본 지원 정보 설정
+                </h5>
+                <div className="row g-4">
+                    <div className="col-md-6">
+                        <label className="form-label fw-bold text-secondary">희망 직무</label>
+                        <select
+                            className="form-select form-select-lg bg-light border-0"
+                            value={jobRole}
+                            onChange={(e) => setJobRole(e.target.value)}
+                        >
+                            <option value="BACKEND">백엔드 엔지니어</option>
+                            <option value="FRONTEND">프론트엔드 엔지니어</option>
+                            <option value="FULLSTACK">풀스택 엔지니어</option>
+                            <option value="PM">서비스 기획자 (PM/PO)</option>
+                            <option value="COMMON">기타 직무 (일반)</option>
+                        </select>
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label fw-bold text-secondary">경력 (연차)</label>
+                        <select
+                            className="form-select form-select-lg bg-light border-0"
+                            value={experience}
+                            onChange={(e) => setExperience(e.target.value)}
+                        >
+                            <option value="NEWBIE">신입 (경력 없음)</option>
+                            <option value="JUNIOR">주니어 (1~3년 차)</option>
+                            <option value="MIDDLE">미들 (4~7년 차)</option>
+                            <option value="SENIOR">시니어 (8년 차 이상)</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div className="row g-4 mb-4">
