@@ -10,8 +10,8 @@ export default function SetupPage() {
     const navigate = useNavigate();
 
     // 기존 상태
-    const [interviewMode, setInterviewMode] = useState('TEXT');
-    const [interviewType, setInterviewType] = useState('NORMAL');
+    const [interviewType, setInterviewType] = useState('TEXT');
+    const [interviewMode, setInterviewMode] = useState('NORMAL');
     const [isLoading, setIsLoading] = useState(false);
 
     // 🚀 [추가] 직무 및 연차 상태 변수
@@ -85,8 +85,8 @@ export default function SetupPage() {
                 resumeId: (interviewMode === 'TEXT' && selectedResumeId) ? Number(selectedResumeId) : null,
                 jobPostingId: (interviewMode === 'TEXT' && selectedJobPostingId) ? selectedJobPostingId : null,
                 jobDescription: interviewMode === 'TEXT' ? parsedJobText : null,
-                interviewType: interviewMode,
-                interviewMode: interviewType,
+                interviewType: interviewType,
+                interviewMode: interviewMode,
                 aiProvider: interviewMode === 'TEXT' ? 'GEMINI' : 'RETELL',
                 modelVariant: 'gemini-2.5-flash',
                 jobRole: jobRole,           // 추가된 직무 데이터
@@ -95,10 +95,10 @@ export default function SetupPage() {
 
             const sessionId = sessionData.sessionId || sessionData.id;
 
-            if (interviewMode === 'TEXT') {
-                navigate(`/interview/text/${sessionId}?mode=${interviewType}`);
+            if (interviewType === 'TEXT') {
+                navigate(`/interview/text/${sessionId}?mode=${interviewMode}`);
             } else {
-                navigate(`/interview/voice/${sessionId}?mode=${interviewType}`);
+                navigate(`/interview/voice/${sessionId}?mode=${interviewMode}`);
             }
         } catch (error) {
             console.error("세션 생성 실패:", error);
@@ -166,13 +166,13 @@ export default function SetupPage() {
                         </h6>
                         <div className="d-flex flex-column gap-2">
                             <button
-                                className={`btn py-3 fw-bold ${interviewMode === 'TEXT' ? 'btn-primary shadow-sm' : 'btn-light text-secondary'}`}
-                                onClick={() => setInterviewMode('TEXT')}>
+                                className={`btn py-3 fw-bold ${interviewType === 'TEXT' ? 'btn-primary shadow-sm' : 'btn-light text-secondary'}`}
+                                onClick={() => setInterviewType('TEXT')}>
                                 💬 채팅(Text) 면접
                             </button>
                             <button
-                                className={`btn py-3 fw-bold ${interviewMode === 'VOICE' ? 'btn-primary shadow-sm' : 'btn-light text-secondary'}`}
-                                onClick={() => setInterviewMode('VOICE')}>
+                                className={`btn py-3 fw-bold ${interviewType === 'VOICE' ? 'btn-primary shadow-sm' : 'btn-light text-secondary'}`}
+                                onClick={() => setInterviewType('VOICE')}>
                                 🎙️ 음성(Voice) 면접
                             </button>
                         </div>
@@ -250,8 +250,8 @@ export default function SetupPage() {
                     <div className="row g-4">
                         <div className="col-md-4">
                             <div
-                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewType === 'NORMAL' ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
-                                onClick={() => setInterviewType('NORMAL')} style={{ cursor: 'pointer' }}>
+                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewMode === 'NORMAL' ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
+                                onClick={() => setInterviewMode('NORMAL')} style={{ cursor: 'pointer' }}>
                                 <div className="icon-box bg-white text-primary rounded-circle d-inline-flex p-3 mb-3 shadow-sm">
                                     <BookOpen size={24} />
                                 </div>
@@ -261,8 +261,8 @@ export default function SetupPage() {
                         </div>
                         <div className="col-md-4">
                             <div
-                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewType === 'FOLLOW_UP' ? 'border-info bg-info bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
-                                onClick={() => setInterviewType('FOLLOW_UP')} style={{ cursor: 'pointer' }}>
+                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewMode === 'FOLLOW_UP' ? 'border-info bg-info bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
+                                onClick={() => setInterviewMode('FOLLOW_UP')} style={{ cursor: 'pointer' }}>
                                 <div className="icon-box bg-white text-info rounded-circle d-inline-flex p-3 mb-3 shadow-sm">
                                     <MessageSquare size={24} />
                                 </div>
@@ -272,8 +272,8 @@ export default function SetupPage() {
                         </div>
                         <div className="col-md-4">
                             <div
-                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewType === 'STRESS' ? 'border-danger bg-danger bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
-                                onClick={() => setInterviewType('STRESS')} style={{ cursor: 'pointer' }}>
+                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewMode === 'STRESS' ? 'border-danger bg-danger bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
+                                onClick={() => setInterviewMode('STRESS')} style={{ cursor: 'pointer' }}>
                                 <div className="icon-box bg-white text-danger rounded-circle d-inline-flex p-3 mb-3 shadow-sm">
                                     <ShieldAlert size={24} />
                                 </div>
