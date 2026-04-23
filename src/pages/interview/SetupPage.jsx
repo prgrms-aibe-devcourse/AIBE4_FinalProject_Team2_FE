@@ -6,6 +6,22 @@ import axios from '../../api/axios';
 import { parseJobPosting } from '../../api/jobPosting';
 import './Interview.css';
 
+// [리뷰 반영] 선택지 데이터를 상수 배열로 분리하여 유지보수성 및 가독성 향상
+const JOB_ROLES = [
+    { value: 'BACKEND', label: '백엔드 엔지니어' },
+    { value: 'FRONTEND', label: '프론트엔드 엔지니어' },
+    { value: 'FULLSTACK', label: '풀스택 엔지니어' },
+    { value: 'PM', label: '서비스 기획자 (PM/PO)' },
+    { value: 'COMMON', label: '기타 직무 (일반)' }
+];
+
+const EXPERIENCE_LEVELS = [
+    { value: 'NEWBIE', label: '신입 (경력 없음)' },
+    { value: 'JUNIOR', label: '주니어 (1~3년 차)' },
+    { value: 'MIDDLE', label: '미들 (4~7년 차)' },
+    { value: 'SENIOR', label: '시니어 (8년 차 이상)' }
+];
+
 export default function SetupPage() {
     const navigate = useNavigate();
 
@@ -14,7 +30,7 @@ export default function SetupPage() {
     const [interviewMode, setInterviewMode] = useState('NORMAL');
     const [isLoading, setIsLoading] = useState(false);
 
-    // 🚀 [추가] 직무 및 연차 상태 변수
+    // [추가] 직무 및 연차 상태 변수
     const [jobRole, setJobRole] = useState('BACKEND');
     const [experience, setExperience] = useState('NEWBIE');
 
@@ -90,7 +106,7 @@ export default function SetupPage() {
                 aiProvider: interviewType === 'TEXT' ? 'GEMINI' : 'RETELL',
                 modelVariant: 'gemini-2.5-flash',
                 jobRole: jobRole,           // 추가된 직무 데이터
-                experience: experience // 추가된 연차 데이터
+                experience: experience      // 추가된 연차 데이터
             });
 
             const sessionId = sessionData.sessionId || sessionData.id;
@@ -121,7 +137,7 @@ export default function SetupPage() {
                 <p className="text-muted">내 직무/연차 정보와 이력서를 추가하면 훨씬 더 정교한 질문을 받을 수 있습니다.</p>
             </div>
 
-            {/* 🚀 [추가] 0. 지원자 기본 정보 설정 */}
+            {/* [추가] 0. 지원자 기본 정보 설정 */}
             <div className="setup-card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
                 <h5 className="fw-bold mb-4 d-flex align-items-center gap-2">
                     <User size={20} className="text-primary" /> 기본 지원 정보 설정
@@ -134,11 +150,12 @@ export default function SetupPage() {
                             value={jobRole}
                             onChange={(e) => setJobRole(e.target.value)}
                         >
-                            <option value="BACKEND">백엔드 엔지니어</option>
-                            <option value="FRONTEND">프론트엔드 엔지니어</option>
-                            <option value="FULLSTACK">풀스택 엔지니어</option>
-                            <option value="PM">서비스 기획자 (PM/PO)</option>
-                            <option value="COMMON">기타 직무 (일반)</option>
+                            {/* 상수 배열 map 렌더링 적용 */}
+                            {JOB_ROLES.map((role) => (
+                                <option key={role.value} value={role.value}>
+                                    {role.label}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="col-md-6">
@@ -148,10 +165,12 @@ export default function SetupPage() {
                             value={experience}
                             onChange={(e) => setExperience(e.target.value)}
                         >
-                            <option value="NEWBIE">신입 (경력 없음)</option>
-                            <option value="JUNIOR">주니어 (1~3년 차)</option>
-                            <option value="MIDDLE">미들 (4~7년 차)</option>
-                            <option value="SENIOR">시니어 (8년 차 이상)</option>
+                            {/* 상수 배열 map 렌더링 적용 */}
+                            {EXPERIENCE_LEVELS.map((level) => (
+                                <option key={level.value} value={level.value}>
+                                    {level.label}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
