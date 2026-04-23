@@ -6,7 +6,7 @@ import LoginSidebar from '../../components/auth/loginPage/LoginSidebar.jsx';
 import LoginForm from '../../components/auth/loginPage/LoginForm.jsx';
 import SocialLoginGroup from '../../components/auth/loginPage/SocialLoginGroup.jsx';
 
-const LoginPage = () => {
+const LoginPage = ({onLoginSuccess}) => {
     const navigate = useNavigate();
     const [loginData, setLoginData] = useState({ email: '', password: '' });
 
@@ -27,6 +27,7 @@ const LoginPage = () => {
             localStorage.setItem('nickname', payload.nickname ?? "");
 
             if (payload.accessToken) setAuthToken(payload.accessToken);
+            if (onLoginSuccess) onLoginSuccess();
 
             alert(`${payload.nickname || '사용자'}님, 환영합니다!`);
             navigate('/');
@@ -55,6 +56,7 @@ const LoginPage = () => {
                         <SocialLoginGroup onSocialLogin={handleSocialLogin} />
 
                         <div className="text-center small mt-4">
+                            이메일 또는 비밀번호를 잊었나요? <Link to="/find" className="fw-bold text-primary">계정 찾기</Link> <br/><br/>
                             아직 회원이 아니신가요? <Link to="/signup" className="fw-bold text-primary">지금 회원가입</Link>
                         </div>
                     </div>

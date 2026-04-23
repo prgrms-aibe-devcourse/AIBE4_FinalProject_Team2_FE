@@ -1,4 +1,6 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import {Routes, Route, useLocation, Navigate} from 'react-router-dom';
+
+import AccountRecoveryPage from "./pages/auth/AccountRecoveryPage.jsx";
 import Navbar from './components/global/Navigation.jsx';
 import Footer from './components/global/Footer.jsx';
 import Home from './pages/Home.jsx';
@@ -37,16 +39,29 @@ import TextInterview from "./pages/interview/TextInterview.jsx";
 import VoiceInterview from "./pages/interview/VoiceInterview.jsx";
 import ReportPage from "./pages/interview/ReportPage.jsx";
 
-</* 면접 코칭 컨설턴트 */></>
 import JobPostingPage from "./pages/jobposting/JobPostingPage.jsx";
 
-</* AI 자기소개서 분석 페이지 */></>
 import ResumeProgress from "./pages/resume/ResumeProgress.jsx";
 import ResumeWrite from "./pages/resume/ResumeWrite.jsx"; 
 import ResumeResult from './pages/resume/ResumeResult.jsx';
+import AuthProtectedRoute from "./components/auth/AuthProtectedRoute.jsx";
+import useDuplicateLoginCheck from "./components/auth/useDuplicateLoginCheck.jsx";
+import {useState} from "react";
 
 function App() {
     const location = useLocation();
+
+    // 1. 로그인한 유저의 이메일 상태 관리
+    const [userEmail, setUserEmail] = useState(localStorage.getItem('email'));
+
+    // 2. 중복 로그인 체크 훅 호출 (userEmail이 바뀔 때마다 내부 useEffect 실행)
+    useDuplicateLoginCheck(userEmail);
+
+    // 3. LoginPage에서 호출할 로그인 성공 핸들러
+    const handleLoginSuccess = () => {
+        setUserEmail(localStorage.getItem('email'));
+    };
+
     const isAdminOrOpsRoute =
         location.pathname.startsWith("/admin") || location.pathname.startsWith("/ops");
 
@@ -58,8 +73,12 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/resume" element={<ResumeWrite />} />
+                <Route
+                    path="/login"
+                    element={<LoginPage onLoginSuccess={handleLoginSuccess} />}
+                />
                 <Route path="/oauth/callback" element={<OAuthCallback />} />
+                <Route path="/find" element={<AccountRecoveryPage />} />
 
                 {/* 관리자 */}
                 <Route
@@ -171,32 +190,36 @@ function App() {
                     }
                 />
 
-                {/* 면접 코칭 컨설턴트 */}
-                <Route path="/job-posting" element={<JobPostingPage />} />
-                
-                {/* AI 자기소개서 분석*/}
-                <Route path="/resumes/:resumeId/reports/:reportId/progress" element={<ResumeProgress />} />
-                <Route path="/resumes/:resumeId/reports/:reportId" element={<ResumeResult />} />
-                <Route path="/resume" element={<ResumeWrite />} />
+                <Route element={<AuthProtectedRoute />}>
+                    {/* 면접 코칭 컨설턴트 */}
+                    <Route path="/job-posting" element={<JobPostingPage />} />
+                    {/* AI 자기소개서 분석*/}
+                    <Route path="/resume" element={<ResumeWrite />} />
+                    <Route path="/resumes/:resumeId/reports/:reportId" element={<ResumeResult />} />
+                    <Route path="/resumes/:resumeId/reports/:reportId/progress" element={<ResumeProgress />} />
 
-                {/*마이페이지*/}
-                <Route path="/mypage" element={<MyPageLayout />}>
-                    <Route path="dashboard" element={<DashBoard />} />
-                    <Route path="resumes" element={<ResumesList />} />
-                    <Route path="interviews" element={<InterviewsList />} />
-                    <Route path="bookmarks" element={<QuestionBookmark />} />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="profile/edit" element={<ProfileEdit />} />
+                    {/*마이페이지*/}
+                    <Route path="/mypage" element={<MyPageLayout />}>
+                        <Route path="dashboard" element={<DashBoard />} />
+                        <Route path="resumes" element={<ResumesList />} />
+                        <Route path="interviews" element={<InterviewsList />} />
+                        <Route path="bookmarks" element={<QuestionBookmark />} />
+                        <Route path="profile" element={<Profile />} />
+                        <Route path="profile/edit" element={<ProfileEdit />} />
+                    </Route>
+                    <Route path="/mypage/resumes/:id" element={<MyResumeDetail />} />
+                    <Route path="/mypage/resume/edit/:id" element={<ResumeEdit />} />
+                    <Route path="/mypage/interviews/:id" element={<MyInterviewDetail />} />
+
+                    {/*면접*/}
+                    <Route path="/interview" element={<SetupPage />} />
+                    <Route path="/interview/text/:sessionId" element={<TextInterview />} />
+                    <Route path="/interview/voice/:sessionId" element={<VoiceInterview />} />
+                    <Route path="/interview/report/:sessionId" element={<ReportPage />} />
                 </Route>
-                <Route path="/mypage/resumes/:id" element={<MyResumeDetail />} />
-                <Route path="/mypage/resume/edit/:id" element={<ResumeEdit />} />
-                <Route path="/mypage/interviews/:id" element={<MyInterviewDetail />} />
 
-                {/*면접*/}
-                <Route path="/interview" element={<SetupPage />} />
-                <Route path="/interview/text/:sessionId" element={<TextInterview />} />
-                <Route path="/interview/voice/:sessionId" element={<VoiceInterview />} />
-                <Route path="/interview/report/:sessionId" element={<ReportPage />} />
+                {/* 잘못된 경로는 메인으로 리다이렉트 */}
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
 
             {!isAdminOrOpsRoute && <Footer />}
