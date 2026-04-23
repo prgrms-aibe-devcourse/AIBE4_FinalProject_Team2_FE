@@ -85,11 +85,8 @@ export default function TextInterview() {
                 let chunk = "";
 
                 try {
-                    let data = JSON.parse(event.data);
-
-                    if (typeof data === 'string') {
-                        data = JSON.parse(data);
-                    }
+                    // [리뷰 반영] 백엔드 응답 규격이 개선되었으므로 단일 파싱으로 깔끔하게 처리
+                    const data = JSON.parse(event.data);
 
                     if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
                         chunk = data.candidates[0].content.parts[0].text;
