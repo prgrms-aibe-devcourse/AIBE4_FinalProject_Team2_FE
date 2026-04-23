@@ -82,12 +82,12 @@ export default function SetupPage() {
         try {
             // [수정] 음성/텍스트 면접에 관계없이 직무와 연차 정보를 함께 전송
             const sessionData = await interviewApi.startInterview({
-                resumeId: (interviewMode === 'TEXT' && selectedResumeId) ? Number(selectedResumeId) : null,
-                jobPostingId: (interviewMode === 'TEXT' && selectedJobPostingId) ? selectedJobPostingId : null,
-                jobDescription: interviewMode === 'TEXT' ? parsedJobText : null,
+                resumeId: (interviewType === 'TEXT' && selectedResumeId) ? Number(selectedResumeId) : null,
+                jobPostingId: (interviewType === 'TEXT' && selectedJobPostingId) ? selectedJobPostingId : null,
+                jobDescription: interviewType === 'TEXT' ? parsedJobText : null,
                 interviewType: interviewType,
                 interviewMode: interviewMode,
-                aiProvider: interviewMode === 'TEXT' ? 'GEMINI' : 'RETELL',
+                aiProvider: interviewType === 'TEXT' ? 'GEMINI' : 'RETELL',
                 modelVariant: 'gemini-2.5-flash',
                 jobRole: jobRole,           // 추가된 직무 데이터
                 experience: experience // 추가된 연차 데이터
@@ -184,7 +184,7 @@ export default function SetupPage() {
                     <div className="setup-card h-100 p-4 border-0 shadow-sm rounded-4 bg-white d-flex flex-column justify-content-center gap-4">
 
                         {/* 조건부 렌더링: 텍스트 모드일 때만 입력 폼 노출, 음성 모드면 안내 문구 노출 */}
-                        {interviewMode === 'TEXT' ? (
+                        {interviewType === 'TEXT' ? (
                             <>
                                 <div>
                                     <h6 className="fw-bold mb-2 d-flex align-items-center gap-2">
@@ -242,7 +242,7 @@ export default function SetupPage() {
             </div>
 
             {/* 3. 면접 유형 선택 (텍스트 모드일 때만 전체 박스 렌더링) */}
-            {interviewMode === 'TEXT' && (
+            {interviewType === 'TEXT' && (
                 <div className="setup-card p-4 border-0 shadow-sm rounded-4 bg-white mb-4 transition-all">
                     <h5 className="fw-bold mb-4 d-flex align-items-center gap-2">
                         <span className="text-primary">❖</span> 면접 세부 유형

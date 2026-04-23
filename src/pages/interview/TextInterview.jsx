@@ -5,17 +5,15 @@ import { Send, Square, Info } from 'lucide-react';
 import './Interview.css';
 
 // 모드별 동적 인사말 생성 함수
-const getInitialGreeting = (mode) => {
-    switch (mode) {
-        case 'STRESS':
-            return '바로 시작하겠습니다. 지원자님, 1분 자기소개 해보세요.';
-        case 'FOLLOW_UP':
-            return '지원해 주셔서 감사합니다. 먼저 본인의 핵심 역량을 중심으로 자기소개를 부탁드립니다.';
-        case 'NORMAL':
-        default:
-            return '반갑습니다! 긴장 푸시고 편하게 자기소개 부탁드립니다.';
-    }
+// [리뷰 반영] 인사말 데이터를 상수 객체로 분리하여 유지보수성 향상
+const GREETINGS = {
+    STRESS: '바로 시작하겠습니다. 지원자님, 1분 자기소개 해보세요.',
+    FOLLOW_UP: '지원해 주셔서 감사합니다. 먼저 본인의 핵심 역량을 중심으로 자기소개를 부탁드립니다.',
+    NORMAL: '반갑습니다! 긴장 푸시고 편하게 자기소개 부탁드립니다.'
 };
+
+// 넘어온 mode 값으로 객체에서 텍스트를 찾고, 이상한 값이면 NORMAL을 기본으로 출력
+const getInitialGreeting = (mode) => GREETINGS[mode] || GREETINGS.NORMAL;
 
 export default function TextInterview() {
     const { sessionId } = useParams();
@@ -52,16 +50,23 @@ export default function TextInterview() {
 
         const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
 
-        // [수정] memberId 하드코딩 완전 제거 (Spring Security 쿠키/세션 인증 활용)
+        // [수정] 파라미터 생성 객체
         const params = new URLSearchParams({
             answer: userText,
             interviewMode: mode
         });
 
+        // [추가] 로컬 스토리지에 저장된 JWT 토큰을 가져와서 파라미터에 붙임
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            params.append('token', token);
+        }
+
+        // 완성된 파라미터(answer, interviewMode, token)를 URL에 결합
         const url = `${baseUrl}/api/interviews/${sessionId}/text/stream?${params.toString()}`;
 
         try {
-            // CORS 및 JWT/세션 인증 정보를 보내기 위한 필수 옵션 (이 옵션이 memberId 역할을 대신함)
+            // 라이브러리 없이 기본 EventSource 사용
             const eventSource = new EventSource(url, { withCredentials: true });
 
             eventSource.onopen = () => {
