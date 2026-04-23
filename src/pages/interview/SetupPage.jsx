@@ -1,18 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, MessageSquare, ShieldAlert, Play, Settings, FileText, Briefcase, Info } from 'lucide-react';
+import { BookOpen, MessageSquare, ShieldAlert, Play, Settings, FileText, Briefcase, Info, User, Star } from 'lucide-react';
 import { interviewApi } from '../../api/interview';
 import axios from '../../api/axios';
 import { parseJobPosting } from '../../api/jobPosting';
 import './Interview.css';
 
+// [리뷰 반영] 선택지 데이터를 상수 배열로 분리하여 유지보수성 및 가독성 향상
+const JOB_ROLES = [
+    { value: 'BACKEND', label: '백엔드 엔지니어' },
+    { value: 'FRONTEND', label: '프론트엔드 엔지니어' },
+    { value: 'FULLSTACK', label: '풀스택 엔지니어' },
+    { value: 'PM', label: '서비스 기획자 (PM/PO)' },
+    { value: 'COMMON', label: '기타 직무 (일반)' }
+];
+
+const EXPERIENCE_LEVELS = [
+    { value: 'NEWBIE', label: '신입 (경력 없음)' },
+    { value: 'JUNIOR', label: '주니어 (1~3년 차)' },
+    { value: 'MIDDLE', label: '미들 (4~7년 차)' },
+    { value: 'SENIOR', label: '시니어 (8년 차 이상)' }
+];
+
 export default function SetupPage() {
     const navigate = useNavigate();
 
     // 기존 상태
-    const [interviewMode, setInterviewMode] = useState('TEXT');
-    const [interviewType, setInterviewType] = useState('NORMAL');
+    const [interviewType, setInterviewType] = useState('TEXT');
+    const [interviewMode, setInterviewMode] = useState('NORMAL');
     const [isLoading, setIsLoading] = useState(false);
+
+    // [추가] 직무 및 연차 상태 변수
+    const [jobRole, setJobRole] = useState('BACKEND');
+    const [experience, setExperience] = useState('NEWBIE');
 
     // 자기소개서 상태
     const [myResumes, setMyResumes] = useState([]);
@@ -76,23 +96,25 @@ export default function SetupPage() {
     const handleStartInterview = async () => {
         setIsLoading(true);
         try {
-            // 음성 면접일 경우 부가 정보(이력서, 공고)는 null로 전송하여 백엔드 오류 방지
+            // [수정] 음성/텍스트 면접에 관계없이 직무와 연차 정보를 함께 전송
             const sessionData = await interviewApi.startInterview({
-                resumeId: (interviewMode === 'TEXT' && selectedResumeId) ? Number(selectedResumeId) : null,
-                jobPostingId: (interviewMode === 'TEXT' && selectedJobPostingId) ? selectedJobPostingId : null,
-                jobDescription: interviewMode === 'TEXT' ? parsedJobText : null,
-                interviewType: interviewMode,
-                interviewMode: interviewType,
-                aiProvider: interviewMode === 'TEXT' ? 'GEMINI' : 'RETELL',
-                modelVariant: 'gemini-2.5-flash'
+                resumeId: (interviewType === 'TEXT' && selectedResumeId) ? Number(selectedResumeId) : null,
+                jobPostingId: (interviewType === 'TEXT' && selectedJobPostingId) ? selectedJobPostingId : null,
+                jobDescription: interviewType === 'TEXT' ? parsedJobText : null,
+                interviewType: interviewType,
+                interviewMode: interviewMode,
+                aiProvider: interviewType === 'TEXT' ? 'GEMINI' : 'RETELL',
+                modelVariant: 'gemini-2.5-flash',
+                jobRole: jobRole,           // 추가된 직무 데이터
+                experience: experience      // 추가된 연차 데이터
             });
 
             const sessionId = sessionData.sessionId || sessionData.id;
 
-            if (interviewMode === 'TEXT') {
-                navigate(`/interview/text/${sessionId}?mode=${interviewType}`);
+            if (interviewType === 'TEXT') {
+                navigate(`/interview/text/${sessionId}?mode=${interviewMode}`);
             } else {
-                navigate(`/interview/voice/${sessionId}?mode=${interviewType}`);
+                navigate(`/interview/voice/${sessionId}?mode=${interviewMode}`);
             }
         } catch (error) {
             console.error("세션 생성 실패:", error);
@@ -112,7 +134,46 @@ export default function SetupPage() {
             <div className="mb-5 text-center">
                 <span className="badge bg-primary bg-opacity-10 text-primary mb-2 px-3 py-2 rounded-pill">AI 면접 설정</span>
                 <h2 className="fw-bold mb-3">맞춤형 모의 면접 준비</h2>
-                <p className="text-muted">내 이력서와 채용 공고를 추가하면 훨씬 더 정교한 꼬리질문을 받을 수 있습니다.</p>
+                <p className="text-muted">내 직무/연차 정보와 이력서를 추가하면 훨씬 더 정교한 질문을 받을 수 있습니다.</p>
+            </div>
+
+            {/* [추가] 0. 지원자 기본 정보 설정 */}
+            <div className="setup-card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
+                <h5 className="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <User size={20} className="text-primary" /> 기본 지원 정보 설정
+                </h5>
+                <div className="row g-4">
+                    <div className="col-md-6">
+                        <label className="form-label fw-bold text-secondary">희망 직무</label>
+                        <select
+                            className="form-select form-select-lg bg-light border-0"
+                            value={jobRole}
+                            onChange={(e) => setJobRole(e.target.value)}
+                        >
+                            {/* 상수 배열 map 렌더링 적용 */}
+                            {JOB_ROLES.map((role) => (
+                                <option key={role.value} value={role.value}>
+                                    {role.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label fw-bold text-secondary">경력 (연차)</label>
+                        <select
+                            className="form-select form-select-lg bg-light border-0"
+                            value={experience}
+                            onChange={(e) => setExperience(e.target.value)}
+                        >
+                            {/* 상수 배열 map 렌더링 적용 */}
+                            {EXPERIENCE_LEVELS.map((level) => (
+                                <option key={level.value} value={level.value}>
+                                    {level.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div className="row g-4 mb-4">
@@ -124,13 +185,13 @@ export default function SetupPage() {
                         </h6>
                         <div className="d-flex flex-column gap-2">
                             <button
-                                className={`btn py-3 fw-bold ${interviewMode === 'TEXT' ? 'btn-primary shadow-sm' : 'btn-light text-secondary'}`}
-                                onClick={() => setInterviewMode('TEXT')}>
+                                className={`btn py-3 fw-bold ${interviewType === 'TEXT' ? 'btn-primary shadow-sm' : 'btn-light text-secondary'}`}
+                                onClick={() => setInterviewType('TEXT')}>
                                 💬 채팅(Text) 면접
                             </button>
                             <button
-                                className={`btn py-3 fw-bold ${interviewMode === 'VOICE' ? 'btn-primary shadow-sm' : 'btn-light text-secondary'}`}
-                                onClick={() => setInterviewMode('VOICE')}>
+                                className={`btn py-3 fw-bold ${interviewType === 'VOICE' ? 'btn-primary shadow-sm' : 'btn-light text-secondary'}`}
+                                onClick={() => setInterviewType('VOICE')}>
                                 🎙️ 음성(Voice) 면접
                             </button>
                         </div>
@@ -142,7 +203,7 @@ export default function SetupPage() {
                     <div className="setup-card h-100 p-4 border-0 shadow-sm rounded-4 bg-white d-flex flex-column justify-content-center gap-4">
 
                         {/* 조건부 렌더링: 텍스트 모드일 때만 입력 폼 노출, 음성 모드면 안내 문구 노출 */}
-                        {interviewMode === 'TEXT' ? (
+                        {interviewType === 'TEXT' ? (
                             <>
                                 <div>
                                     <h6 className="fw-bold mb-2 d-flex align-items-center gap-2">
@@ -200,7 +261,7 @@ export default function SetupPage() {
             </div>
 
             {/* 3. 면접 유형 선택 (텍스트 모드일 때만 전체 박스 렌더링) */}
-            {interviewMode === 'TEXT' && (
+            {interviewType === 'TEXT' && (
                 <div className="setup-card p-4 border-0 shadow-sm rounded-4 bg-white mb-4 transition-all">
                     <h5 className="fw-bold mb-4 d-flex align-items-center gap-2">
                         <span className="text-primary">❖</span> 면접 세부 유형
@@ -208,8 +269,8 @@ export default function SetupPage() {
                     <div className="row g-4">
                         <div className="col-md-4">
                             <div
-                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewType === 'NORMAL' ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
-                                onClick={() => setInterviewType('NORMAL')} style={{ cursor: 'pointer' }}>
+                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewMode === 'NORMAL' ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
+                                onClick={() => setInterviewMode('NORMAL')} style={{ cursor: 'pointer' }}>
                                 <div className="icon-box bg-white text-primary rounded-circle d-inline-flex p-3 mb-3 shadow-sm">
                                     <BookOpen size={24} />
                                 </div>
@@ -219,8 +280,8 @@ export default function SetupPage() {
                         </div>
                         <div className="col-md-4">
                             <div
-                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewType === 'FOLLOW_UP' ? 'border-info bg-info bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
-                                onClick={() => setInterviewType('FOLLOW_UP')} style={{ cursor: 'pointer' }}>
+                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewMode === 'FOLLOW_UP' ? 'border-info bg-info bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
+                                onClick={() => setInterviewMode('FOLLOW_UP')} style={{ cursor: 'pointer' }}>
                                 <div className="icon-box bg-white text-info rounded-circle d-inline-flex p-3 mb-3 shadow-sm">
                                     <MessageSquare size={24} />
                                 </div>
@@ -230,8 +291,8 @@ export default function SetupPage() {
                         </div>
                         <div className="col-md-4">
                             <div
-                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewType === 'STRESS' ? 'border-danger bg-danger bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
-                                onClick={() => setInterviewType('STRESS')} style={{ cursor: 'pointer' }}>
+                                className={`type-card h-100 p-4 border rounded-4 cursor-pointer transition-all ${interviewMode === 'STRESS' ? 'border-danger bg-danger bg-opacity-10 shadow-sm' : 'border-light bg-light hover-shadow'}`}
+                                onClick={() => setInterviewMode('STRESS')} style={{ cursor: 'pointer' }}>
                                 <div className="icon-box bg-white text-danger rounded-circle d-inline-flex p-3 mb-3 shadow-sm">
                                     <ShieldAlert size={24} />
                                 </div>
